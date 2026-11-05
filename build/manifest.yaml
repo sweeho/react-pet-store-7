@@ -1,0 +1,444 @@
+schemaVersion: 1
+program:
+  key: java-pet-store
+  title: Java Pet Store rebuild
+  source: extraction
+  generator: vortex-spec-extraction
+  sourceRef: vortex/legacy-spec/sx-0001
+capabilities:
+  - slug: sign-on
+    title: "Sign-on"
+    order: 1
+    dependsOn: []
+    priority: 0
+    change:
+      dir: openspec/changes/sx-sign-on
+      specCapabilities:
+        - sign-on
+    canvas:
+      problem: "Account, checkout and supplier inventory screens must be restricted to known users; the legacy rules (plain-text credentials, filter-based protection, timeouts) need to be recorded."
+      solution: "Build authentication for the storefront and the supplier administrator, protected-resource rules, sign-out, idle timeout and the sign-in screens."
+      userStories:
+        - "As a returning customer, I want to sign in with my user name and password, so that I can reach my account and check out."
+        - "As a supplier administrator, I want to sign in to the inventory application, so that I can update stock."
+      acceptanceCriteria:
+        - "Sign-on credential record — Duplicate user name: the creation is rejected"
+        - "User creation limits — Forbidden character: creation is rejected"
+        - "Credential authentication — Matching password: authentication succeeds"
+        - "Sign-on outcome — Success after a protected request: the session is signed on and the visitor is taken to the account page"
+        - "Customer context on sign-on — Preferred language applied: the storefront and cart use Japanese"
+        - "Storefront protected resources — Protected page, not signed on: the sign-in screen is shown and the requested address is remembered"
+        - "Remember user name — Option selected: the cookie is set for 31 days, even if authentication fails"
+        - "Storefront sign-out — Sign out: the cart is empty, the visitor is not signed on, Japanese is kept and the message is shown"
+        - "Storefront idle timeout — Idle session: the session has expired"
+        - "Supplier administrator access — Not signed in: the supplier sign-in screen is shown"
+        - "Supplier logout — Logout: the session ends and a sign-in link is shown"
+        - "Supplier idle timeout — Idle supplier session: the user must sign in again"
+      outOfScope:
+        - "Customer registration data (see customer-accounts)"
+        - "Password hashing or other security improvements not present in the legacy system"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Storefront sign-in screen: returning-customer form (user name, password, Remember My User Name checkbox) and a new-customer sign-up form; user name pre-filled and password blank when a name is remembered, otherwise both fields pre-filled with the sample credentials j2ee/j2ee; a failed sign-in shows \"There were errors signing you in...\" and offers to try again"
+        - "Supplier sign-in screen: asks for user id and password pre-filled with supplier/supplier; rejected credentials show \"You could not be authenticated with the information provided. Please check your Username and Password.\" with a link back to sign in"
+        - "Storefront page header: search box, links to Account and Cart, and Sign out when the visitor is signed on or Sign in otherwise"
+    evidence:
+      irRefs: [SIGNON-REQ-0001, SIGNON-REQ-0002, SIGNON-REQ-0003, SIGNON-REQ-0004, SIGNON-REQ-0005, SIGNON-ENT-0001, CUSTACC-REQ-0002, SO-REQ-0001, SO-SCR-0002, SO-REQ-0003, SO-BR-0004, SIGN-BR-0001, SIGN-BR-0002, SIGN-BR-0003, SIGN-SCR-0004, SGN-RULE-0001, SIGN-REQ-0001, SIGN-SCR-0002, SIGN-BR-0004, SIGN-BR-0005, SIGN-BR-0006, SIGN-BR-0007, SIGN-SCR-0006, SIGN-ENT-0001]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: customer-accounts
+    title: "Customer accounts"
+    order: 2
+    dependsOn: [sign-on]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-customer-accounts
+      specCapabilities:
+        - customer-accounts
+    canvas:
+      problem: "Shoppers need a registered identity holding contact details, address, payment card and storefront preferences."
+      solution: "Build customer sign-up, account display and edit, profile preferences, and the customer, account, contact, address and card data model."
+      userStories:
+        - "As a new shopper, I want to register an account, so that I can place orders."
+        - "As a customer, I want to view and edit my account, so that my details stay current."
+      acceptanceCriteria:
+        - "Customer creation provisions account and profile — New customer: an active account, a default profile, empty contact information and an empty payment card exist for that customer"
+        - "Default profile preferences — Defaults applied: language is en_US, favourite category is empty, my-list is on and banner is on"
+        - "Account status values — Status on creation: its status is \"active\""
+        - "Customer data model — Customer record read: the account, contact, address, card and profile are available"
+        - "Cascading customer removal — Customer deleted: all dependent records are removed"
+        - "List customers — List: three customers are returned"
+        - "Transactional operations without role check — Unprivileged caller: the operation is permitted"
+        - "Address storage without validation — Empty address: it is accepted unchanged"
+        - "Address XML exchange — Wrong root: it is rejected"
+        - "Payment card storage — Copy a card: number, type and expiry are copied unchanged"
+        - "Card expiry month and year derivation — Normal expiry: \"04\" and \"2005\" are returned"
+        - "Card XML exchange — Wrong root: it is rejected"
+      outOfScope:
+        - "Card number protection (legacy stores it in clear text; decision pending)"
+        - "Order placement (see checkout)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Account screen: shows the signed-on customer's contact information, card type, full unmasked card number and expiry month/year, and profile preferences, with a link to edit the account"
+    evidence:
+      irRefs: [CUST-ENT-0001, CUST-REQ-0002, CUST-RULE-0003, CUST-RULE-0004, CUST-REQ-0005, CUST-RULE-0006, SIGNON-REQ-0006, CUSTACC-REQ-0001, CUSTACC-BR-0002, CUSTACC-REQ-0003, CUSTACC-BR-0004, CUSTACC-ENT-0005, CUSTACC-BR-0006, CUSTACC-BR-0007, CUSTACC-RULE-0001, CUSTACC-RULE-0002, CUSTACC-ENT-0001, CUSTACC-RULE-0003, CUSTACC-RULE-0004, CUSTACC-WFL-0001, CUSTACC-BR-0001, CUSTACC-WFL-0002, CUSTACC-ENT-0002, CUSTACC-ENT-0003, CUSTACC-BR-0003, CUST-BR-0001, CUST-REQ-0001, CUST-BR-0002, CUST-INT-0001, CUST-INT-0002, ACCT-REQ-0001, ACCT-REQ-0002, ACCT-BR-0003, ACCT-BR-0004, ACCT-BR-0005, ACCT-REQ-0006, ACCT-BR-0007, ACCT-BR-0008, ACCT-BR-0009, ACCT-ENT-0010, ACCT-WF-0001, ACCT-WF-0002, ACCT-ENT-0003, ACCT-BR-0006, ACCT-SCR-0008, ACCT-BR-0010, ACCT-BR-0011, CUSTACCT-ENT-0001, CUSTACCT-ENT-0002, CUSTACCT-ENT-0003, CUSTACCT-ENT-0004, CUST-BR-0003, CUST-BR-0004, CUST-ENT-0002, CUST-ENT-0003, CUST-ENT-0004, CUST-ENT-0005]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: catalog-data-maintenance
+    title: "Catalog data maintenance"
+    order: 3
+    dependsOn: []
+    priority: 0
+    change:
+      dir: openspec/changes/sx-catalog-data-maintenance
+      specCapabilities:
+        - catalog-data-maintenance
+    canvas:
+      problem: "Legacy applications seed their own catalog, user, customer and supplier stock data and run an integrity check on the catalog."
+      solution: "Build the initial data load for the storefront and supplier and the catalog integrity checks."
+      userStories:
+        - "As an operator, I want the catalog and sample users loaded, so that the store is usable on first start."
+        - "As a catalog owner, I want integrity and quality flags reported, so that bad data is found."
+      acceptanceCriteria:
+        - "Initial seed content — Initial load on an empty store: the four users with matching customers and the five categories with details in three locales exist"
+        - "Storefront data load — Already populated: nothing is changed"
+        - "Data load access and redirect — Load fails with error page given: the caller is redirected to the error page"
+        - "Storefront entry data load — Entering the storefront: the wait message is shown, the storefront load runs, then the supplier load runs with the same force setting"
+        - "Catalog item pricing storage — Item detail stored: list price and unit cost are held as 2-place decimals and both are required"
+        - "No price-versus-cost constraint — Price below cost: it is accepted"
+        - "Supplier stock load — Stock already present: no stock is changed"
+        - "Supplier seed stock — Seeded stock: 29 items EST-1..EST-29 each have quantity 10000"
+        - "Supplier load page and redirects — Successful supplier load: the user is redirected to the success page"
+        - "Catalog structure integrity check — Empty category: the job fails"
+        - "Catalog data quality flags — Item without inventory: the item is flagged under C5 and category and item totals are logged"
+      outOfScope:
+        - "Interactive catalog editing (not present in legacy)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [CDM-REQ-0001, CDM-BR-0002, CDM-WF-0003, CAT-BR-0001, CAT-WF-0002, DATA-REQ-0001, DATA-ENT-0002, DATA-BR-0003, DATA-BR-0004, DATA-WF-0001, DATA-BR-0002, DATA-INT-0003, DATA-ENT-0004, DATA-BR-0005, CDM-REQ-0002, CDM-REQ-0003, CATALOG-BR-0003, CATB-BR-0003, CAT-ENT-0004]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: catalog-browsing
+    title: "Catalog browsing"
+    order: 4
+    dependsOn: [catalog-data-maintenance]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-catalog-browsing
+      specCapabilities:
+        - catalog-browsing
+    canvas:
+      problem: "Shoppers need to find pets by category, product and item, in their language, with prices."
+      solution: "Build category, product and item navigation, paging, item detail, keyword search, locales and the category sidebar."
+      userStories:
+        - "As a shopper, I want to browse categories, products and items, so that I can find a pet."
+        - "As a shopper, I want to search by keyword, so that I can find a pet quickly."
+      acceptanceCriteria:
+        - "Catalog hierarchy and product identity — Product with unknown category: the product is rejected"
+        - "Product details per locale — Product row without name: it is rejected"
+        - "Item details per locale — Item row missing a price: it is rejected"
+        - "Category, product and item hierarchy — Item belongs to one product: exactly one product is returned"
+        - "Catalog navigation and paged lists — List opened without paging parameters: items 1 and 2 are shown with a Next link and no Previous link"
+        - "Home page category entry points — Open a category from the home page: the product list of the Dogs category is displayed"
+        - "Item detail screen — Item displayed: name, attribute, image, List Price, Your Price and an Add to Cart link are shown"
+        - "Category sidebar — Sidebar displayed: 5 category links are shown, each opening that category's product list"
+        - "Price shown per list — Price in item list versus search: the item list shows 20.00 and the search results show 15.00"
+        - "Keyword search — Any keyword matches: items matching either keyword are returned"
+        - "Storefront locales — Default locale: en_US catalog content is shown"
+        - "Language switching — Switch to Chinese: the page and the cart are shown in zh_CN"
+      outOfScope:
+        - "Cart and checkout behaviour"
+        - "Catalog data loading"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Catalog navigation: category to product list to item list to item detail; product and item lists show 2 rows at a time starting at the first row, with Previous and Next links only when an earlier or later page exists"
+        - "Item detail screen: shows the item's name and attribute, its image, a List Price from the item's list price and a Your Price from the item's unit cost, both formatted as currency for the page locale, and an Add to Cart link"
+        - "Home page: lets the shopper open each of the five pet categories (Fish, Dogs, Reptiles, Cats, Birds) from a clickable image map, alongside a sidebar of catalog categories"
+    evidence:
+      irRefs: [CATB-REQ-0001, CATB-BR-0002, CATB-SCR-0001, CATB-REQ-0002, CATB-SCR-0003, CATB-BR-0004, CATB-REQ-0005, CATB-REQ-0006, CATB-REQ-0007, CATB-BR-0008, CATB-SCR-0009, CATB-ENT-0010, CATB-BR-0011, CAT-SCR-0001, CAT-SCR-0002, CAT-BR-0003, CAT-BR-0004, CAT-BR-0005, CAT-BR-0006, CAT-BR-0007, CAT-BR-0008, CATALOG-ENT-0001, CATALOG-ENT-0002, CATB-ENT-0001, CAT-ENT-0001, CAT-ENT-0002, CAT-ENT-0003, CAT-REQ-0001, CAT-REQ-0002, CAT-REQ-0004]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: shopping-cart
+    title: "Shopping cart"
+    order: 5
+    dependsOn: [catalog-browsing]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-shopping-cart
+      specCapabilities:
+        - shopping-cart
+    canvas:
+      problem: "Visitors build a cart before signing on."
+      solution: "Build the per-session cart with add, update, remove and total behaviour."
+      userStories:
+        - "As a visitor, I want to add pets to a cart and change quantities, so that I can prepare an order."
+      acceptanceCriteria:
+        - "Cart screen — Empty cart: the message \"Your Shopping Cart is Empty.\" is shown instead of a line list"
+        - "Cart line operations — Add an item: one unit of the item is added to the cart and the cart is shown"
+        - "Non-numeric quantity — Text entered as a quantity: that line's quantity is treated as 0"
+        - "Anonymous per-session cart — New visitor adds an item: the item is held in that session's cart and no sign-on is requested"
+      outOfScope:
+        - "Order placement (see checkout)"
+        - "Persisting carts across sessions"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Cart screen: shows \"Your Shopping Cart is Empty.\" when there are no lines; otherwise lists each line with a link to the item, a Remove link, an editable quantity (up to 10 characters) and the unit cost, an Update Cart button, the cart total, and a Check Out link to the order information screen"
+    evidence:
+      irRefs: [CART-REQ-0001, CART-REQ-0002, CART-BR-0003, CART-SCR-0004, CART-REQ-0005, CART-BR-0001, CART-BR-0002, CART-SCR-0003, CART-BR-0004]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: checkout
+    title: "Checkout"
+    order: 6
+    dependsOn: [shopping-cart, customer-accounts]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-checkout
+      specCapabilities:
+        - checkout
+    canvas:
+      problem: "A signed-on shopper turns a cart into a purchase order."
+      solution: "Build billing and shipping capture, order identifier generation, order total, purchase order creation and the order hand-off."
+      userStories:
+        - "As a signed-on shopper, I want to enter billing and shipping details and place my order, so that I receive my pets."
+      acceptanceCriteria:
+        - "Order information screen — Form displayed to a signed-on shopper: both blocks are shown with the fields listed above, filled from the account"
+        - "Order complete screen — Order placed: it shows \"Your Order is Complete\", the order id and the billing e-mail address"
+        - "General error screen — Unexpected failure: the error message, the technical trace and a request to tell the administrator are shown"
+        - "Order placement — Successful order: a purchase order with all listed data is created, sent for processing, the cart is emptied and the complete page is shown"
+        - "Empty cart refusal — Empty or re-submitted order: no order is created and \"The Shopping Cart is Empty and the order could not be placed.\" is shown, explaining that a re-submitted order has already been placed"
+        - "Order total calculation — Two lines: the total is 25.50 and the lines are numbered 0 and 1"
+        - "Payment card attached to orders — Any customer: the order carries the fixed card, not the stored one"
+        - "Checkout required contact fields — Blank field reaching the server: legacy behaviour records the missing field without telling the shopper and continues (suspected defect, awaiting a decision)"
+        - "Order identifier generation — First identifier for a prefix: a counter is created at 0 and \"10011\" is returned"
+        - "Identifier counter storage — Duplicate counter name: the store is rejected"
+        - "Purchase order storage — Order missing its card: it is rejected"
+        - "Order line quantity constraints — Zero quantity: it is rejected"
+      outOfScope:
+        - "Approval and fulfilment of the order"
+        - "E-mail composition (see order-notifications)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Order information screen: asks for billing and shipping contact details (first and last name, street lines 1-2, city, state/province, postal code, country, telephone, e-mail), pre-fills both from the signed-on customer's account, and refuses to submit in the browser while any required field (all except street line 2 and the selects) is empty"
+        - "Order complete screen: after an order is placed, shows the order id and states that a confirmation e-mail will be sent to the billing e-mail address"
+        - "General error screen: shown when a request fails unexpectedly; displays the error message and technical error trace and asks the user to notify the administrator (reachability unresolved in legacy)"
+    evidence:
+      irRefs: [CHK-BR-0001, CHK-BR-0002, CHK-ENT-0003, CHK-REQ-0004, CHK-REQ-0005, CHK-REQ-0006, CHK-REQ-0001, CHK-REQ-0002, CHK-ENT-0001, CHK-BR-0003, CHK-INT-0001, CHK-INT-0002, CHK-REQ-0003, CHK-RULE-0004, CHK-RULE-0005, CHK-SCR-0001, CHK-BR-0005, CHK-BR-0006, CHK-INT-0007, CHK-BR-0008, CHK-SCR-0009, CHK-SCR-0010, CHK-BR-0011, CHK-BR-0004, CHK-WF-0005, CHECKOUT-ENT-0001, CHECKOUT-BR-0002, CHECKOUT-ENT-0003, CHKO-ENT-0001, CHKO-BR-0002, CHKO-BR-0003]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: order-approval
+    title: "Order approval"
+    order: 7
+    dependsOn: [checkout]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-order-approval
+      specCapabilities:
+        - order-approval
+    canvas:
+      problem: "Placed orders must be approved or denied before fulfilment."
+      solution: "Build automatic approval by locale, administrator batch decisions and status rules."
+      userStories:
+        - "As an administrator, I want to approve or deny pending orders, so that only accepted orders are fulfilled."
+      acceptanceCriteria:
+        - "Batch approval decisions — Mixed batch: both statuses are updated, one supplier purchase order is sent for the approved order only, and both decisions are passed on for customer notification"
+        - "en_US automatic approval — Below the limit: it is approved automatically"
+        - "ja_JP automatic approval — Below and at the limit: the first is approved automatically and the second stays PENDING"
+        - "No automatic approval for other locales — Chinese locale order: it stays PENDING until an administrator approves or denies it"
+        - "Initial pending state and shared approval path — Automatic approval is treated like an administrator approval: it is first recorded PENDING, then approved through the decision path, so the supplier receives the order and the customer is notified"
+        - "Decisions apply only to pending orders — Decision on an already decided order: the decision is ignored, no status change is made, no supplier order is sent and no customer notice is produced for it"
+        - "Order status values — Unlisted status: the store is rejected"
+        - "Approval document format — Empty batch: it is rejected as invalid"
+      outOfScope:
+        - "Fulfilment and shipping"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [ORDER-APPROVAL-INTEGRATION-0004, OAP-RULE-0001, OAP-WF-0002, OAP-RULE-0003, OAP-WF-0004, APPR-BR-0001, APPR-BR-0002, APPR-BR-0003, APPR-WF-0004, APPR-BR-0005, APPR-WF-0006, APPROVAL-BR-0001]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: inventory-management
+    title: "Inventory management"
+    order: 8
+    dependsOn: [sign-on, catalog-data-maintenance]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-inventory-management
+      specCapabilities:
+        - inventory-management
+    canvas:
+      problem: "The supplier keeps a stock count per item and clerks edit it."
+      solution: "Build the stock record, inventory update screen and retry of waiting orders after update."
+      userStories:
+        - "As a stock clerk, I want to update stock counts, so that back-ordered items can be filled."
+      acceptanceCriteria:
+        - "Stock record per item — One record per item: the creation is rejected"
+        - "Stock quantity is never negative — Negative quantity stored: the store is rejected and the quantity is unchanged"
+        - "Inventory screen — Administrator views stock: each item shows its id, existing quantity, a new-quantity field and an update tick box, with a submit button"
+        - "Supplier home and confirmation screen — Home screen on navigation: the home screen is shown with Display Inventory and Logout actions"
+        - "Stock update rules — Ticked row with a value: item A's quantity is 12"
+        - "Retry pending orders after stock update — Waiting order now shippable: the line ships, an invoice is published and the confirmation is shown"
+      outOfScope:
+        - "Order shipment logic (see order-fulfillment)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+      screens:
+        - "Inventory screen: for an administrator lists every stock record with item id and existing quantity, a new-quantity entry field and an update tick box per row, and a submit button; with no stock shows \"There are no items in inventory at all\" (some legacy passes also show \"You are not authorised to update the status of orders.\" to non-administrators)"
+        - "Supplier home screen: explains the application is used to update inventory so back-ordered items can be filled, with a Display Inventory action and a Logout action; a direct visit always shows this page"
+    evidence:
+      irRefs: [INV-ENT-0001, INV-SCR-0002, INV-BR-0003, INV-WF-0004, INV-SCR-0005, INV-BR-0004, INV-WF-0005, INV-SCR-0006, INVENTORY-BR-0001, INVM-BR-0001]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: order-fulfillment
+    title: "Order fulfilment"
+    order: 9
+    dependsOn: [order-approval, inventory-management]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-order-fulfillment
+      specCapabilities:
+        - order-fulfillment
+    canvas:
+      problem: "Approved orders are sent to the supplier, shipped from stock and invoiced."
+      solution: "Build supplier order intake, shipment and partial shipment, invoicing, completion tracking and order interchange documents."
+      userStories:
+        - "As the supplier, I want approved orders shipped from stock and invoiced, so that customers receive their pets."
+      acceptanceCriteria:
+        - "Supplier order intake and fulfilment workflow — Some stock available: the order is recorded, the stocked lines ship and an invoice for them is sent"
+        - "Order status tracking — One status per order: exactly one status exists for that order"
+        - "Supplier order record — Order stored: the order, its shipping contact and both lines are retrievable by order id"
+        - "New supplier orders start pending — Incoming status ignored: its status is PENDING"
+        - "Supplier order statuses — Status changed: the stored order reports COMPLETED"
+        - "Supplier order contact and line copies — Creation copies children: three stored lines with shipped quantity 0 and one contact copy are linked to it"
+        - "Supplier order lookup — List by status: exactly the two pending orders are returned"
+        - "Whole-line shipment only — Insufficient stock: nothing is shipped for the line and stock stays 3"
+        - "Already shipped lines are skipped — Reprocessing: no stock is taken and the line is not invoiced"
+        - "Item without stock record — Unknown stock item: the line ships nothing and the order remains pending"
+        - "Partial shipment and completion — One line short: the first line ships and the order stays pending"
+        - "Invoice content per pass — Second pass: the invoice lists only line 2"
+      outOfScope:
+        - "Customer e-mail (see order-notifications)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [ORD-REQ-0003, ORD-REQ-0004, CHK-REQ-0001, ORDER-FULFILLMENT-ENTITY-0001, ORDER-FULFILLMENT-BUSINESS-RULE-0001, ORDER-FULFILLMENT-REQUIREMENT-0001, ORDER-FULFILLMENT-REQUIREMENT-0002, ORDER-FULFILLMENT-INTEGRATION-0001, ORDER-FULFILLMENT-INTEGRATION-0002, ORDER-FULFILLMENT-BUSINESS-RULE-0003, ORDER-FULFILLMENT-BUSINESS-RULE-0005, ORDER-FULFILLMENT-BUSINESS-RULE-0002, ORDER-FULFILLMENT-WORKFLOW-0001, ORDER-FULFILLMENT-BUSINESS-RULE-0004, ORDF-ENT-0001, ORDF-BR-0001, ORDF-WF-0001, ORDF-REQ-0001, ORDF-REQ-0002, ORDF-REQ-0003, FUL-INT-0001, FUL-BR-0002, FUL-BR-0003, FUL-BR-0004, FUL-BR-0005, FUL-BR-0006, FUL-BR-0007, FUL-INT-0008, FUL-INT-0009, FUL-BR-0010, FUL-ENT-0011, FUL-WF-0001, FUL-INT-0007, FUL-BR-0009, OFF-INT-0001, OFF-WF-0002, OFF-WF-0003, FULF-INT-0001, FULF-INT-0002, FULF-WF-0003, FULF-INT-0004, FULF-ENT-0005, FULF-ENT-0006, FULF-REQ-0007, FULFIL-ENT-0001, FULFIL-BR-0002, FULF-ENT-0001, FULF-ENT-0002, OFL-ENT-0001, OFL-REQ-0003, OFL-REQ-0004, OFL-REQ-0005, OFU-ENT-0001]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: order-notifications
+    title: "Order notifications"
+    order: 10
+    dependsOn: [order-approval]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-order-notifications
+      specCapabilities:
+        - order-notifications
+    canvas:
+      problem: "Customers are e-mailed about order status, shipment and completion."
+      solution: "Build status, shipment and completion e-mails, locale templates, asynchronous hand-off and named resource lookup."
+      userStories:
+        - "As a customer, I want e-mail about my order, so that I know its progress."
+      acceptanceCriteria:
+        - "Order status e-mail — Switch on: one e-mail with subject \"Java Pet Store Order Status: <order id>\" is sent to the order's e-mail address"
+        - "Shipment e-mail — Partial shipment: the customer receives an e-mail listing that shipment's lines"
+        - "Completed-order e-mail — Order completes: one e-mail listing every order line is sent to the order's e-mail address"
+        - "Locale templates and price format — Japanese order: the body is Japanese and prices use the yen format without decimals"
+        - "Status wording and subject language — Denied order in Chinese: the body carries the Chinese refusal wording and the subject is English"
+        - "Hand-off to mail service — Two e-mails: two separate messages are passed to the mail service"
+        - "Asynchronous message hand-off — Message queued: one text message is placed on the queue"
+        - "Asynchronous send failure — Send fails: the caller receives an error and the connection is released"
+        - "Asynchronous send transaction and access — Caller rolls back: the message is not delivered"
+        - "Named resource lookup — Queue lookup: the resolved queue is returned"
+        - "Lookup caching — Repeated name: the cached object is returned"
+        - "Configuration entries not cached — Switch changed: the new value is returned"
+      outOfScope:
+        - "Order decisions (see order-approval)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [ONT-REQ-0003, ORDER-NOTIFICATIONS-INT-0001, ORDER-NOTIFICATIONS-REQ-0002, ORDER-NOTIFICATIONS-REQ-0003, ORDER-NOTIFICATIONS-REQ-0004, ORDNOT-INT-0001, ORDNOT-REQ-0002, ORDNOT-BR-0003, NOT-RULE-0001, NOT-RULE-0002, NOT-RULE-0003, NOT-RULE-0004, NOT-RULE-0005, NOT-INT-0006, NOTIF-REQ-0001, NOTIF-REQ-0002, NOTIF-REQ-0003, NOTIF-BR-0004, NOTIF-BR-0005, NOTIF-INT-0006]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: sales-reporting
+    title: "Sales reporting"
+    order: 11
+    dependsOn: [checkout]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-sales-reporting
+      specCapabilities:
+        - sales-reporting
+    canvas:
+      problem: "Administrators need to list orders by status and see sales charts."
+      solution: "Build orders-by-status listing, revenue and units charts and date-range order lookup."
+      userStories:
+        - "As an administrator, I want sales charts for a period, so that I can track revenue."
+      acceptanceCriteria:
+        - "Orders listed by status — Orders requested for a status: exactly the three approved orders are returned, each with order id, user id, date as M/D/YYYY with no zero padding, value and status"
+        - "Revenue chart — Revenue by category: one total per category is returned, each the sum of quantity times unit price"
+        - "Units-ordered chart — Units by category: FISH is 10 and DOGS is 4"
+        - "Orders by date range — Orders in range: the orders at the start, inside and at the end are returned"
+        - "Order lookup by user and date — Indexes present: secondary indexes exist on the ordering user id and on the order date"
+      outOfScope:
+        - "Nightly extracts (see order-batch-operations)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [SAL-REQ-0005, RPT-RULE-0001, RPT-RULE-0002, REPT-REQ-0001, REPT-BR-0002, REPT-BR-0003, RPT-REQ-0001, SAL-REQ-0001]
+      reviewedBy: null
+      reviewedAt: null
+  - slug: order-batch-operations
+    title: "Order batch operations"
+    order: 12
+    dependsOn: [order-fulfillment]
+    priority: 0
+    change:
+      dir: openspec/changes/sx-order-batch-operations
+      specCapabilities:
+        - order-batch-operations
+    canvas:
+      problem: "Nightly database jobs extract, report on, purge and back up order data."
+      solution: "Build the Finance extract, stuck-order, low-stock and mismatch reports, retention purge and backup."
+      userStories:
+        - "As Finance, I want a daily order extract, so that I can reconcile sales."
+      acceptanceCriteria:
+        - "Order status view and indexes — Status view lists orders: one row per order is returned with id, user, date, value and status"
+        - "Daily order extract for Finance — Yesterday's orders exported: only yesterday's orders appear, ordered by order id, with line-item count and status"
+        - "Stuck order report — Old pending order: only the 30-hour-old order is listed as STUCK"
+        - "Orders per status count — Status counts: each status is listed with its order count, ordered by status"
+        - "Supplier invoice mismatch — Lost invoice message: the order is listed as MISMATCH with both statuses"
+        - "Low stock report — Items below threshold: the items with 3 and 7 are listed, lowest first, followed by the tracked-item count and total units"
+        - "Retention purge — Old completed order purged: the old order and its related records are removed and the recent order is kept"
+        - "Purge follows extract — Purge ordering: it starts only after the extract has run"
+        - "Database backup — Scheduled backup: a backup is written to the backup folder and moved to a dated folder"
+      outOfScope:
+        - "Interactive reporting (see sales-reporting)"
+      risksAssumptions: []
+      techStack: []
+      affectedCode: []
+    evidence:
+      irRefs: [OBO-REQ-0001, OBO-REQ-0002, OBO-REQ-0003, OBO-REQ-0004, OBO-REQ-0005, OBO-REQ-0006, OBO-REQ-0007, OBO-REQ-0008, BATCH-ENT-0001]
+      reviewedBy: null
+      reviewedAt: null
+artifacts:
+  openapi: api/openapi.yaml
+  erd: architecture/erd.mermaid
+  schema: architecture/schema.sql
+  agents: architecture/rebuild-guidance.md
