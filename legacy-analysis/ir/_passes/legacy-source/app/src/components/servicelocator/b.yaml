@@ -1,0 +1,195 @@
+records:
+  - record_key: CHK-REQ-0001
+    kind: requirement
+    capability_key: checkout
+    requirement: >
+      The system SHALL resolve named infrastructure resources (EJB local and remote homes, JMS queue and topic connection factories, queues, topics, data sources) by name through a single lookup facility, and SHALL raise a ServiceLocatorException wrapping the underlying cause when any lookup fails.
+    confidence: high
+    confidence_basis: >
+      Same behaviour is visible in two implementations (web and ejb variants), every method follows the identical try/catch pattern. Not higher: no tests or config, and the capability list has no infrastructure key.
+    risk_class: operational
+    basis: >
+      No listed capability covers shared infrastructure lookup; filed under checkout because order placement is the main consumer (order submission to queues). Closest-fit, flagged for review.
+    plain_text: >
+      Whenever the shop needs a queue, a database connection or another internal service, it finds it by name in one place, and a clear error is reported if it cannot be found.
+    technical_note: >
+      JNDI InitialContext.lookup wrapped by ServiceLocator (ejb and web packages); NamingException and any Exception are rewrapped as ServiceLocatorException.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/ejb/ServiceLocator.java
+        line_start: 83
+        line_end: 98
+        excerpt: |
+          public EJBLocalHome getLocalHome(String jndiHomeName) throws ServiceLocatorException {
+          EJBLocalHome home = null;
+          try {
+          home = (EJBLocalHome) ic.lookup(jndiHomeName);
+          } catch (NamingException ne) {
+          throw new ServiceLocatorException(ne);
+          } catch (Exception e) {
+          throw new ServiceLocatorException(e);
+          }
+          return home;
+          }
+          
+          /**
+          * will get the ejb Remote home factory.
+          * clients need to cast to the type of EJBHome they desire
+          *
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/web/ServiceLocator.java
+        line_start: 106
+        line_end: 121
+        excerpt: |
+          public EJBLocalHome getLocalHome(String jndiHomeName) throws ServiceLocatorException {
+          EJBLocalHome home = null;
+          try {
+          if (cache.containsKey(jndiHomeName)) {
+          home = (EJBLocalHome) cache.get(jndiHomeName);
+          } else {
+          home = (EJBLocalHome) ic.lookup(jndiHomeName);
+          cache.put(jndiHomeName, home);
+          }
+          } catch (NamingException ne) {
+          throw new ServiceLocatorException(ne);
+          } catch (Exception e) {
+          throw new ServiceLocatorException(e);
+          }
+          return home;
+          }
+    stack_metadata:
+      framework: J2EE JNDI service locator
+  - record_key: CHK-BR-0002
+    kind: business-rule
+    capability_key: checkout
+    requirement: >
+      GIVEN a web-tier caller requests a home, connection factory, queue, topic or data source by a name already looked up, WHEN the lookup is repeated, THEN the system SHALL return the previously resolved object from a shared per-application cache instead of looking it up again; the cache is not applied to URL, boolean or string environment entries, and the EJB-tier locator has no cache.
+    confidence: high
+    confidence_basis: >
+      Cache logic is explicit in six methods of the web locator and its absence is explicit in the ejb locator and in getUrl/getBoolean/getString. Source comment documents the cache purpose.
+    risk_class: operational
+    basis: >
+      Web ServiceLocator caches in a synchronized map keyed by JNDI name; singleton created in a static initialiser.
+    plain_text: >
+      Internal services used by the web storefront are looked up once and then reused; configuration values are read fresh each time.
+    technical_note: >
+      web.ServiceLocator singleton via getInstance(); Collections.synchronizedMap(HashMap). Check-then-put is not atomic, so concurrent first lookups may both hit JNDI (harmless duplicate lookup).
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/web/ServiceLocator.java
+        line_start: 70
+        line_end: 70
+        excerpt: |
+          private Map cache; //used to hold references to EJBHomes/JMS Resources for re-use
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/web/ServiceLocator.java
+        line_start: 109
+        line_end: 114
+        excerpt: |
+          if (cache.containsKey(jndiHomeName)) {
+          home = (EJBLocalHome) cache.get(jndiHomeName);
+          } else {
+          home = (EJBLocalHome) ic.lookup(jndiHomeName);
+          cache.put(jndiHomeName, home);
+          }
+    stack_metadata:
+      framework: J2EE JNDI service locator
+      session.scope: application (static singleton)
+  - record_key: ONT-REQ-0003
+    kind: requirement
+    capability_key: order-notifications
+    requirement: >
+      The system SHALL read configuration switches, such as the confirmation-mail switch, as boolean environment entries by name, and SHALL also supply string and URL environment entries by name.
+    confidence: medium
+    confidence_basis: >
+      One clear place in each locator; the method documentation names SEND_CONFIRMATION_MAIL as the example. The actual switch names and values are defined outside this module and were not read.
+    risk_class: operational
+    basis: >
+      getBoolean looks up a Boolean environment entry and unwraps it; javadoc cites SEND_CONFIRMATION_MAIL.
+    plain_text: >
+      On/off settings such as whether confirmation e-mails are sent are read from the deployment configuration by name.
+    technical_note: >
+      ic.lookup(envName) cast to Boolean/String/URL. A missing entry throws ServiceLocatorException wrapping NamingException; a null Boolean cannot occur because a failed lookup throws first.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/ejb/ServiceLocator.java
+        line_start: 213
+        line_end: 227
+        excerpt: |
+          /**
+          * @return the boolean value corresponding
+          * to the env entry such as SEND_CONFIRMATION_MAIL property.
+          */
+          public boolean getBoolean(String envName) throws ServiceLocatorException {
+          Boolean bool = null;
+          try {
+          bool = (Boolean)ic.lookup(envName);
+          } catch (NamingException ne) {
+          throw new ServiceLocatorException(ne);
+          } catch (Exception e) {
+          throw new ServiceLocatorException(e);
+          }
+          return bool.booleanValue();
+          }
+    stack_metadata:
+      framework: J2EE env-entry lookup
+  - record_key: CHK-REQ-0004
+    kind: requirement
+    capability_key: checkout
+    requirement: >
+      The system SHALL expose, on a lookup failure, the wrapped cause: the root cause is found by unwrapping nested ServiceLocatorExceptions, and the textual form of the error is that of the innermost wrapped exception when one exists.
+    confidence: medium
+    confidence_basis: One clear place (exception class); no tests.
+    risk_class: operational
+    basis: ServiceLocatorException getRootCause and toString delegate to the wrapped exception.
+    plain_text: >
+      When a service cannot be found, the error shown is the underlying reason rather than a generic message.
+    technical_note: >
+      toString returns the wrapped exception's toString, discarding the wrapper's own message.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/ServiceLocatorException.java
+        line_start: 92
+        line_end: 105
+        excerpt: |
+          public Exception getRootCause() {
+          if (exception instanceof ServiceLocatorException) {
+          return ((ServiceLocatorException) exception).getRootCause();
+          }
+          return exception == null ? this : exception;
+          }
+          
+          public String toString() {
+          if (exception instanceof ServiceLocatorException) {
+          return ((ServiceLocatorException) exception).toString();
+          }
+          return exception == null ? super.toString() : exception.toString();
+          }
+          }
+    stack_metadata:
+      framework: Java exception wrapper
+suspected_defects:
+  - capability_key: checkout
+    record_keys: [CHK-BR-0002]
+    severity: medium
+    category: error-swallowed
+    title: Web locator singleton failure is only printed, leaving a null instance
+    description: >
+      If creating the shared web locator fails, the error is printed to standard error and the instance stays null; later getInstance() callers receive null and fail with a null reference rather than a clear error.
+    traces:
+      - path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/web/ServiceLocator.java
+        line_start: 73
+        line_end: 81
+        excerpt: |
+          
+          static {
+          try {
+          me = new ServiceLocator();
+          } catch(ServiceLocatorException se) {
+          System.err.println(se);
+          se.printStackTrace(System.err);
+          }
+          }
+findings:
+  - kind: ambiguity
+    path: legacy-source/app/src/components/servicelocator/src/com/sun/j2ee/blueprints/servicelocator/web/ServiceLocator.java
+    description: >
+      The module has no business rules of its own and no capability in the closed list covers shared infrastructure lookup; records are filed under checkout/order-notifications as closest fit. No documents under legacy-analysis/sources bear on this module (directory absent in this tree). The legacy-source tree was absent from the worktree and was read from commit 0683ff9.
