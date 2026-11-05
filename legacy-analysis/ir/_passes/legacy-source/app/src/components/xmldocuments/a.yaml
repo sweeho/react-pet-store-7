@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/xmldocuments
+    description: >
+      The shard directory does not exist in the worktree or on origin/vortex/legacy-spec/sx-0001
+      (no legacy-source/ tree at all), and legacy-analysis/discovery/capabilities.csv and
+      legacy-analysis/sources/** are also absent. No records could be extracted or filed under a
+      closed capability key. Re-run once legacy-source/ is committed to the branch.
