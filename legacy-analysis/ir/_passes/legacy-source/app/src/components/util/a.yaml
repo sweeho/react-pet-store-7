@@ -1,0 +1,12 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/util
+    description: >
+      The shard path does not exist. No branch of this repository (dev, main, the initiative
+      branch, the setup branches, or this one) contains a legacy-source/ directory, and the
+      worktree has no legacy-analysis/discovery/capabilities.csv or legacy-analysis/sources/.
+      No code could be read, so no record was emitted rather than invent behaviour. A human
+      needs to commit the legacy source and the capability list to this branch and re-open
+      the stage.
