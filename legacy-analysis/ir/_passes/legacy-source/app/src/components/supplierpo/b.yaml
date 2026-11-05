@@ -1,0 +1,350 @@
+records:
+  - record_key: ORDER-FULFILLMENT-ENTITY-0001
+    kind: entity
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL persist a supplier purchase order identified by a unique order id (the primary key), with an order date, a status, one shipping contact (with address) and one or more line items.
+    confidence: high
+    confidence_basis: >
+      Declared in the deployment descriptor (cmp fields, primkey, relationships) and mirrored by the bean's abstract accessors and the XML DTD requiring LineItem+. Only the cardinality of line items rests on the DTD rather than on persistence.
+    risk_class: operational
+    basis: >
+      ejb-jar declares cmp fields poId, poDate, poStatus, primkey poId, a one-to-one relation to contact info with cascade delete, and a one-to-many relation to line items.
+    plain_text: >
+      A supplier purchase order has a unique order number, a date, a status, a shipping contact and at least one line item.
+    technical_note: >
+      CMP 2.x entity SupplierOrderEJB; CMR contactInfo (cascade delete to ContactInfo and Address) and lineItems. Order date stored as long epoch millis.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/ejb-jar.xml
+        line_start: 60
+        line_end: 69
+        excerpt: |
+          <cmp-field>
+            <field-name>poId</field-name>
+          </cmp-field>
+          <cmp-field>
+            <field-name>poDate</field-name>
+          </cmp-field>
+          <cmp-field>
+            <field-name>poStatus</field-name>
+          </cmp-field>
+          <primkey-field>poId</primkey-field>
+      - path: legacy-source/app/src/components/supplierpo/src/ejb-jar.xml
+        line_start: 289
+        line_end: 295
+        excerpt: |
+          <ejb-relation>
+            <ejb-relation-name>SupplierOrder-LineItem</ejb-relation-name>
+            <ejb-relationship-role>
+              <ejb-relationship-role-name>purchaseorder-has-lineitems</ejb-relationship-role-name>
+              <multiplicity>One</multiplicity>
+              <relationship-role-source>
+                <ejb-name>SupplierOrderEJB</ejb-name>
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: SupplierOrderEJB
+      db.object: SupplierOrder abstract schema
+
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0001
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL give every newly created supplier order the status PENDING, regardless of any status held by the incoming order data.
+    confidence: high
+    confidence_basis: >
+      Create method hard-sets the status and the status constants file lists PENDING; SupplierOrder transfer object has no status field so nothing else can supply one. Two places (code + constants).
+    risk_class: operational
+    basis: >
+      ejbCreate copies id and date from the incoming order and sets PENDING.
+    plain_text: >
+      When the supplier receives an order it starts out as pending.
+    technical_note: >
+      SupplierOrderEJB.ejbCreate; OrderStatusNames.PENDING.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderEJB.java
+        line_start: 151
+        line_end: 156
+        excerpt: |
+          public String ejbCreate(SupplierOrder supplierOrder) throws CreateException {
+            setPoId(supplierOrder.getOrderId());
+            setPoDate(supplierOrder.getOrderDate().getTime());
+            setPoStatus(OrderStatusNames.PENDING);
+            return null;
+          }
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/OrderStatusNames.java
+        line_start: 48
+        line_end: 62
+        excerpt: |
+          public class OrderStatusNames {
+              public static final String PENDING = "PENDING";
+              public  static final String APPROVED = "APPROVED";
+              public  static final String DENIED = "DENIED";
+              public  static final String COMPLETED = "COMPLETED";
+          }
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: SupplierOrderEJB
+
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0002
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL recognise the supplier order statuses PENDING, APPROVED, DENIED and COMPLETED, and SHALL allow the status of a stored order to be changed through the order's status setter.
+    confidence: medium
+    confidence_basis: >
+      Status vocabulary and public setter are plainly visible, but this module defines no transition rules; which transitions are legal (if any) is enforced, if at all, by callers outside this shard.
+    risk_class: operational
+    basis: >
+      Four status constants; SupplierOrderLocal exposes setPoStatus with no guard.
+    plain_text: >
+      A supplier order can be pending, approved, denied or completed, and its status can be updated.
+    technical_note: >
+      No state machine in this module; only constants and an unguarded setter. Transition logic must be sought in callers.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/OrderStatusNames.java
+        line_start: 51
+        line_end: 60
+        excerpt: |
+          public static final String PENDING = "PENDING";
+          public  static final String APPROVED = "APPROVED";
+          public  static final String DENIED = "DENIED";
+          public  static final String COMPLETED = "COMPLETED";
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderLocal.java
+        line_start: 58
+        line_end: 59
+        excerpt: |
+          public String getPoStatus();
+          public void setPoStatus(String stat);
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: SupplierOrderEJB
+
+  - record_key: ORDER-FULFILLMENT-REQUIREMENT-0001
+    kind: requirement
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL allow supplier orders to be looked up by order id and to be listed by status, returning each distinct order whose status equals the one requested.
+    confidence: high
+    confidence_basis: >
+      Query declared in descriptor (EJB-QL) and the finder declared on the home interface.
+    risk_class: operational
+    basis: >
+      findOrdersByStatus EJB-QL; findByPrimaryKey on home.
+    plain_text: >
+      Staff and systems can find a supplier order by its number, or list all supplier orders that are in a given status.
+    technical_note: >
+      SELECT DISTINCT OBJECT(a) FROM SupplierOrder a WHERE a.poStatus = ?1
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/ejb-jar.xml
+        line_start: 95
+        line_end: 104
+        excerpt: |
+          <query>
+            <description></description>
+            <query-method>
+              <method-name>findOrdersByStatus</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </query-method>
+            <ejb-ql>SELECT DISTINCT OBJECT(a) FROM SupplierOrder a WHERE a.poStatus = ?1</ejb-ql>
+          </query>
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderLocalHome.java
+        line_start: 55
+        line_end: 57
+        excerpt: |
+          public SupplierOrderLocal findByPrimaryKey(String poId) throws FinderException;
+          public Collection findOrdersByStatus(String status) throws FinderException;
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: SupplierOrderEJB
+
+  - record_key: ORDER-FULFILLMENT-WORKFLOW-0001
+    kind: workflow
+    capability_key: order-fulfillment
+    requirement: >
+      WHEN a supplier order is created, the system SHALL also create a stored copy of the shipping contact and one stored line item per incoming line item, each with shipped quantity initialised to 0, and SHALL link them to the order.
+    confidence: medium
+    confidence_basis: >
+      One clear place (ejbPostCreate); the meaning of the literal 0 as quantity shipped is inferred from the second argument to the line-item create call and the quantityShipped cmp field, not read from LineItemEJB (outside shard).
+    risk_class: operational
+    basis: >
+      ejbPostCreate creates ContactInfo from shipping info and a LineItem per entry with literal 0.
+    plain_text: >
+      When an order arrives, its shipping contact and every line are saved with it, and nothing is shown as shipped yet.
+    technical_note: >
+      Lookup via ServiceLocator; a lookup failure is rethrown as CreateException, rolling back creation.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderEJB.java
+        line_start: 162
+        line_end: 183
+        excerpt: |
+          public void ejbPostCreate(SupplierOrder supplierOrder)
+                                                      throws CreateException {
+          try {
+              ServiceLocator serviceLocator = new ServiceLocator();
+              ContactInfoLocalHome cinforef = (ContactInfoLocalHome)
+                  serviceLocator.getLocalHome(JNDINames.CINFO_EJB);
+              ContactInfoLocal cinfoloc = (ContactInfoLocal)
+                              cinforef.create(supplierOrder.getShippingInfo());
+              setContactInfo(cinfoloc);
+              LineItemLocalHome lineItemref = (LineItemLocalHome)
+                  serviceLocator.getLocalHome(JNDINames.LI_EJB);
+              Collection litems = supplierOrder.getLineItems();
+              Iterator it = litems.iterator();
+              while((it != null) && (it.hasNext())) {
+                LineItem li = (LineItem) it.next();
+                LineItemLocal lineItemloc = (LineItemLocal) lineItemref.create(li, 0);
+                addLineItem(lineItemloc);
+              }
+            } catch(ServiceLocatorException ne) {
+              throw new CreateException("ServiceLocator Ex while persisting PO CMR :" +
+                                        ne.getMessage());
+            }
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: SupplierOrderEJB
+      ejb.transaction: container-managed (no trans-attribute declared in this descriptor)
+
+  - record_key: ORDER-FULFILLMENT-INTEGRATION-0001
+    kind: integration
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL exchange a supplier order as an XML document containing, in this order, the order id, the order date, the shipping contact and one or more line items, and SHALL validate incoming documents against that structure by default.
+    confidence: high
+    confidence_basis: >
+      The DTD, the serialiser/deserialiser and the VALIDATING=true constant all agree.
+    risk_class: operational
+    basis: >
+      DTD SupplierOrder content model; fromXML defaults to validating.
+    plain_text: >
+      The supplier order is sent to and received from the supplier as a structured document with a fixed layout: order number, date, ship-to contact, then at least one line.
+    technical_note: >
+      DTD public id "-//Sun Microsystems, Inc. - J2EE Blueprints Group//DTD SupplierOrder 1.1//EN". toXML/fromXML in SupplierOrder; dates formatted yyyy-MM-dd. Document consumer is outside this shard.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/rsrc/schemas/SupplierOrder.dtd
+        line_start: 38
+        line_end: 44
+        excerpt: |
+          <!ELEMENT SupplierOrder (OrderId, OrderDate, ShippingInfo, LineItem+)>
+          <!ELEMENT OrderId (#PCDATA)>
+          <!ELEMENT OrderDate (#PCDATA)>
+          <!ELEMENT ShippingInfo (ContactInfo)>
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrder.java
+        line_start: 59
+        line_end: 66
+        excerpt: |
+          public static final String DTD_PUBLIC_ID = "-//Sun Microsystems, Inc. - J2EE Blueprints Group//DTD SupplierOrder 1.1//EN";
+          public static final String DTD_SYSTEM_ID = "/com/sun/j2ee/blueprints/supplierpo/rsrc/schemas/SupplierOrder.dtd";
+          public static final boolean VALIDATING = true;
+          private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    stack_metadata:
+      framework: JAXP DOM/DTD
+
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0003
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      GIVEN an incoming supplier order document whose order date is missing or unparseable, WHEN it is read, the system SHALL substitute the current date and continue processing.
+    confidence: medium
+    confidence_basis: >
+      One clear place; developer comment "FIX ME!" signals the fallback may be unintended, so whether the business wants it is unknown.
+    risk_class: operational
+    basis: >
+      Catch-all around date parsing resets to new Date().
+    plain_text: >
+      If an incoming order has no usable date, today's date is used instead of rejecting the order.
+    technical_note: >
+      SupplierOrder.fromDOM; message only logged to stderr.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrder.java
+        line_start: 217
+        line_end: 223
+        excerpt: |
+          try {
+            child = XMLDocumentUtils.getNextSibling(child, XML_ORDERDATE, false);
+            supplierOrder.setOrderDate(supplierOrder.dateFormat.parse(XMLDocumentUtils.getContentAsString(child, false)));
+          } catch (Exception exception) {
+            supplierOrder.setOrderDate(new Date()); // FIX ME!
+            System.err.println(XML_ORDERDATE + ": " + exception.getMessage() + " reset to current date.");
+          }
+    stack_metadata:
+      framework: JAXP DOM
+
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0004
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      GIVEN an incoming document whose root element is not a supplier order, WHEN it is read, the system SHALL reject it with an error stating a SupplierOrder element was expected.
+    confidence: medium
+    confidence_basis: >
+      Single explicit check and error.
+    risk_class: operational
+    basis: >
+      fromDOM throws XMLDocumentException otherwise.
+    plain_text: >
+      A document that is not a supplier order is refused.
+    technical_note: >
+      SupplierOrder.fromDOM(Node).
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrder.java
+        line_start: 209
+        line_end: 213
+        excerpt: |
+          public static SupplierOrder fromDOM(Node node) throws XMLDocumentException {
+            Element element;
+            if (node.getNodeType() == Node.ELEMENT_NODE &&
+                (element = ((Element) node)).getTagName().equals(XML_SUPPLIERORDER)) {
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrder.java
+        line_start: 236
+        line_end: 236
+        excerpt: |
+          throw new XMLDocumentException(XML_SUPPLIERORDER + " element expected.");
+    stack_metadata:
+      framework: JAXP DOM
+
+suspected_defects:
+  - capability_key: order-fulfillment
+    record_keys: [ORDER-FULFILLMENT-ENTITY-0001]
+    severity: medium
+    category: data-corruption
+    title: Reading a stored order back loses the shipping contact
+    description: >
+      getData() on the order bean sets the shipping info from the freshly created transfer object's own (null) shipping info instead of from the stored contact, so an order rebuilt from storage has no shipping contact; serialising it to XML would then fail on a null contact.
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderEJB.java
+        line_start: 205
+        line_end: 209
+        excerpt: |
+          public SupplierOrder getData() {
+            SupplierOrder supplierOrder = new SupplierOrder();
+            supplierOrder.setOrderId(getPoId());
+            supplierOrder.setOrderDate(new Date(getPoDate()));
+            supplierOrder.setShippingInfo(supplierOrder.getShippingInfo());
+  - capability_key: order-fulfillment
+    record_keys: [ORDER-FULFILLMENT-BUSINESS-RULE-0003]
+    severity: low
+    category: other
+    title: Bad order date silently replaced by current date
+    description: >
+      An invalid or absent date is not rejected; the code carries a FIX ME comment and only logs to standard error.
+    traces:
+      - path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrder.java
+        line_start: 220
+        line_end: 222
+        excerpt: |
+          } catch (Exception exception) {
+            supplierOrder.setOrderDate(new Date()); // FIX ME!
+findings:
+  - kind: ambiguity
+    path: legacy-source/app/src/components/supplierpo/src/com/sun/j2ee/blueprints/supplierpo/ejb/SupplierOrderEJB.java
+    description: >
+      The status is set to PENDING on creation and has a public setter, but no transition rules (PENDING to APPROVED/DENIED/COMPLETED) exist in this module. A human needs to confirm where they are enforced (callers in other modules).
