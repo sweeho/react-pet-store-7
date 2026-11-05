@@ -1,0 +1,12 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/address
+    description: >
+      The shard path does not exist in the worktree (no legacy-source/ directory at all,
+      and none in the branch tree). A snapshot at /tmp/chk/root holds only
+      legacy-source/app/src/apps/opc, with no components/ directory. No source, and no
+      legacy-analysis/sources documents, were available to read, so no records were
+      emitted rather than inventing any. A human must confirm the shard path or
+      restore the legacy-source checkout, then re-run this stage.
+suspected_defects: []
