@@ -16,6 +16,7 @@
 
 - [ ] 3.1 Implement retrieval of orders dated between two instants, inclusive
 - [ ] 3.2 Provide indexes supporting lookup by ordering user and by order date
+- [ ] 3.3 Provide an order-status view joining orders to their order-manager status (inner join)
 
 ## 4. Verification
 

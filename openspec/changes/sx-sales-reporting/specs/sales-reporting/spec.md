@@ -20,6 +20,8 @@ The system SHALL return, for a requested order status, every order in that statu
 
 ### Requirement: Revenue chart
 
+Recovered from: REPT-BR-0002
+
 The system SHALL, when revenue is requested for a period, sum quantity times unit price over every line item of every order dated within the period, both ends inclusive, grouped by category, or grouped by item counting only lines of that category when a category is also given, and orders of every status SHALL be included.
 
 #### Scenario: Revenue by category
@@ -48,6 +50,8 @@ The system SHALL, when revenue is requested for a period, sum quantity times uni
 
 ### Requirement: Units-ordered chart
 
+Recovered from: REPT-BR-0003
+
 The system SHALL, when any chart other than revenue is requested for a period, sum the ordered quantities of every line item of every order dated within the period, grouped by category, or by item within a given category, and orders of every status SHALL be included.
 
 #### Scenario: Units by category
@@ -64,6 +68,8 @@ The system SHALL, when any chart other than revenue is requested for a period, s
 
 ### Requirement: Orders by date range
 
+Recovered from: SAL-REQ-0005
+
 The system SHALL allow retrieving purchase orders whose order date falls between two given instants, inclusive.
 
 #### Scenario: Orders in range
@@ -74,10 +80,30 @@ The system SHALL allow retrieving purchase orders whose order date falls between
 
 ### Requirement: Order lookup by user and date
 
-The system SHALL support retrieval of purchase orders by ordering user and by order date efficiently, using secondary indexes on the order's user id and order date.
+Recovered from: SAL-REQ-0001
+
+The system SHOULD support retrieval of purchase orders by ordering user and by order date efficiently, using secondary indexes on the order's user id and order date.
 
 #### Scenario: Indexes present
 
 - **GIVEN** the order store
 - **WHEN** it is created
 - **THEN** secondary indexes exist on the ordering user id and on the order date
+
+### Requirement: Order status view
+
+ID: SWHR6-R-0108
+Recovered from: RPT-REQ-0001
+The system SHALL provide an order-status view that lists, for each purchase order, its identifier, user, date, value and the current status held by the order manager.
+
+#### Scenario: Order with a status record
+
+- **GIVEN** a purchase order that has an order-manager status record
+- **WHEN** the order-status view is read
+- **THEN** it lists the order identifier, user, date, value and the current status
+
+#### Scenario: Order without a status record
+
+- **GIVEN** a purchase order with no order-manager row
+- **WHEN** the order-status view is read
+- **THEN** that order is not listed

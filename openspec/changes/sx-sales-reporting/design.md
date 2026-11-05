@@ -21,3 +21,7 @@ No screen records were extracted for this capability; its user interface is unsp
 - Revenue accumulated in single-precision floating point.
 - Status listing date format is server-time-zone dependent.
 - `findPOBetweenDates` callers are outside the module examined; live use unconfirmed.
+
+## Order-status view (RPT-REQ-0001)
+
+The legacy schema scripts define `v_order_status` as an inner join of `purchase_order` to `order_manager` on order id, so orders lacking an order-manager row are excluded. Consumers of the view were not read.
