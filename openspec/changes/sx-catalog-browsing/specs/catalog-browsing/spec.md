@@ -263,3 +263,113 @@ The system SHALL price each item separately for each locale, in that locale's cu
 - **GIVEN** an item with a ja_JP price row
 - **WHEN** it is displayed in ja_JP
 - **THEN** its own ja_JP price is shown formatted as yen, not converted from another locale
+
+### Requirement: Paged product, item and search lists
+
+Recovered from: CATB-REQ-0002
+The system SHALL list the products of a category, the items of a product, and keyword-search results two rows at a time, with Previous and Next links shown only when an earlier or later page exists.
+
+#### Scenario: List opened without paging parameters
+
+- **GIVEN** a list is opened without paging parameters
+- **WHEN** it is displayed
+- **THEN** it starts at the first row with a page size of 2
+
+### Requirement: Item detail prices and Add to Cart
+
+Recovered from: CATB-SCR-0003
+The system SHALL show, on the item detail page, the item image, its List Price and its Your Price, each formatted as currency for the page locale, and an Add to Cart action.
+
+#### Scenario: Item detail displayed
+
+- **GIVEN** an item with a list cost and a unit cost
+- **WHEN** its detail page is shown
+- **THEN** the image, List Price, Your Price and an Add to Cart action are shown, with prices formatted for the page locale
+
+### Requirement: Which price is displayed and charged
+
+Recovered from: CATB-BR-0004
+The system SHALL display the list price for each item in a product's item list and the unit price ("Your Price") for each item in keyword-search results, and SHALL charge the unit price in the cart.
+
+#### Scenario: Search result price
+
+- **GIVEN** an item appears in keyword-search results
+- **WHEN** the result is displayed
+- **THEN** its unit price is shown, and the cart charges that unit price
+
+### Requirement: Keyword search
+
+Recovered from: CATB-REQ-0005
+The system SHALL search the catalog by the keywords the shopper enters and show items matching any of the words.
+
+#### Scenario: Empty keywords or no match
+
+- **GIVEN** the keyword box is empty or no item matches
+- **WHEN** search is submitted
+- **THEN** the message "No results were found for your search." is shown
+
+### Requirement: Supported locales and default
+
+Recovered from: CATB-REQ-0006
+The system SHALL offer the storefront and its catalog content in English (en_US), Japanese (ja_JP) and Chinese (zh_CN), defaulting to en_US, and SHALL fetch catalog names, descriptions and prices for the locale of the page being shown.
+
+#### Scenario: Default locale
+
+- **GIVEN** a shopper who has not chosen a language
+- **WHEN** a page is shown
+- **THEN** it is shown in en_US with en_US catalog content
+
+### Requirement: Language switching
+
+Recovered from: CATB-REQ-0007
+The system SHALL let the shopper switch the storefront language at any time to English, Japanese or Chinese from a control on every page, and SHALL apply the new language to the shopping cart as well.
+
+#### Scenario: Switch to Japanese
+
+- **GIVEN** a shopper on any page
+- **WHEN** they choose Japanese
+- **THEN** they return to the same page in ja_JP and the cart uses ja_JP
+
+### Requirement: Five-minute listing cache
+
+Recovered from: CATB-BR-0008
+The system SHALL serve the rendered category product list (English), product item lists (each locale) and category sidebar (each locale) from an application-wide cache refreshed no more than every 5 minutes, so catalog changes MAY take up to 5 minutes to appear on those pages.
+
+#### Scenario: Catalog change visible after cache expiry
+
+- **GIVEN** a cached product list
+- **WHEN** the catalog changes
+- **THEN** the change may take up to 5 minutes to appear
+
+### Requirement: Category sidebar
+
+Recovered from: CATB-SCR-0009
+The system SHALL show on every storefront page a sidebar listing up to the first 5 catalog categories in the page language, each linking to that category's product list.
+
+#### Scenario: Sidebar shown
+
+- **GIVEN** more than 5 categories exist
+- **WHEN** any page is shown
+- **THEN** the first 5 categories are listed, each linked to its product list
+
+### Requirement: Catalog data structure with per-locale details
+
+Recovered from: CATB-ENT-0010
+The system SHALL hold the catalog as categories, products and items, where each product belongs to exactly one category and each item to exactly one product, and where category, product and item details are kept separately per locale; an item's list price and unit price SHALL be mandatory decimal amounts with two decimal places for every locale in which the item is offered.
+
+#### Scenario: Item without a price
+
+- **GIVEN** an item offered in a locale
+- **WHEN** its details are stored without a list price or unit price
+- **THEN** they are rejected
+
+### Requirement: Mandatory names and prices per locale
+
+Recovered from: CATALOG-ENT-0002
+The system SHALL store the name, image and description of categories and products, and the price, image, description and up to five attributes of items, once per locale, with a mandatory name for categories and products and mandatory list price, unit cost, image and description for items.
+
+#### Scenario: Category without name
+
+- **GIVEN** a category and a locale
+- **WHEN** a detail row is stored without a name
+- **THEN** it is rejected
