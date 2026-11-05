@@ -14,6 +14,8 @@ The system SHALL accept approval decisions as a batch of (order, new status) pai
 
 ### Requirement: en_US automatic approval
 
+ID: SWHR6-R-0127
+Recovered from: APPR-BR-0001
 The system SHALL automatically approve an order placed in the en_US locale whose total price is strictly less than 500, and SHALL leave every other en_US order pending administrator approval.
 
 #### Scenario: Below the limit
@@ -30,6 +32,7 @@ The system SHALL automatically approve an order placed in the en_US locale whose
 
 ### Requirement: ja_JP automatic approval
 
+Recovered from: APPR-BR-0002
 The system SHALL automatically approve an order placed in the ja_JP locale whose total price is strictly less than 50000, and SHALL leave every other ja_JP order pending administrator approval.
 
 #### Scenario: Below and at the limit
@@ -40,6 +43,7 @@ The system SHALL automatically approve an order placed in the ja_JP locale whose
 
 ### Requirement: No automatic approval for other locales
 
+Recovered from: APPR-BR-0003
 The system SHALL NOT automatically approve an order whose locale is neither en_US nor ja_JP, whatever its total.
 
 #### Scenario: Chinese locale order
@@ -50,6 +54,8 @@ The system SHALL NOT automatically approve an order whose locale is neither en_U
 
 ### Requirement: Initial pending state and shared approval path
 
+ID: SWHR6-R-0128
+Recovered from: APPR-WF-0004
 The system SHALL record every received order with status PENDING before any approval decision, and an automatic approval SHALL be issued as an approval decision through the same path as an administrator's decision.
 
 #### Scenario: Automatic approval is treated like an administrator approval
@@ -60,6 +66,8 @@ The system SHALL record every received order with status PENDING before any appr
 
 ### Requirement: Decisions apply only to pending orders
 
+ID: SWHR6-R-0070
+Recovered from: APPR-BR-0005
 The system SHALL apply an approval or denial only to an order whose current status is PENDING.
 
 #### Scenario: Decision on an already decided order
@@ -70,6 +78,7 @@ The system SHALL apply an approval or denial only to an order whose current stat
 
 ### Requirement: Order status values
 
+Recovered from: APPROVAL-BR-0001
 The system SHALL hold the processing state of each order in a record whose status is one of PENDING, APPROVED, DENIED or COMPLETED, and SHALL reject any other value.
 
 #### Scenario: Unlisted status
@@ -80,6 +89,8 @@ The system SHALL hold the processing state of each order in a record whose statu
 
 ### Requirement: Approval document format
 
+ID: SWHR6-R-0071
+Recovered from: ORDER-APPROVAL-INTEGRATION-0004
 The system SHALL represent a batch of order status changes as an OrderApproval document holding one or more Order entries, each with an order id and an order status, and SHALL read such documents back, validating them against the document definition by default.
 
 #### Scenario: Empty batch
