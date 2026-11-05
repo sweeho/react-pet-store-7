@@ -12,23 +12,6 @@ The system SHALL provide an order status view listing for each order its id, use
 - **WHEN** the order status view is queried
 - **THEN** one row per order is returned with id, user, date, value and status
 
-### Requirement: Daily order extract for Finance
-
-Recovered from: OBO-REQ-0001
-The system SHALL export every purchase order dated on or after yesterday 00:00 and before today 00:00 to a comma-separated UTF-8 file with double-quote text delimiter, ordered by order id, with columns order id, user id, order date, locale, order value, line-item count and order status.
-
-#### Scenario: Yesterday's orders exported
-
-- **GIVEN** orders dated yesterday and orders dated today
-- **WHEN** the nightly extract runs
-- **THEN** only yesterday's orders appear, ordered by order id, with line-item count and status
-
-#### Scenario: Order without workflow record
-
-- **GIVEN** a purchase order from yesterday with no workflow record
-- **WHEN** the extract runs
-- **THEN** the order is not included in the file
-
 ### Requirement: Stuck order report
 
 ID: SWHR6-R-0073
@@ -82,34 +65,6 @@ The system SHALL list inventory items whose quantity is below the low-stock thre
 - **GIVEN** a low-stock item with no en_US description
 - **WHEN** the inventory report runs
 - **THEN** the item is omitted from the list
-
-### Requirement: Retention purge
-
-Recovered from: OBO-REQ-0006
-The system SHALL delete orders whose workflow status is COMPLETED or DENIED and whose order date is earlier than the 180-day retention cutoff, together with their supplier line items, supplier orders, order line items, order manager record, purchase order, and the contact, address and credit card records referenced, in a single transaction.
-
-#### Scenario: Old completed order purged
-
-- **GIVEN** a COMPLETED order 200 days old and a COMPLETED order 30 days old
-- **WHEN** the purge runs
-- **THEN** the old order and its related records are removed and the recent order is kept
-
-#### Scenario: Failure mid-purge
-
-- **GIVEN** a purge that fails part-way
-- **WHEN** the transaction ends
-- **THEN** no deletion is retained
-
-### Requirement: Purge follows extract
-
-Recovered from: OBO-REQ-0007
-The system SHALL run the order purge only after the order extract has run, so that purged orders have already been exported.
-
-#### Scenario: Purge ordering
-
-- **GIVEN** the nightly batch cycle
-- **WHEN** the purge is scheduled
-- **THEN** it starts only after the extract has run
 
 ### Requirement: Database backup
 
