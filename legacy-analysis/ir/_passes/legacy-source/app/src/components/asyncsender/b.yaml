@@ -1,10 +1,148 @@
-records: []
+# NOTE: legacy-source/ was absent from the working tree when read (removed by an earlier
+# soft-reset commit); the files were read from commit 0683ff9, where the paths below are exact.
+records:
+  - record_key: ORDNOT-INT-0001
+    kind: integration
+    capability_key: order-notifications
+    requirement: >
+      The system SHALL provide a stateless asynchronous-send service that accepts a text message
+      and delivers it as a single text message onto a configured point-to-point queue, so that a
+      separate consumer processes it later.
+    confidence: high
+    confidence_basis: >
+      Enforced by the bean code and corroborated by the deployment descriptor and the JNDI name
+      constants (code plus config). The queue's consumer is outside this module and not seen.
+    risk_class: operational
+    basis: >
+      sendAMessage opens a queue connection, creates a session and sender, wraps the string in a
+      text message and sends it.
+    plain_text: >
+      Other parts of the application can hand over a message to be processed later in the
+      background, such as an order e-mail request, without waiting for it to be handled.
+    technical_note: >
+      AsyncSenderEJB.sendAMessage(String) using JMS QueueConnectionFactory and Queue looked up in
+      ejbCreate via ServiceLocator. The connection is closed in finally. The consumer and message
+      content are not defined here; link to order e-mails is inferred from the module's purpose,
+      not read.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/asyncsender/src/com/sun/j2ee/blueprints/asyncsender/ejb/AsyncSenderEJB.java
+        line_start: 68
+        line_end: 90
+        excerpt: |
+          public void sendAMessage(String msg)  {
+            ... qConnect = qFactory.createQueueConnection();
+            session = qConnect.createQueueSession(true,0);
+            qSender = session.createSender(q);
+            TextMessage jmsMsg = session.createTextMessage();
+            jmsMsg.setText(msg);
+            qSender.send(jmsMsg);
+      - path: legacy-source/app/src/components/asyncsender/src/ejb-jar.xml
+        line_start: 58
+        line_end: 67
+        excerpt: |
+          <resource-ref>
+            <res-ref-name>jms/QueueConnectionFactory</res-ref-name>
+            <res-type>javax.jms.QueueConnectionFactory</res-type>
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: AsyncSenderEJB
+      ejb.transaction: Required
+      jms.queue: java:comp/env/jms/AsyncSenderQueue
+
+  - record_key: ORDNOT-REQ-0002
+    kind: requirement
+    capability_key: order-notifications
+    requirement: >
+      GIVEN the queue or connection factory cannot be resolved when the sender is created, WHEN
+      creation occurs, THEN the system SHALL fail creation with an error.
+      GIVEN any failure while sending, WHEN sendAMessage runs, THEN the system SHALL report the
+      failure to the caller as an error and SHALL release the queue connection.
+    confidence: medium
+    confidence_basis: >
+      One clear place (the bean). Message and sending failures are rethrown as runtime errors;
+      the transactional effect on the caller depends on container behaviour not seen.
+    risk_class: operational
+    basis: >
+      ejbCreate wraps lookup failure in EJBException; sendAMessage catches Exception, prints the
+      stack trace, rethrows EJBException, and closes the connection in finally.
+    plain_text: >
+      If a background message cannot be queued, the requesting process is told it failed rather
+      than continuing silently.
+    technical_note: >
+      EJBException thrown from ejbCreate and sendAMessage; stack trace is also written to stderr.
+      Failure on connection close is ignored.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/asyncsender/src/com/sun/j2ee/blueprints/asyncsender/ejb/AsyncSenderEJB.java
+        line_start: 58
+        line_end: 90
+        excerpt: |
+          } catch (ServiceLocatorException sle) {
+            throw new EJBException("AsyncSenderEJB.ejbCreate failed", sle);
+          ...
+          }catch  (Exception e) {
+            e.printStackTrace();
+            throw new EJBException("askMDBToSendAMessage: Error!",e);
+          } finally { ... } catch(Exception e) {}
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: AsyncSenderEJB
+
+  - record_key: ORDNOT-BR-0003
+    kind: business-rule
+    capability_key: order-notifications
+    requirement: >
+      The system SHALL execute the send within the caller's transaction (or start one), and any
+      caller SHALL be permitted to invoke the send without a role restriction.
+    confidence: medium
+    confidence_basis: >
+      Declared in ejb-jar.xml only (container-transaction Required, method-permission unchecked).
+      Note the bean opens the JMS session as transacted (createQueueSession(true,0)), which under
+      a container-managed transaction is ignored by most containers; not verified.
+    risk_class: operational
+    basis: ejb-jar.xml declares Required transaction attribute and unchecked permission for sendAMessage.
+    plain_text: >
+      Queuing a background message is committed or rolled back together with the business action
+      that requested it, and no special permission is needed to request one.
+    technical_note: >
+      container-transaction trans-attribute Required on Local sendAMessage(String); unchecked
+      method-permission; security-identity use-caller-identity.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/asyncsender/src/ejb-jar.xml
+        line_start: 70
+        line_end: 133
+        excerpt: |
+          <method-permission><unchecked />
+          ...
+          <trans-attribute>Required</trans-attribute>
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: AsyncSenderEJB
+      ejb.transaction: Required
+
 findings:
-  - kind: unparseable
-    path: legacy-source/app/src/components/asyncsender
+  - kind: ambiguity
+    path: legacy-source/app/src/components/asyncsender/src/com/sun/j2ee/blueprints/asyncsender/ejb/AsyncSenderEJB.java
     description: >
-      The shard path does not exist in the worktree or on origin/vortex/legacy-spec/sx-0001
-      (no legacy-source/ directory, no legacy-analysis/discovery/capabilities.csv, no
-      legacy-analysis/sources). Nothing could be read, so no records were emitted.
-      The legacy source must be committed to the branch before this shard can be extracted.
-suspected_defects: []
+      Capability home is inferred: no document or caller was available in this module to show
+      which messages are sent. order-notifications is the closest listed capability; an SME should
+      confirm. No extracted.md documents were found for this module.
+suspected_defects:
+  - capability_key: order-notifications
+    record_keys: [ORDNOT-REQ-0002]
+    severity: low
+    category: error-swallowed
+    title: Connection-close failures are silently ignored and errors printed to stderr
+    description: >
+      Exceptions while closing the queue connection are swallowed with an empty catch, and send
+      failures are printed with printStackTrace in addition to being rethrown.
+    traces:
+      - path: legacy-source/app/src/components/asyncsender/src/com/sun/j2ee/blueprints/asyncsender/ejb/AsyncSenderEJB.java
+        line_start: 80
+        line_end: 90
+        excerpt: |
+          e.printStackTrace();
+          ...
+          } catch(Exception e) {}
