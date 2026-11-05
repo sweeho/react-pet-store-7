@@ -30,28 +30,6 @@ The system SHALL automatically approve an order placed in the en_US locale whose
 - **WHEN** it is received
 - **THEN** it stays PENDING
 
-### Requirement: ja_JP automatic approval
-
-Recovered from: APPR-BR-0002
-The system SHALL automatically approve an order placed in the ja_JP locale whose total price is strictly less than 50000, and SHALL leave every other ja_JP order pending administrator approval.
-
-#### Scenario: Below and at the limit
-
-- **GIVEN** ja_JP orders with totals 49999 and 50000
-- **WHEN** they are received
-- **THEN** the first is approved automatically and the second stays PENDING
-
-### Requirement: No automatic approval for other locales
-
-Recovered from: APPR-BR-0003
-The system SHALL NOT automatically approve an order whose locale is neither en_US nor ja_JP, whatever its total.
-
-#### Scenario: Chinese locale order
-
-- **GIVEN** a zh_CN order of any value
-- **WHEN** it is received
-- **THEN** it stays PENDING until an administrator approves or denies it
-
 ### Requirement: Initial pending state and shared approval path
 
 ID: SWHR6-R-0128
@@ -75,17 +53,6 @@ The system SHALL apply an approval or denial only to an order whose current stat
 - **GIVEN** an order already APPROVED, DENIED or COMPLETED
 - **WHEN** an approval decision for it arrives
 - **THEN** the decision is ignored, no status change is made, no supplier order is sent and no customer notice is produced for it
-
-### Requirement: Order status values
-
-Recovered from: APPROVAL-BR-0001
-The system SHALL hold the processing state of each order in a record whose status is one of PENDING, APPROVED, DENIED or COMPLETED, and SHALL reject any other value.
-
-#### Scenario: Unlisted status
-
-- **GIVEN** an order processing record
-- **WHEN** a status other than the four listed is stored
-- **THEN** the store is rejected
 
 ### Requirement: Approval document format
 
