@@ -1,0 +1,49 @@
+# Legacy runtime for initiative SWHR6-N-0001: Java Pet Store 1.3.2 on the
+# J2EE 1.3.1 Reference Implementation, with its Cloudscape database.
+#
+#   docker compose -f .vortex/legacy-runtime/compose.yaml up --build --wait
+#   -> http://localhost:8000/petstore/
+#
+# The legacy source is read from the legacy-spec branch at build time; it is
+# never copied onto dev. Set LEGACY_SOURCE to a local checkout to build offline.
+# See README.md for the vendor/ files the image needs (Oracle licence).
+
+name: petstore-legacy
+
+x-image: &image
+  image: petstore-legacy:1.3.2
+  platform: linux/386
+  build:
+    context: .
+    platform: linux/386
+    additional_contexts:
+      legacy: ${LEGACY_SOURCE:-https://github.com/sweeho/react-pet-store-7.git#vortex/legacy-spec/sx-0001:legacy-source}
+
+services:
+  # Cloudscape (RmiJdbc on :1099). Owns the network namespace, so it also
+  # publishes the application's HTTP port: setup.xml points every datasource at
+  # localhost, and the app container shares this namespace to keep that true.
+  db:
+    <<: *image
+    command: ["/opt/runtime/start-db.sh"]
+    ports:
+      - "${LEGACY_HTTP_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/1099"]
+      interval: 5s
+      retries: 30
+
+  # J2EE RI server: deploys the four EARs with `setup.sh deploy`, loads the
+  # catalog through /petstore/Populate, then reports healthy.
+  app:
+    <<: *image
+    command: ["/opt/runtime/start-app.sh"]
+    network_mode: "service:db"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/petstore-ready"]
+      interval: 10s
+      start_period: 600s
+      retries: 60
