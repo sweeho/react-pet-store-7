@@ -1,0 +1,232 @@
+records:
+  - record_key: CHK-REQ-0001
+    kind: requirement
+    capability_key: checkout
+    requirement: >
+      The system SHALL generate each new order identifier by incrementing a named counter by one and
+      returning the counter name immediately followed by the new counter value as text.
+    confidence: high
+    confidence_basis: >
+      The increment-and-concatenate logic is in one bean and the counter table in the schema DDL
+      confirms the name/value shape; the caller passing the prefix is seen in a third place.
+    risk_class: operational
+    basis: >
+      getNextValue adds one to the stored counter, stores it, and returns name + count with no separator or padding.
+    plain_text: >
+      Each new order gets the next number in a running sequence, written as a fixed prefix followed directly by the sequence number.
+    technical_note: >
+      CounterEJB (CMP entity, primary key = name) getNextValue(); invoked from UniqueIdGeneratorEJB.getUniqueId
+      and by OrderEJBAction with prefix "1001". Container transaction Required on both methods.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/com/sun/j2ee/blueprints/uidgen/counter/ejb/CounterEJB.java
+        line_start: 67
+        line_end: 71
+        excerpt: |
+          public String getNextValue() {
+              int count = getCounter() + 1;
+              setCounter(count);
+              return getName() + String.valueOf(count);
+          }
+      - path: legacy-source/app/src/apps/petstore/src/com/sun/j2ee/blueprints/petstore/controller/ejb/actions/OrderEJBAction.java
+        line_start: 110
+        line_end: 110
+        excerpt: |
+          orderIdString = uidgen.getUniqueId("1001");
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: CounterEJB
+      ejb.transaction: Required
+      db.object: counter
+  - record_key: CHK-REQ-0002
+    kind: business-rule
+    capability_key: checkout
+    requirement: >
+      GIVEN an identifier prefix for which no counter exists WHEN an identifier is requested THEN the system SHALL
+      create a counter for that prefix starting at zero and return the first identifier using value 1.
+    confidence: high
+    confidence_basis: >
+      Lazy creation is explicit in the generator's finder-fallback and the counter's create method sets zero; two places.
+    risk_class: operational
+    basis: >
+      getCounter finds the counter by name and on FinderException creates it; ejbCreate sets counter to 0.
+    plain_text: >
+      The first time a number sequence is used, it is started automatically and the first number issued is 1.
+    technical_note: >
+      UniqueIdGeneratorEJB.getCounter() catches FinderException and calls home.create(name); CounterEJB.ejbCreate sets counter 0.
+      A CreateException is rethrown as EJBException. Find-then-create is not locked, so two concurrent first requests may race.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/com/sun/j2ee/blueprints/uidgen/ejb/UniqueIdGeneratorEJB.java
+        line_start: 74
+        line_end: 86
+        excerpt: |
+          private CounterLocal getCounter(String name) {
+              try {
+                  CounterLocal counter = null;
+                  try {
+                      counter = clh.findByPrimaryKey(name);
+                  } catch (FinderException fe) {
+                      counter = clh.create(name);
+                  }
+                  return counter;
+              } catch (CreateException ce) {
+                  throw new EJBException("Could not create counter " + name + ". Error: " + ce.getMessage());
+              }
+          }
+      - path: legacy-source/app/src/components/uidgen/src/com/sun/j2ee/blueprints/uidgen/counter/ejb/CounterEJB.java
+        line_start: 58
+        line_end: 62
+        excerpt: |
+          public String ejbCreate(String name) throws CreateException {
+              setName(name);
+              setCounter(0);
+              return null;
+          }
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: UniqueIdGeneratorEJB
+      ejb.transaction: Required
+  - record_key: CHK-ENT-0003
+    kind: entity
+    capability_key: checkout
+    requirement: >
+      The system SHALL persist each identifier sequence as a record holding a unique name (up to 40 characters)
+      and a whole-number current value, both mandatory.
+    confidence: high
+    confidence_basis: >
+      DDL primary key and NOT NULL constraints plus the CMP field declarations in the deployment descriptor.
+    risk_class: operational
+    basis: >
+      COUNTER table has name varchar2(40) primary key and counter integer, both NOT NULL; ejb-jar declares name as primkey-field.
+    plain_text: >
+      The system remembers, for each numbering sequence, its name and the last number issued.
+    technical_note: >
+      Table COUNTER (name PK, counter) mapped by CMP entity CounterEJB; Oracle and Cloudscape DDL are identical.
+    interface: false
+    traces:
+      - path: legacy-source/db/schema/petstore_oracle.sql
+        line_start: 211
+        line_end: 216
+        excerpt: |
+          -- COUNTER: Named sequence used by UniqueIdGeneratorEJB for order and PO identifiers.
+          -- Source: CMP bean CounterEJB (uidgen)
+          CREATE TABLE counter (
+            name varchar2(40) not null,
+            counter integer not null,
+            constraint pk_counter primary key (name));
+      - path: legacy-source/app/src/components/uidgen/src/ejb-jar.xml
+        line_start: 57
+        line_end: 65
+        excerpt: |
+          <cmp-field>
+            <description>no description</description>
+            <field-name>counter</field-name>
+          </cmp-field>
+          <cmp-field>
+            <description>no description</description>
+            <field-name>name</field-name>
+          </cmp-field>
+          <primkey-field>name</primkey-field>
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: CounterEJB
+      db.object: counter
+  - record_key: CHK-REQ-0004
+    kind: requirement
+    capability_key: checkout
+    requirement: >
+      The system SHALL issue each identifier inside a transaction so that the counter increment and its use are committed together.
+    confidence: medium
+    confidence_basis: >
+      Declared once in the deployment descriptor (Required on getUniqueId and getNextValue); no test or comment corroborates it.
+    risk_class: operational
+    basis: >
+      container-transaction Required for getUniqueId and getNextValue.
+    plain_text: >
+      A new order number is only consumed as part of a completed unit of work, so two orders do not receive the same number.
+    technical_note: >
+      Container-managed transaction attribute Required on UniqueIdGeneratorEJB.getUniqueId and CounterEJB.getNextValue; CounterEJB is non-reentrant.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/ejb-jar.xml
+        line_start: 223
+        line_end: 242
+        excerpt: |
+          <container-transaction>
+            <method>
+              <ejb-name>CounterEJB</ejb-name>
+              <method-intf>Local</method-intf>
+              <method-name>getNextValue</method-name>
+              <method-params />
+            </method>
+            <trans-attribute>Required</trans-attribute>
+          </container-transaction>
+    stack_metadata:
+      ejb.transaction: Required
+      ejb.bean: UniqueIdGeneratorEJB
+  - record_key: CHK-REQ-0005
+    kind: requirement
+    capability_key: checkout
+    requirement: >
+      The system SHALL make the identifier generator available to any caller within the application without a role restriction.
+    confidence: medium
+    confidence_basis: One clear place (method-permission unchecked in the descriptor); no role checks in code.
+    risk_class: operational
+    basis: All generator and counter methods are declared unchecked.
+    plain_text: >
+      Any part of the store can request a new number; no special permission is needed.
+    technical_note: >
+      ejb-jar method-permission unchecked for UniqueIdGeneratorEJB and CounterEJB; local interfaces only, so not callable remotely.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/ejb-jar.xml
+        line_start: 152
+        line_end: 159
+        excerpt: |
+          <method-permission>
+            <unchecked />
+            <method>
+              <ejb-name>UniqueIdGeneratorEJB</ejb-name>
+              <method-intf>Local</method-intf>
+              <method-name>getPrimaryKey</method-name>
+              <method-params />
+            </method>
+    stack_metadata:
+      ejb.bean: UniqueIdGeneratorEJB
+findings: []
+suspected_defects:
+  - capability_key: checkout
+    record_keys: [CHK-REQ-0001]
+    severity: medium
+    category: data-corruption
+    title: Identifier is prefix and number joined with no separator
+    description: >
+      The identifier is the name concatenated with the count, so the sequence "1001" at value 11 ("100111")
+      collides with the sequence "10011" at value 1. Only the prefix "1001" is used by the order flow today, so no collision occurs in practice, but the format is ambiguous.
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/com/sun/j2ee/blueprints/uidgen/counter/ejb/CounterEJB.java
+        line_start: 67
+        line_end: 71
+  - capability_key: checkout
+    record_keys: [CHK-REQ-0002]
+    severity: low
+    category: other
+    title: Find-then-create counter is not guarded against concurrent first use
+    description: >
+      Two concurrent first requests for a new prefix may both miss the finder and both try to create the counter; one gets a create failure surfaced as a runtime exception.
+    traces:
+      - path: legacy-source/app/src/components/uidgen/src/com/sun/j2ee/blueprints/uidgen/ejb/UniqueIdGeneratorEJB.java
+        line_start: 76
+        line_end: 85
+  - capability_key: checkout
+    record_keys: [CHK-REQ-0001]
+    severity: medium
+    category: error-swallowed
+    title: Caller swallows generator lookup failure then dereferences null
+    description: >
+      The order action catches creation and lookup errors by printing the stack trace, then calls getUniqueId on the possibly null generator, producing a null-pointer failure instead of a clear error.
+    traces:
+      - path: legacy-source/app/src/apps/petstore/src/com/sun/j2ee/blueprints/petstore/controller/ejb/actions/OrderEJBAction.java
+        line_start: 101
+        line_end: 110
