@@ -1,0 +1,11 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/signon
+    description: >
+      The shard directory does not exist in this worktree or on branch HEAD (git tree holds no
+      legacy-source files; no file matching "signon" exists anywhere on the machine). Only a stale copy at
+      /tmp/chk/root has legacy-source/app/src/apps/opc, with no components/signon. No records were
+      emitted because nothing could be read or cited. Re-run after the legacy source is committed, or
+      confirm the shard path (sign-on behaviour may live elsewhere, e.g. under apps/opc docroot web.xml).
+suspected_defects: []
