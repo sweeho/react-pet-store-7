@@ -1,0 +1,11 @@
+# Where the acceptance suite finds the new system (initiative SWHR6-N-0001).
+#
+# The app is one Vite dev server serving the React SPA and the Nitro API together.
+# `start` runs Vite's bin under `bun --bun` (the same form playwright.config.ts uses)
+# because `bun run dev` honours Vite's `#!/usr/bin/env node` shebang, and under Node
+# db/client.ts's `bun:sqlite` import fails, so every database-backed route 500s.
+# Port 5000 is the project's dev port; the repo's own Playwright run uses 5178, so
+# the two never collide. `--strictPort` fails fast instead of drifting off baseUrl.
+baseUrl: http://localhost:5000
+start: bun --bun ./node_modules/vite/bin/vite.js --port 5000 --strictPort
+ready: /
