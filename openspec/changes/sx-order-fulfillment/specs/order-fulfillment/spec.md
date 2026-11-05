@@ -36,17 +36,6 @@ The system SHALL ship an order line only when the stock on hand for its item is 
 - **WHEN** the order is processed
 - **THEN** the short line ships nothing and stock is unchanged, while the other line still ships
 
-### Requirement: Already shipped lines are skipped
-
-Recovered from: FUL-BR-0003
-The system SHALL skip, on every fulfilment attempt, any order line whose shipped quantity already equals its ordered quantity, so a line is never shipped or invoiced twice.
-
-#### Scenario: Line already shipped
-
-- **GIVEN** a line whose shipped quantity equals its ordered quantity
-- **WHEN** a later fulfilment attempt runs
-- **THEN** the line is neither shipped nor invoiced again
-
 ### Requirement: Order completion on fulfilment
 
 ID: SWHR6-R-0130
@@ -76,34 +65,6 @@ The system SHALL treat an order line for an item that has no stock record at the
 - **GIVEN** a line for an item with no stock record
 - **WHEN** the order is processed
 - **THEN** nothing ships for the line and the order stays pending
-
-### Requirement: Invoice content per fulfilment attempt
-
-Recovered from: FUL-BR-0006
-The system SHALL produce, for each fulfilment attempt that ships at least one line, one invoice that carries the order id, the original order date, a shipping date equal to the time of the attempt, a fixed addressee of "Dear PetStore Customer", and, for each line shipped in this attempt only, its category, product, item, line number, quantity and unit price.
-
-#### Scenario: Second attempt ships remaining lines
-
-- **GIVEN** line 1 shipped in a first attempt and line 2 shipping in a second
-- **WHEN** the second invoice is produced
-- **THEN** it contains line 2 only, with the original order date and the time of the second attempt as shipping date
-
-### Requirement: Invoice production per shipping pass
-
-Recovered from: FUL-BR-0007
-WHEN at least one line ships in a fulfilment pass THEN the system SHALL produce one invoice for that pass containing the order id, the original order date, a shipping date equal to the current date and time, and, for each line shipped in that pass only, its category, product, item, line number, quantity and unit price; WHEN no line ships it SHALL produce no invoice.
-
-#### Scenario: Pass ships two lines
-
-- **GIVEN** a pass that ships two lines
-- **WHEN** the pass ends
-- **THEN** exactly one invoice listing those two lines is produced
-
-#### Scenario: Pass ships nothing
-
-- **GIVEN** a pass that ships no line
-- **WHEN** the pass ends
-- **THEN** no invoice is produced
 
 ### Requirement: Supplier order receipt channel
 
@@ -147,17 +108,6 @@ The system SHALL accept supplier orders in the trading-partner supplier order XM
 - **WHEN** it is received
 - **THEN** it is rejected and no order is recorded
 
-### Requirement: Supplier order field mapping
-
-Recovered from: FUL-INT-0009
-The system SHALL accept the incoming supplier purchase order in the trading-partner SupplierOrder format and SHALL map it to its own order record: order id, order date, the shipping contact (names, street, city, state, zip code, country, e-mail, phone) and, per line, category id, product id, item id, line number, quantity and unit price.
-
-#### Scenario: Fields mapped
-
-- **GIVEN** a SupplierOrder document with a contact and two lines
-- **WHEN** it is mapped
-- **THEN** the order record carries the order id, date, contact fields and both lines with all listed fields
-
 ### Requirement: Atomic order receipt
 
 ID: SWHR6-R-0079
@@ -169,28 +119,6 @@ The system SHALL record an incoming supplier order, apply its stock reductions a
 - **GIVEN** an order message whose processing fails at any step
 - **WHEN** the message is processed
 - **THEN** the work is undone and the message is redelivered for another attempt
-
-### Requirement: Failed receipt keeps no effects
-
-Recovered from: FUL-BR-0010
-GIVEN a received purchase order cannot be read, cannot be stored, or its invoice cannot be published WHEN the supplier processes it THEN the system SHALL fail the whole receipt so that none of its effects (stored order, stock reductions, shipped quantities) are kept and the message is not consumed.
-
-#### Scenario: Invoice cannot be published
-
-- **GIVEN** an order whose invoice publication fails
-- **WHEN** it is processed
-- **THEN** no stored order, stock reduction or shipped quantity is kept and the message is not consumed
-
-### Requirement: Supplier order record
-
-Recovered from: FUL-ENT-0011
-The system SHALL keep, for each supplier order, an order id that is unique, an order date that is always present, an order status, a shipping contact with address, and its order lines; each line SHALL always carry an ordered quantity, a shipped quantity and a unit price, plus category, product, item and line number.
-
-#### Scenario: Duplicate order id
-
-- **GIVEN** a stored order with id X
-- **WHEN** another order with id X is stored
-- **THEN** the second is refused
 
 ### Requirement: Supplier order sent for approved orders
 
@@ -276,28 +204,6 @@ The system SHALL track one status of up to 20 characters per order in the order 
 - **WHEN** orders with status APPROVED are requested
 - **THEN** only those orders are returned
 
-### Requirement: Purchase order record at the order processing center
-
-Recovered from: FULF-ENT-0006
-The system SHALL store each purchase order with a unique order id, a mandatory order date, a mandatory order value, the customer's user id, e-mail address and locale, a contact (name, e-mail, telephone, address with two street lines, city, state, country, postal code), a payment card (number, type, expiry date), and line items each holding category, product, item, line number, a mandatory quantity, a mandatory shipped quantity and a mandatory unit price.
-
-#### Scenario: Missing mandatory value
-
-- **GIVEN** a purchase order without an order date
-- **WHEN** it is stored
-- **THEN** it is refused
-
-### Requirement: Purchase order line shipped quantity bound
-
-Recovered from: FULFIL-ENT-0001
-The system SHALL record each purchase order line with category, product, item, quantity, unit price and quantity shipped, identified by order id and line number, and SHALL NOT allow the quantity shipped to exceed the quantity ordered.
-
-#### Scenario: Over-shipment
-
-- **GIVEN** a line with quantity 3
-- **WHEN** a shipped quantity of 4 is recorded
-- **THEN** the record is refused
-
 ### Requirement: Supplier order status restriction in the database
 
 ID: SWHR6-R-0131
@@ -310,17 +216,6 @@ The system SHALL record each order received by the supplier as a supplier order 
 - **WHEN** status APPROVED is stored in the database
 - **THEN** the value is rejected
 
-### Requirement: Supplier order status and contact link
-
-Recovered from: FULFIL-BR-0002
-The system SHALL restrict a supplier order status to PENDING or COMPLETED, and SHALL link each supplier order to a contact.
-
-#### Scenario: Order without contact
-
-- **GIVEN** a supplier order with no contact
-- **WHEN** it is stored
-- **THEN** it is refused
-
 ### Requirement: Unit of work per message
 
 ID: SWHR6-R-0085
@@ -332,17 +227,6 @@ The system SHALL process each incoming order, approval batch, invoice and notifi
 - **GIVEN** an invoice message whose processing fails
 - **WHEN** it is processed
 - **THEN** no status change or outgoing message takes effect and it is redelivered
-
-### Requirement: Purchase orders by date range
-
-Recovered from: CHK-REQ-0001
-The system SHALL allow retrieval of purchase orders whose order date falls between two given instants, inclusive.
-
-#### Scenario: Boundary dates
-
-- **GIVEN** an order dated exactly at the range start
-- **WHEN** the range is queried
-- **THEN** the order is included
 
 ### Requirement: Invoice quantity accumulation
 
@@ -367,17 +251,6 @@ The system SHALL treat an order as completely fulfilled only when every line ite
 - **GIVEN** two lines, one fully shipped and one not
 - **WHEN** completeness is evaluated
 - **THEN** the order is not complete
-
-### Requirement: Order line item record
-
-Recovered from: ORDER-FULFILLMENT-ENTITY-0001
-The system SHALL keep, for each order line item, the category id, product id, item id, line number, ordered quantity, unit price and quantity shipped so far; and SHALL persist a supplier purchase order identified by a unique order id with an order date, a status, one shipping contact and one or more line items.
-
-#### Scenario: Line stored
-
-- **GIVEN** a new line item
-- **WHEN** it is stored
-- **THEN** all seven fields are kept
 
 ### Requirement: Line item creation
 
@@ -408,17 +281,6 @@ The system SHALL recognise the supplier order statuses PENDING, APPROVED, DENIED
 - **GIVEN** a stored order
 - **WHEN** its status is set to COMPLETED
 - **THEN** the stored status is COMPLETED
-
-### Requirement: Order date fallback
-
-Recovered from: ORDER-FULFILLMENT-BUSINESS-RULE-0003
-GIVEN an incoming supplier order document whose order date is missing or unparseable, WHEN it is read, the system SHALL substitute the current date and continue processing.
-
-#### Scenario: Missing date
-
-- **GIVEN** a document with no order date
-- **WHEN** it is read
-- **THEN** the current date is used and processing continues
 
 ### Requirement: Supplier order root element check
 
@@ -461,17 +323,6 @@ The system SHALL exchange a line item as an XML LineItem element containing, in 
 - **GIVEN** an approved order
 - **WHEN** the document is built
 - **THEN** it lists order id, yyyy-MM-dd date, address and lines in that order
-
-### Requirement: Invoice document building
-
-Recovered from: ORDER-FULFILLMENT-INTEGRATION-0002
-The system SHALL build an invoice document containing the order id, user id, order date and shipping date (each date formatted yyyy-MM-dd) and one or more line items, in the TPA Invoice namespace.
-
-#### Scenario: Invoice built
-
-- **GIVEN** an invoice with one line
-- **WHEN** it is built
-- **THEN** it carries the listed fields in the TPA Invoice namespace
 
 ### Requirement: Line item mutability
 
@@ -575,17 +426,6 @@ The system SHALL, when a supplier order is removed, also remove its shipping con
 - **WHEN** it is removed
 - **THEN** contact and lines are removed too
 
-### Requirement: Supplier order creation links
-
-Recovered from: ORDER-FULFILLMENT-WORKFLOW-0001
-WHEN a supplier order is created, the system SHALL also create a stored copy of the shipping contact and one stored line item per incoming line item, each with shipped quantity initialised to 0, and SHALL link them to the order.
-
-#### Scenario: Linked on create
-
-- **GIVEN** an order with three lines
-- **WHEN** it is created
-- **THEN** three line items with shipped 0 and the contact copy are linked to it
-
 ### Requirement: Supplier order line storage
 
 ID: SWHR6-R-0082
@@ -597,47 +437,3 @@ The system SHALL store supplier order lines keyed by order and line number, each
 - **GIVEN** a line for an unknown supplier order
 - **WHEN** it is stored
 - **THEN** it is rejected
-
-### Requirement: Order status is mandatory and unique
-
-Recovered from: OFL-ENT-0001
-The system SHALL keep exactly one mandatory status value per order, identified by order id.
-
-#### Scenario: Order status is mandatory and unique
-
-- **GIVEN** an order without a status
-- **WHEN** it is stored
-- **THEN** it is refused
-
-### Requirement: Lookup of purchase orders by customer
-
-Recovered from: OFL-REQ-0003
-The system SHALL support fast lookup of purchase_order by po_user_id, for finding a customer's orders.
-
-#### Scenario: Lookup of purchase orders by customer
-
-- **GIVEN** orders of several customers
-- **WHEN** one customer's orders are requested
-- **THEN** that customer's orders are returned
-
-### Requirement: Lookup of purchase orders by date
-
-Recovered from: OFL-REQ-0004
-The system SHALL support fast lookup of purchase_order by po_date, for finding orders by date.
-
-#### Scenario: Lookup of purchase orders by date
-
-- **GIVEN** orders on several dates
-- **WHEN** orders for one date are requested
-- **THEN** orders with that date are returned
-
-### Requirement: Lookup of orders by status index
-
-Recovered from: OFL-REQ-0005
-The system SHALL support fast lookup of order_manager by status, for finding orders by status.
-
-#### Scenario: Lookup of orders by status index
-
-- **GIVEN** orders in several statuses
-- **WHEN** one status is requested
-- **THEN** orders with that status are returned
