@@ -1,0 +1,12 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/scheduler/control-m
+    description: >
+      The shard path does not exist. The worktree has no legacy-source/ directory (git tree at HEAD
+      and origin contain no legacy-source files or any Control-M file), and
+      legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/ are absent. A copy of
+      the capability list exists outside the worktree, but its legacy-source tree holds only app/ and
+      nothing under scheduler/. No records were extracted rather than invent content. Commit the
+      Control-M definitions to the branch and re-run.
+suspected_defects: []
