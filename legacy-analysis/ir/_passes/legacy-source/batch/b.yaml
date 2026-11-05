@@ -1,0 +1,15 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/batch
+    description: >
+      The shard path legacy-source/batch does not exist in this worktree or on
+      origin/vortex/legacy-spec/sx-0001: no legacy-source/ directory is committed
+      on the branch (a partial copy of legacy-source/app exists only in /tmp
+      scratch dirs and has no batch/ folder). legacy-analysis/discovery/capabilities.csv
+      is likewise absent from the branch (a copy exists at /tmp/chk/root). The only
+      document source found (petstore-user-guide extracted.md) has no mention of batch,
+      purge, backup, health check or stuck-order reporting. No records were emitted
+      rather than inventing any. A human must commit the legacy application's batch
+      sources under legacy-source/batch and re-run this shard.
