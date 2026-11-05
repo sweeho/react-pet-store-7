@@ -1,12 +1,254 @@
-records: []
+records:
+  - record_key: CUST-ENT-0001
+    kind: entity
+    capability_key: customer-accounts
+    requirement: >
+      The system SHALL represent a postal address as six text fields: street line 1, street line 2,
+      city, state, zip code and country, and SHALL persist it as a stand-alone record.
+    confidence: high
+    confidence_basis: >
+      The field set is declared in the persistence descriptor and the entity bean accessors, two
+      independent places. The value-object class was not cross-checked line by line for field types.
+    risk_class: operational
+    basis: >
+      ejb-jar.xml declares six container-managed fields; AddressEJB declares matching abstract accessors.
+      No length, format or not-null constraint appears in either place.
+    plain_text: >
+      An address is stored as street line 1, street line 2, city, state, zip code and country.
+    technical_note: >
+      Container-managed entity (CMP 2.x, abstract schema Address) with six cmp-fields. The primary key
+      class is java.lang.Object; ejbCreate returns null so the container generates the key. No DDL for
+      the table is in this component.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/address/src/ejb-jar.xml
+        line_start: 52
+        line_end: 80
+        excerpt: |
+          <persistence-type>Container</persistence-type>
+          <prim-key-class>java.lang.Object</prim-key-class>
+          <reentrant>False</reentrant>
+          <cmp-version>2.x</cmp-version>
+          <abstract-schema-name>Address</abstract-schema-name>
+          <cmp-field>
+            <description>no description</description>
+            <field-name>zipCode</field-name>
+          </cmp-field>
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/AddressEJB.java
+        line_start: 53
+        line_end: 69
+        excerpt: |
+          public abstract String getStreetName1();
+          public abstract void setStreetName1(String streetName1);
+
+          public abstract String getStreetName2();
+          public abstract void setStreetName2(String streetName2);
+
+          public abstract String getCity();
+          public abstract void setCity(String city);
+    stack_metadata:
+      framework: EJB 2.0 CMP entity
+      ejb.bean: AddressEJB
+      ejb.transaction: Required
+
+  - record_key: CUST-BR-0001
+    kind: business-rule
+    capability_key: customer-accounts
+    requirement: >
+      The system SHALL accept an address with any combination of field values, including empty or null
+      values, without validating format, length or required fields at creation time.
+    confidence: medium
+    confidence_basis: >
+      Absence of validation was observed in the create methods of this component only; a caller
+      elsewhere may validate. Absence is inferred from reading, not from a positive statement.
+    risk_class: operational
+    basis: >
+      Every ejbCreate variant copies arguments straight into the fields; the no-argument variant
+      creates an empty address. Nothing throws CreateException.
+    plain_text: >
+      The address store itself does not check that addresses are complete or well formed; any checking
+      must happen before the address reaches it.
+    technical_note: >
+      ejbCreate(6 Strings), ejbCreate(Address) and ejbCreate() declare CreateException but never throw it.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/AddressEJB.java
+        line_start: 73
+        line_end: 101
+        excerpt: |
+          public Object ejbCreate(String streetName1, String streetName2, String city,
+                                  String state, String zipCode, String country) throws CreateException {
+                                    setStreetName1(streetName1);
+          ...
+          public Object ejbCreate() throws CreateException {
+            return null;
+          }
+    stack_metadata:
+      framework: EJB 2.0 CMP entity
+      ejb.bean: AddressEJB
+
+  - record_key: CUST-REQ-0001
+    kind: requirement
+    capability_key: customer-accounts
+    requirement: >
+      The system SHALL allow an address to be created from six individual values, from an existing
+      address value, or empty, and SHALL allow it to be read back as a complete address value.
+    confidence: high
+    confidence_basis: >
+      Create variants and getData in the bean, plus method permissions and transaction attributes
+      for the same methods in the descriptor.
+    risk_class: operational
+    basis: >
+      Three create variants and getData copy all six fields; the descriptor lists each as callable
+      without role restriction (unchecked).
+    plain_text: >
+      An address can be saved from its individual parts, copied from another address, or started blank,
+      and its full details can be retrieved again.
+    technical_note: >
+      Local interface only (no remote access). All methods are in an unchecked method-permission and run with
+      container transaction attribute Required.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/AddressEJB.java
+        line_start: 87
+        line_end: 114
+        excerpt: |
+          public Object ejbCreate(Address address) throws CreateException {
+            setStreetName1(address.getStreetName1());
+          ...
+          public Address getData() {
+            Address address = new Address();
+    stack_metadata:
+      framework: EJB 2.0 CMP entity
+      ejb.bean: AddressEJB
+      ejb.transaction: Required
+
+  - record_key: CUST-BR-0002
+    kind: business-rule
+    capability_key: customer-accounts
+    requirement: >
+      The system SHALL allow any caller to create, read, change and remove an address without a role
+      check.
+    confidence: medium
+    confidence_basis: >
+      One clear place (the descriptor); callers elsewhere may enforce access before reaching this component.
+    risk_class: regulated
+    basis: >
+      All methods are in a single unchecked method-permission block, and the bean uses the caller's identity.
+      Addresses are personal data.
+    plain_text: >
+      The address store does not itself restrict who may view or change an address.
+    technical_note: >
+      ejb-jar.xml method-permission is unchecked for all Local and LocalHome methods; security-identity is use-caller-identity.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/address/src/ejb-jar.xml
+        line_start: 81
+        line_end: 95
+        excerpt: |
+          <security-identity>
+            <description></description>
+            <use-caller-identity></use-caller-identity>
+          </security-identity>
+          ...
+          <method-permission>
+            <unchecked />
+    stack_metadata:
+      framework: EJB 2.0 CMP entity
+      ejb.bean: AddressEJB
+
+  - record_key: CUST-INT-0001
+    kind: integration
+    capability_key: customer-accounts
+    requirement: >
+      The system SHALL write an address to XML as an Address element containing a street name, then
+      the second street name only when it is non-empty, then city, state, zip code and country, in that order.
+    confidence: high
+    confidence_basis: >
+      Serialiser code plus the DTD, two places that agree on element order.
+    risk_class: operational
+    basis: >
+      toDOM omits the second street element when null or empty; the DTD makes the second StreetName optional.
+    plain_text: >
+      When an address is sent to another system as a document, the second street line is left out if blank.
+    technical_note: >
+      Address.toDOM; the DTD (Address 1.1) is referenced by public and system id constants in Address.java. Both street lines use the element name StreetName.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/Address.java
+        line_start: 144
+        line_end: 155
+        excerpt: |
+          public Node toDOM(Document document) {
+            Element root = document.createElement(XML_ADDRESS);
+            XMLDocumentUtils.appendChild(document, root, XML_STREET_NAME, streetName1);
+            if (streetName2 != null && !streetName2.equals("")) {
+              XMLDocumentUtils.appendChild(document, root, XML_STREET_NAME, streetName2);
+            }
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/rsrc/schemas/Address.dtd
+        line_start: 38
+        line_end: 43
+        excerpt: |
+          <!ELEMENT Address (StreetName, StreetName?, City, State, ZipCode, Country?)>
+    stack_metadata:
+      framework: XML DOM serialisation
+      db.object: Address.dtd
+
+  - record_key: CUST-INT-0002
+    kind: integration
+    capability_key: customer-accounts
+    requirement: >
+      GIVEN an incoming XML document WHEN it is read as an address THEN the system SHALL require the root
+      element to be Address and SHALL require street name, city, state, zip code and country elements in
+      order, with a second street name optional, and SHALL reject anything else as an XML document error.
+    confidence: medium
+    confidence_basis: >
+      One clear place (fromDOM); behaviour of the required flag in the helper utility was not read, so
+      the precise failure on a missing element is inferred.
+    risk_class: operational
+    basis: >
+      fromDOM throws on a wrong root element; child lookups pass false (mandatory) for all but the second street.
+    plain_text: >
+      An address received as a document must have all its parts in the expected order, apart from the second street line; otherwise it is refused.
+    technical_note: >
+      Address.fromDOM. Country is mandatory in the reader but optional (Country?) in the DTD.
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/Address.java
+        line_start: 157
+        line_end: 180
+        excerpt: |
+          public static Address fromDOM(Node node) throws XMLDocumentException {
+            ...
+            child = XMLDocumentUtils.getFirstChild(element, XML_STREET_NAME, false);
+            ...
+            Element optionalChild = XMLDocumentUtils.getNextSibling(child, XML_STREET_NAME, true);
+            ...
+            throw new XMLDocumentException(XML_ADDRESS + " element expected.");
+    stack_metadata:
+      framework: XML DOM serialisation
+
+suspected_defects:
+  - capability_key: customer-accounts
+    record_keys: [CUST-INT-0002, CUST-INT-0001]
+    severity: low
+    category: contradicts-document
+    title: Country is optional in the DTD but mandatory when reading
+    description: >
+      The DTD declares Country as optional; fromDOM looks the country element up as mandatory (required flag false
+      is passed for it as for the other mandatory fields). A document without Country that satisfies the DTD would be rejected.
+    traces:
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/rsrc/schemas/Address.dtd
+        line_start: 38
+        line_end: 38
+      - path: legacy-source/app/src/components/address/src/com/sun/j2ee/blueprints/address/ejb/Address.java
+        line_start: 175
+        line_end: 176
+
 findings:
-  - kind: unparseable
+  - kind: ambiguity
     path: legacy-source/app/src/components/address
     description: >
-      The shard path does not exist in the worktree (no legacy-source/ directory at all,
-      and none in the branch tree). A snapshot at /tmp/chk/root holds only
-      legacy-source/app/src/apps/opc, with no components/ directory. No source, and no
-      legacy-analysis/sources documents, were available to read, so no records were
-      emitted rather than inventing any. A human must confirm the shard path or
-      restore the legacy-source checkout, then re-run this stage.
-suspected_defects: []
+      legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources were not present in the tree, and
+      legacy-source/ is absent from the branch head (read from commit 0683ff9 instead). Records are filed under
+      customer-accounts, taken from keys used by other passes; a human should confirm whether address belongs under checkout.
