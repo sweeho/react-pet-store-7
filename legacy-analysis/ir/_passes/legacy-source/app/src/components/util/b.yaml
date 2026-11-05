@@ -1,0 +1,12 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/util
+    description: >
+      The shard path does not exist in the worktree. The branch holds no legacy-source/
+      directory at all (git ls-tree HEAD lists only legacy-analysis IR files), and no
+      legacy-analysis/discovery/capabilities.csv or legacy-analysis/sources/ either.
+      No code could be read, so no record was emitted rather than invent behaviour.
+      A human needs to confirm the legacy source was committed to this branch and
+      re-open the stage.
