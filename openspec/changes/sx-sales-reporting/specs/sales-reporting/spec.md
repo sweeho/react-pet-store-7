@@ -82,7 +82,7 @@ The system SHALL allow retrieving purchase orders whose order date falls between
 
 Recovered from: SAL-REQ-0001
 
-The system SHOULD support retrieval of purchase orders by ordering user and by order date efficiently, using secondary indexes on the order's user id and order date.
+The system SHALL support retrieval of purchase orders by ordering user and by order date efficiently, using secondary indexes on the order's user id and order date.
 
 #### Scenario: Indexes present
 
