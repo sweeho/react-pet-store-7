@@ -1,49 +1,89 @@
-# Legacy runtime for initiative SWHR6-N-0001: Java Pet Store 1.3.2 on the
+# Legacy runtime for initiative SWHR6-N-0001: Sun Java Pet Store 1.3.2 on the
 # J2EE 1.3.1 Reference Implementation, with its Cloudscape database.
+# See README.md for what must be in ./vendor before the first build.
 #
 #   docker compose -f .vortex/legacy-runtime/compose.yaml up --build --wait
 #   -> http://localhost:8000/petstore/
-#
-# The legacy source is read from the legacy-spec branch at build time; it is
-# never copied onto dev. Set LEGACY_SOURCE to a local checkout to build offline.
-# See README.md for the vendor/ files the image needs (Oracle licence).
 
 name: petstore-legacy
 
-x-image: &image
+x-legacy: &legacy
   image: petstore-legacy:1.3.2
+  # J2SDK 1.4 and the J2EE 1.3.1 RI are 32-bit Linux (i586) builds.
   platform: linux/386
   build:
     context: .
     platform: linux/386
     additional_contexts:
+      # The legacy source tree (legacy-source/ on the legacy-spec branch).
+      # Override with a local path, e.g. LEGACY_SOURCE=/path/to/legacy-source
       legacy: ${LEGACY_SOURCE:-https://github.com/sweeho/react-pet-store-7.git#vortex/legacy-spec/sx-0001:legacy-source}
+    dockerfile_inline: |
+      FROM debian:bookworm-slim
+      RUN apt-get update \
+       && apt-get install -y --no-install-recommends ca-certificates curl \
+       && rm -rf /var/lib/apt/lists/*
+
+      # Not in the repository (licensed): see README.md.
+      COPY vendor/jdk  /opt/jdk
+      COPY vendor/j2ee /opt/j2ee
+      ENV JAVA_HOME=/opt/jdk J2EE_HOME=/opt/j2ee
+      ENV PATH=/opt/jdk/bin:/opt/j2ee/bin:$PATH
+
+      COPY --from=legacy app /opt/petstore
+      WORKDIR /opt/petstore
+
+      # Third-party jars the legacy tree leaves out (its README: binaries
+      # and the bundled Ant are not shipped). Same versions as the 1.3.2 bundle.
+      RUN set -e; mvn=https://repo1.maven.org/maven2; \
+          mkdir -p src/lib/ant/lib src/lib/jstl src/lib/base64; \
+          curl -fsSL -o src/lib/ant/lib/ant.jar  $mvn/ant/ant/1.4.1/ant-1.4.1.jar; \
+          curl -fsSL -o src/lib/jstl/jstl.jar     $mvn/jstl/jstl/1.0.6/jstl-1.0.6.jar; \
+          curl -fsSL -o src/lib/jstl/standard.jar $mvn/taglibs/standard/1.0.6/standard-1.0.6.jar; \
+          curl -fsSL -o src/lib/base64/base64.jar $mvn/commons-codec/commons-codec/1.1/commons-codec-1.1.jar
+
+      # The legacy build, unchanged: Ant via src/build.sh builds every EAR,
+      # then setup.sh registers the JMS destinations, users and the three
+      # Cloudscape datasources in the RI configuration.
+      RUN chmod +x setup.sh src/build.sh /opt/j2ee/bin/* \
+       && cd src && sh build.sh core \
+       && cd .. && sh setup.sh core
 
 services:
-  # Cloudscape (RmiJdbc on :1099). Owns the network namespace, so it also
-  # publishes the application's HTTP port: setup.xml points every datasource at
-  # localhost, and the app container shares this namespace to keep that true.
   db:
-    <<: *image
-    command: ["/opt/runtime/start-db.sh"]
+    <<: *legacy
+    # Cloudscape (RmiJdbc on 1099), shipped inside the RI.
+    command: ["cloudscape", "-start"]
+    # The app shares this network namespace, so its publish lives here and the
+    # datasources' localhost RMI URLs reach Cloudscape.
     ports:
       - "${LEGACY_HTTP_PORT:-8000}:8000"
     healthcheck:
-      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/1099"]
+      test: ["CMD-SHELL", "cat /proc/net/tcp | grep -qi ':044B '"]
       interval: 5s
       retries: 30
 
-  # J2EE RI server: deploys the four EARs with `setup.sh deploy`, loads the
-  # catalog through /petstore/Populate, then reports healthy.
   app:
-    <<: *image
-    command: ["/opt/runtime/start-app.sh"]
+    <<: *legacy
     network_mode: "service:db"
     depends_on:
       db:
         condition: service_healthy
+    # Start the RI server, deploy the four EARs with the legacy build's
+    # deploy target once it answers, then keep the server in the foreground.
+    command:
+      - sh
+      - -c
+      - |
+        j2ee -verbose &
+        pid=$$!
+        until curl -s -o /dev/null http://localhost:8000/; do sleep 3; done
+        if [ ! -f /opt/j2ee/.petstore-deployed ]; then
+          (cd /opt/petstore/src && sh build.sh deploy) && touch /opt/j2ee/.petstore-deployed
+        fi
+        wait $$pid
     healthcheck:
-      test: ["CMD", "test", "-f", "/tmp/petstore-ready"]
+      test: ["CMD", "curl", "-fs", "-o", "/dev/null", "http://localhost:8000/petstore/"]
       interval: 10s
-      start_period: 600s
-      retries: 60
+      start_period: 300s
+      retries: 30

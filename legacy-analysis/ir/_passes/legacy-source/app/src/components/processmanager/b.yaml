@@ -1,0 +1,226 @@
+records:
+  - record_key: ORDER-FULFILLMENT-ENTITY-0001
+    kind: entity
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL keep one process-state record per order, identified by the order id and holding a single current status string.
+    confidence: high
+    confidence_basis: >
+      Declared in the deployment descriptor (two persistent fields, order id as key) and mirrored by the abstract accessors in the bean class.
+    risk_class: operational
+    basis: Container-managed entity with fields status and orderId, primary key orderId.
+    plain_text: >
+      Every order has exactly one status record that holds where the order currently is in its life.
+    technical_note: >
+      ManagerEJB CMP 2.x entity, abstract schema Manager, primkey orderId (String), ejb-jar.xml. Not reentrant.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/ejb-jar.xml
+        line_start: 53
+        line_end: 66
+        excerpt: |
+                <prim-key-class>java.lang.String</prim-key-class>
+                <reentrant>False</reentrant>
+                <cmp-version>2.x</cmp-version>
+                <abstract-schema-name>Manager</abstract-schema-name>
+                <cmp-field>
+                  <description>no description</description>
+                  <field-name>status</field-name>
+                </cmp-field>
+                <cmp-field>
+                  <description>no description</description>
+                  <field-name>orderId</field-name>
+                </cmp-field>
+                <primkey-field>orderId</primkey-field>
+                <security-identity>
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/manager/ejb/ManagerEJB.java
+        line_start: 47
+        line_end: 52
+        excerpt: |
+          import javax.ejb.DuplicateKeyException;
+          
+          public abstract class ManagerEJB implements EntityBean {
+          
+              private EntityContext context = null;
+          
+    stack_metadata:
+      framework: EJB 2.0 CMP
+      ejb.bean: ManagerEJB
+      ejb.transaction: Required
+  - record_key: ORDER-FULFILLMENT-BR-0001
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL recognise the order statuses PENDING, APPROVED, DENIED, SHIPPED_PART and COMPLETED.
+    confidence: medium
+    confidence_basis: >
+      Constants are in one place; the user guide lists four of the five (no SHIPPED_PART). Allowed transitions are not enforced here.
+    risk_class: operational
+    basis: Status name constants with comments; guide status table.
+    plain_text: >
+      An order is either waiting for approval, approved, denied, partly shipped, or completed.
+    technical_note: >
+      OrderStatusNames constants. No transition validation exists in this module: any status string is accepted by updateStatus.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/ejb/OrderStatusNames.java
+        line_start: 50
+        line_end: 65
+        excerpt: |
+              /** for orders that have been placed but not yet approved */
+              public static final String PENDING = "PENDING";
+          
+              /** for orders that have been approved */
+              public  static final String APPROVED = "APPROVED";
+          
+              /** for orders that have been denied */
+              public  static final String DENIED = "DENIED";
+          
+          
+              /** for orders that have been partially completed*/
+              public  static final String SHIPPED_PART = "SHIPPED_PART";
+          
+          
+              /** for orders that have been completed*/
+              public  static final String COMPLETED = "COMPLETED";
+      - path: legacy-analysis/sources/pdf/petstore-user-guide/extracted.md
+        anchor: p1
+        excerpt: "5. Order status: PENDING, APPROVED, DENIED, COMPLETED"
+    stack_metadata:
+      framework: EJB 2.0
+  - record_key: ORDER-FULFILLMENT-REQ-0001
+    kind: requirement
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL allow an order's status record to be created with an initial status, updated to a new status, and read back by order id, each within a transaction.
+    confidence: high
+    confidence_basis: >
+      Session bean methods plus descriptor transaction attributes (Required) and unchecked permissions.
+    risk_class: operational
+    basis: createManager, updateStatus, getStatus delegate to the entity; descriptor sets Required.
+    plain_text: >
+      The system can record a new order's status, change it later, and look it up. Anyone calling inside the application may do this.
+    technical_note: >
+      ProcessManagerEJB stateless session bean; updateStatus/getStatus throw FinderException if the order is unknown; createManager throws CreateException (e.g. duplicate id). Methods are unchecked (no role restriction).
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/ejb/ProcessManagerEJB.java
+        line_start: 66
+        line_end: 84
+        excerpt: |
+              public void createManager(String orderId, String status) throws CreateException {
+                ManagerLocal manager = mlh.create(orderId, status);
+              }
+          
+              /**
+               * Business method used to keep track of an order in the workflow process
+               */
+              public void updateStatus(String orderId, String status) throws FinderException {
+                ManagerLocal manager = mlh.findByPrimaryKey(orderId);
+                manager.setStatus(status);
+              }
+          
+              /**
+               * Business method used to keep track of an order in the workflow process
+               */
+              public String getStatus(String orderId) throws FinderException {
+                ManagerLocal manager = mlh.findByPrimaryKey(orderId);
+                return manager.getStatus();
+              }
+    stack_metadata:
+      framework: EJB 2.0
+      ejb.bean: ProcessManagerEJB
+      ejb.transaction: Required
+  - record_key: ORDER-FULFILLMENT-REQ-0002
+    kind: requirement
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL list the orders whose current status equals a given status exactly.
+    confidence: high
+    confidence_basis: >
+      Query declared in descriptor and exposed by the session bean.
+    risk_class: operational
+    basis: EJB-QL finder on status equality.
+    plain_text: >
+      The system can list all orders that are currently in a chosen status, such as all pending orders.
+    technical_note: >
+      findOrdersByStatus EJB-QL: SELECT DISTINCT OBJECT(a) FROM Manager a WHERE a.status = ?1.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/ejb-jar.xml
+        line_start: 71
+        line_end: 78
+        excerpt: |
+                  <description></description>
+                  <query-method>
+                    <method-name>findOrdersByStatus</method-name>
+                    <method-params>
+                      <method-param>java.lang.String</method-param>
+                    </method-params>
+                  </query-method>
+                  <ejb-ql>SELECT DISTINCT OBJECT(a) FROM Manager a WHERE a.status = ?1</ejb-ql>
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/ejb/ProcessManagerEJB.java
+        line_start: 89
+        line_end: 91
+        excerpt: |
+              public Collection getOrdersByStatus(String status) throws FinderException {
+                  return mlh.findOrdersByStatus(status);
+              }
+    stack_metadata:
+      framework: EJB 2.0
+      db.object: Manager
+  - record_key: ORDER-FULFILLMENT-WF-0001
+    kind: workflow
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL support pluggable transition handlers, instantiated by class name, that receive an XML message or batch of XML messages and perform a status transition, failing with a transition error wrapping any instantiation problem.
+    confidence: low
+    confidence_basis: >
+      Only the interface, factory and info holder are in this module; no implementations or callers were seen here, so live use is unproven.
+    dispute:
+      reason: unresolved-reachability
+      detail: >
+        No caller of TransitionDelegateFactory was checked across the whole tree in this pass; a grep of other components would settle whether it is used.
+    risk_class: operational
+    basis: Factory uses reflection by class name.
+    plain_text: >
+      The system has a hook for plugging in custom handlers that move orders between statuses in response to incoming messages.
+    technical_note: >
+      TransitionDelegateFactory.getTransitionDelegate uses Class.forName(...).newInstance(); TransitionDelegate has setup() and doTransition(TransitionInfo).
+    interface: true
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/transitions/TransitionDelegateFactory.java
+        line_start: 46
+        line_end: 56
+        excerpt: |
+            public TransitionDelegateFactory() { }
+          
+            public TransitionDelegate getTransitionDelegate(String className) throws TransitionException {
+              TransitionDelegate td = null;
+              try {
+                td = (TransitionDelegate)Class.forName(className).newInstance();
+              } catch(Exception e) {
+                throw new TransitionException(e);
+              }
+              return td;
+            }
+    stack_metadata:
+      framework: EJB 2.0
+findings: []
+suspected_defects:
+  - capability_key: order-fulfillment
+    record_keys: [ORDER-FULFILLMENT-BR-0001]
+    severity: low
+    category: contradicts-document
+    title: SHIPPED_PART status not in user guide
+    description: >
+      Code defines a partly-shipped status that the user guide status table does not list.
+    traces:
+      - path: legacy-source/app/src/components/processmanager/src/com/sun/j2ee/blueprints/processmanager/ejb/OrderStatusNames.java
+        line_start: 61
+        line_end: 61
+        excerpt: |
+          public  static final String SHIPPED_PART = "SHIPPED_PART";
+      - path: legacy-analysis/sources/pdf/petstore-user-guide/extracted.md
+        anchor: p1
+        excerpt: "5. Order status"
