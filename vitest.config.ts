@@ -39,7 +39,10 @@ export default defineConfig({
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
           css: false,
-          exclude: ["node_modules", "dist", ".output", "e2e", "routes/**"],
+          // tests/acceptance/** is the locked acceptance suite: it is red until the
+          // Build phase makes it pass, so it runs only via `test:acceptance`
+          // (vitest.acceptance.config.ts), never in the default run.
+          exclude: ["node_modules", "dist", ".output", "e2e", "routes/**", "tests/acceptance/**"],
         },
       },
       {
