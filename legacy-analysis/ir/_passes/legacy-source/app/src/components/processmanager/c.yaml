@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/processmanager
+    description: >
+      The shard directory does not exist in the worktree or on origin/vortex/legacy-spec/sx-0001
+      (no legacy-source/ tree at all), and legacy-analysis/discovery/capabilities.csv and
+      legacy-analysis/sources/ are also absent. No records could be extracted without inventing
+      content. A human must restore the legacy-source commit and capabilities list, then re-run.
+suspected_defects: []
