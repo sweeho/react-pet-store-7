@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/scheduler/control-m
+    description: >
+      The shard path does not exist in the worktree (no legacy-source/ directory at HEAD or in the
+      git tree), and legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/ are
+      also absent. No records could be extracted without inventing content. Re-run once the
+      legacy source and capability list are committed to the branch.
+suspected_defects: []
