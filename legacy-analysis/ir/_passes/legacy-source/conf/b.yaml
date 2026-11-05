@@ -4,7 +4,8 @@ findings:
   - kind: unparseable
     path: legacy-source/conf
     description: >
-      The directory legacy-source/conf does not exist in the worktree (no legacy-source/ tree at all),
-      and legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/**/extracted.md are also
-      absent. No records were emitted because nothing could be read or traced. A human needs to confirm
-      the legacy source was committed to the branch, then re-run this shard.
+      Attempt 2: legacy-source/ is still absent from the worktree on branch vortex/legacy-spec/sx-0001,
+      as are legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/. No records were
+      emitted because nothing could be read, traced or filed under a capability key. A copy of
+      capabilities.csv exists outside the repo under /tmp, which was not used as it is not part of the
+      branch. A human needs to commit the legacy source to the branch, then re-run this shard.
