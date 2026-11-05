@@ -1,0 +1,385 @@
+{
+ "records": [
+  {
+   "record_key": "CAT-ENT-0001",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL identify each product by a unique mandatory 10-character product identifier and SHALL require every product to reference an existing category.",
+   "confidence": "high",
+   "confidence_basis": "Primary key, NOT NULL and foreign key declared identically in both DDL dialects; no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "product PK on productid, catid NOT NULL, fk_product_1 to category(catid).",
+   "plain_text": "Every product has a unique code and belongs to exactly one existing category.",
+   "technical_note": "CREATE TABLE product; char(10) in Cloudscape, varchar2(10) in Oracle.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "product",
+     "line_start": 30,
+     "line_end": 34,
+     "excerpt": "CREATE TABLE product (\n  productid ... not null,\n  catid ... not null,\n  constraint pk_product primary key (productid),\n  constraint fk_product_1 foreign key (catid) references category (catid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "product",
+     "line_start": 30,
+     "line_end": 34,
+     "excerpt": "CREATE TABLE product (\n  productid ... not null,\n  catid ... not null,\n  constraint pk_product primary key (productid),\n  constraint fk_product_1 foreign key (catid) references category (catid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "CAT-ENT-0002",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL hold product name, image and description per locale, SHALL require a name for every product-locale pair, and SHALL allow only one entry per product and locale for an existing product.",
+   "confidence": "high",
+   "confidence_basis": "Composite PK, NOT NULL name and FK declared in both dialects; image and description nullability seen directly.",
+   "risk_class": "operational",
+   "basis": "product_details PK (productid, locale), name NOT NULL, image/descn nullable, fk_product_details_1 to product.",
+   "plain_text": "Each product can have a name, picture and description in each supported language; the name is always required, picture and description are optional.",
+   "technical_note": "CREATE TABLE product_details; name varchar(80), image/descn varchar(255).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "product_details",
+     "line_start": 38,
+     "line_end": 45,
+     "excerpt": "CREATE TABLE product_details (... name ... not null, image ..., descn ..., constraint pk_product_details primary key (productid, locale), constraint fk_product_details_1 foreign key (productid) references product (productid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "product_details",
+     "line_start": 38,
+     "line_end": 45,
+     "excerpt": "CREATE TABLE product_details (... name ... not null, image ..., descn ..., constraint pk_product_details primary key (productid, locale), constraint fk_product_details_1 foreign key (productid) references product (productid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "CAT-ENT-0003",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL hold per-locale item list price, unit cost, image and description as mandatory values, with up to five optional attributes, SHALL allow one entry per item and locale, and SHALL require the item to exist.",
+   "confidence": "high",
+   "confidence_basis": "NOT NULL columns, composite PK and FK identical in both dialects.",
+   "risk_class": "financial",
+   "basis": "item_details: listprice and unitcost decimal(10,2) NOT NULL, image and descn NOT NULL, attr1-attr5 nullable, PK (itemid, locale), FK to item.",
+   "plain_text": "Every item has, for each language, a selling price, a cost, a picture and a description; up to five extra descriptive attributes are optional.",
+   "technical_note": "CREATE TABLE item_details; prices are decimal(10,2) so two decimal places, up to 8 integer digits.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "item_details",
+     "line_start": 57,
+     "line_end": 70,
+     "excerpt": "CREATE TABLE item_details (itemid ... not null, listprice decimal(10,2) not null, unitcost decimal(10,2) not null, locale ... not null, image varchar(255) not null, descn varchar(255) not null, attr1..attr5 varchar(80), constraint pk_item_details primary key (itemid, locale), constraint fk_item_details_1 foreign key (itemid) references item (itemid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "item_details",
+     "line_start": 57,
+     "line_end": 70,
+     "excerpt": "CREATE TABLE item_details (itemid ... not null, listprice decimal(10,2) not null, unitcost decimal(10,2) not null, locale ... not null, image varchar(255) not null, descn varchar(255) not null, attr1..attr5 varchar(80), constraint pk_item_details primary key (itemid, locale), constraint fk_item_details_1 foreign key (itemid) references item (itemid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "CHK-ENT-0001",
+   "kind": "entity",
+   "capability_key": "checkout",
+   "requirement": "The system SHALL record each purchase order line with mandatory category, product, item, quantity, unit price and shipped quantity, SHALL identify a line by order id and line number, and SHALL require the order to exist.",
+   "confidence": "high",
+   "confidence_basis": "NOT NULL columns, composite PK and FK identical in both dialects.",
+   "risk_class": "financial",
+   "basis": "po_line_item PK (po_id, line_number), all columns NOT NULL, fk_po_line_item_1 to purchase_order.",
+   "plain_text": "Every order line states what was ordered, how many, at what price and how many have shipped; a line always belongs to an existing order.",
+   "technical_note": "CREATE TABLE po_line_item; unit_price is double in Cloudscape and number(12,2) in Oracle; line_number is varchar(10). Quantity checks sit in ALTER TABLE statements outside this unit.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "po_line_item",
+     "line_start": 161,
+     "line_end": 171,
+     "excerpt": "CREATE TABLE po_line_item (po_id ... not null, line_number ... not null, category_id, product_id, item_id, quantity integer not null, unit_price ... not null, quantity_shipped integer not null, constraint pk_po_line_item primary key (po_id, line_number), constraint fk_po_line_item_1 foreign key (po_id) references purchase_order (po_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "po_line_item",
+     "line_start": 161,
+     "line_end": 171,
+     "excerpt": "CREATE TABLE po_line_item (po_id ... not null, line_number ... not null, category_id, product_id, item_id, quantity integer not null, unit_price ... not null, quantity_shipped integer not null, constraint pk_po_line_item primary key (po_id, line_number), constraint fk_po_line_item_1 foreign key (po_id) references purchase_order (po_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "OFL-ENT-0001",
+   "kind": "entity",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL keep exactly one mandatory status value per order, identified by order id.",
+   "confidence": "medium",
+   "confidence_basis": "One clear place; the allowed status values are in a separate ALTER TABLE outside this unit, so the full rule is not visible here.",
+   "risk_class": "operational",
+   "basis": "order_manager PK order_id, status NOT NULL.",
+   "plain_text": "Every order has exactly one current status.",
+   "technical_note": "CREATE TABLE order_manager; status varchar(20).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "order_manager",
+     "line_start": 175,
+     "line_end": 178,
+     "excerpt": "CREATE TABLE order_manager (order_id ... not null, status ... not null, constraint pk_order_manager primary key (order_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "order_manager",
+     "line_start": 175,
+     "line_end": 178,
+     "excerpt": "CREATE TABLE order_manager (order_id ... not null, status ... not null, constraint pk_order_manager primary key (order_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "CAT-REQ-0001",
+   "kind": "requirement",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL support fast lookup of product by catid, for listing the products of a category.",
+   "confidence": "low",
+   "confidence_basis": "Only an index definition; its purpose is inferred from the column, no query code was read here.",
+   "risk_class": "presentational",
+   "basis": "ix_product_catid on product(catid).",
+   "plain_text": "The system finds records quickly when listing the products of a category.",
+   "technical_note": "CREATE INDEX ix_product_catid; a performance structure, not a data rule.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "ix_product_catid",
+     "line_start": 219,
+     "line_end": 219,
+     "excerpt": "CREATE INDEX ix_product_catid ON product (catid);"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "ix_product_catid",
+     "line_start": 219,
+     "line_end": 219,
+     "excerpt": "CREATE INDEX ix_product_catid ON product (catid);"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "CAT-REQ-0002",
+   "kind": "requirement",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL support fast lookup of item by productid, for listing the items of a product.",
+   "confidence": "low",
+   "confidence_basis": "Only an index definition; its purpose is inferred from the column, no query code was read here.",
+   "risk_class": "presentational",
+   "basis": "ix_item_productid on item(productid).",
+   "plain_text": "The system finds records quickly when listing the items of a product.",
+   "technical_note": "CREATE INDEX ix_item_productid; a performance structure, not a data rule.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "ix_item_productid",
+     "line_start": 220,
+     "line_end": 220,
+     "excerpt": "CREATE INDEX ix_item_productid ON item (productid);"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "ix_item_productid",
+     "line_start": 220,
+     "line_end": 220,
+     "excerpt": "CREATE INDEX ix_item_productid ON item (productid);"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "OFL-REQ-0003",
+   "kind": "requirement",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL support fast lookup of purchase_order by po_user_id, for finding a customer's orders.",
+   "confidence": "low",
+   "confidence_basis": "Only an index definition; its purpose is inferred from the column, no query code was read here.",
+   "risk_class": "presentational",
+   "basis": "ix_po_user on purchase_order(po_user_id).",
+   "plain_text": "The system finds records quickly when finding a customer's orders.",
+   "technical_note": "CREATE INDEX ix_po_user; a performance structure, not a data rule.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "ix_po_user",
+     "line_start": 221,
+     "line_end": 221,
+     "excerpt": "CREATE INDEX ix_po_user ON purchase_order (po_user_id);"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "ix_po_user",
+     "line_start": 221,
+     "line_end": 221,
+     "excerpt": "CREATE INDEX ix_po_user ON purchase_order (po_user_id);"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "OFL-REQ-0004",
+   "kind": "requirement",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL support fast lookup of purchase_order by po_date, for finding orders by date.",
+   "confidence": "low",
+   "confidence_basis": "Only an index definition; its purpose is inferred from the column, no query code was read here.",
+   "risk_class": "presentational",
+   "basis": "ix_po_date on purchase_order(po_date).",
+   "plain_text": "The system finds records quickly when finding orders by date.",
+   "technical_note": "CREATE INDEX ix_po_date; a performance structure, not a data rule.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "ix_po_date",
+     "line_start": 222,
+     "line_end": 222,
+     "excerpt": "CREATE INDEX ix_po_date ON purchase_order (po_date);"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "ix_po_date",
+     "line_start": 222,
+     "line_end": 222,
+     "excerpt": "CREATE INDEX ix_po_date ON purchase_order (po_date);"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  },
+  {
+   "record_key": "OFL-REQ-0005",
+   "kind": "requirement",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL support fast lookup of order_manager by status, for finding orders by status.",
+   "confidence": "low",
+   "confidence_basis": "Only an index definition; its purpose is inferred from the column, no query code was read here.",
+   "risk_class": "presentational",
+   "basis": "ix_order_manager_status on order_manager(status).",
+   "plain_text": "The system finds records quickly when finding orders by status.",
+   "technical_note": "CREATE INDEX ix_order_manager_status; a performance structure, not a data rule.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "ix_order_manager_status",
+     "line_start": 223,
+     "line_end": 223,
+     "excerpt": "CREATE INDEX ix_order_manager_status ON order_manager (status);"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "ix_order_manager_status",
+     "line_start": 223,
+     "line_end": 223,
+     "excerpt": "CREATE INDEX ix_order_manager_status ON order_manager (status);"
+    }
+   ],
+   "stack_metadata": {
+    "db.kind": "table",
+    "db.schema": "petstore"
+   }
+  }
+ ],
+ "findings": [],
+ "suspected_defects": [
+  {
+   "capability_key": "checkout",
+   "record_keys": [
+    "CHK-ENT-0001"
+   ],
+   "severity": "low",
+   "category": "inconsistent-rounding",
+   "title": "Unit price type differs between database dialects",
+   "description": "po_line_item.unit_price is a binary double in the Cloudscape script and number(12,2) in the Oracle script, so the same order price may round differently depending on the database.",
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "po_line_item",
+     "line_start": 168,
+     "line_end": 168,
+     "excerpt": "unit_price double not null / number(12,2) not null"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "po_line_item",
+     "line_start": 168,
+     "line_end": 168,
+     "excerpt": "unit_price double not null / number(12,2) not null"
+    }
+   ]
+  }
+ ]
+}
