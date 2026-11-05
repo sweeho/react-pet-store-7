@@ -1,0 +1,11 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/db/schema
+    description: >
+      The directory legacy-source/db/schema does not exist in this worktree (no legacy-source/ tree at all in /workspace/repo),
+      and legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/ are also absent here. A copy of the closed
+      capability list exists at /tmp/chk/root, but its legacy-source tree contains only app/src/apps/opc, no db/schema.
+      No record was emitted because nothing could be read and cited. A human needs to confirm the module path or commit the
+      DDL scripts (the other pass cites legacy-source/db/schema/petstore_oracle.sql and petstore_cloudscape.sql) and re-run this pass.
