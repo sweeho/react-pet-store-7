@@ -1,0 +1,382 @@
+{
+ "records": [
+  {
+   "record_key": "CAT-ENT-0001",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL identify each category by a mandatory unique 10-character category identifier.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "category has primary key on catid.",
+   "plain_text": "Every product category has a unique code.",
+   "technical_note": "CREATE TABLE category (catid char(10)/varchar2(10), pk_category).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "category",
+     "line_start": 13,
+     "line_end": 15,
+     "excerpt": "CREATE TABLE category (\n  catid char(10) not null,\n  constraint pk_category primary key (catid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "category",
+     "line_start": 13,
+     "line_end": 15,
+     "excerpt": "CREATE TABLE category (\n  catid varchar2(10) not null,\n  constraint pk_category primary key (catid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "category",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CAT-ENT-0002",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL hold category name, image and description per locale keyed by category and locale, SHALL require a name and locale, SHALL treat image and description as optional, and SHALL reject details for a nonexistent category.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "presentational",
+   "basis": "category_details pk (catid, locale), name not null, fk_category_details_1 to category.",
+   "plain_text": "Each category has a name, and optionally a picture and description, for each supported language, with one entry per language.",
+   "technical_note": "CREATE TABLE category_details; name varchar(80), image/descn varchar(255).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "category_details",
+     "line_start": 19,
+     "line_end": 26,
+     "excerpt": "CREATE TABLE category_details (\n  catid char(10) not null,\n  name varchar(80) not null,\n  image varchar(255),\n  descn varchar(255),\n  locale char(10) not null,\n  constraint pk_category_details primary key (catid, locale),\n  constraint fk_category_details_1 foreign key (catid) references category (catid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "category_details",
+     "line_start": 19,
+     "line_end": 26,
+     "excerpt": "CREATE TABLE category_details (\n  catid varchar2(10) not null,\n  name varchar2(80) not null,\n  image varchar2(255),\n  descn varchar2(255),\n  locale varchar2(10) not null,\n  constraint pk_category_details primary key (catid, locale),\n  constraint fk_category_details_1 foreign key (catid) references category (catid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "category_details",
+    "db.kind": "table",
+    "db.reads": "category"
+   }
+  },
+  {
+   "record_key": "CAT-ENT-0003",
+   "kind": "entity",
+   "capability_key": "catalog-browsing",
+   "requirement": "The system SHALL identify each item by a mandatory unique 10-character item identifier and SHALL require every item to belong to an existing product.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "item pk on itemid, productid not null, fk_item_1 to product.",
+   "plain_text": "Every sellable item has a unique code and belongs to an existing product.",
+   "technical_note": "CREATE TABLE item; pk_item, fk_item_1.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "item",
+     "line_start": 49,
+     "line_end": 53,
+     "excerpt": "CREATE TABLE item (\n  itemid char(10) not null,\n  productid char(10) not null,\n  constraint pk_item primary key (itemid),\n  constraint fk_item_1 foreign key (productid) references product (productid));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "item",
+     "line_start": 49,
+     "line_end": 53,
+     "excerpt": "CREATE TABLE item (\n  itemid varchar2(10) not null,\n  productid varchar2(10) not null,\n  constraint pk_item primary key (itemid),\n  constraint fk_item_1 foreign key (productid) references product (productid));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "item",
+    "db.kind": "table",
+    "db.reads": "product"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0001",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL store an address with mandatory street line 1, city, state, zip code and country, and an optional street line 2, identified by a unique address identifier.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "address: street_name1, city, state, zip_code, country not null; street_name2 nullable; pk address_id.",
+   "plain_text": "An address must have a street, city, state, postal code and country; a second street line is optional.",
+   "technical_note": "CREATE TABLE address; field lengths 80/40/20/40.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "address",
+     "line_start": 81,
+     "line_end": 89,
+     "excerpt": "CREATE TABLE address (\n  address_id varchar(40) not null,\n  street_name1 varchar(80) not null,\n  street_name2 varchar(80),\n  city varchar(80) not null,\n  state varchar(40) not null,\n  zip_code varchar(20) not null,\n  country varchar(40) not null,\n  constraint pk_address primary key (address_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "address",
+     "line_start": 81,
+     "line_end": 89,
+     "excerpt": "CREATE TABLE address (\n  address_id varchar2(40) not null,\n  street_name1 varchar2(80) not null,\n  street_name2 varchar2(80),\n  city varchar2(80) not null,\n  state varchar2(40) not null,\n  zip_code varchar2(20) not null,\n  country varchar2(40) not null,\n  constraint pk_address primary key (address_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "address",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0002",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL store contact information with mandatory family name, given name, telephone and e-mail, and SHALL require each contact to reference an existing address.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "regulated",
+   "basis": "contact_info columns not null; fk_contact_info_1 to address. Holds personal data.",
+   "plain_text": "Every contact record has a name, telephone number, e-mail and an existing address.",
+   "technical_note": "CREATE TABLE contact_info; email varchar(120).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "contact_info",
+     "line_start": 93,
+     "line_end": 101,
+     "excerpt": "CREATE TABLE contact_info (\n  contact_id varchar(40) not null,\n  family_name varchar(80) not null,\n  given_name varchar(80) not null,\n  telephone varchar(40) not null,\n  email varchar(120) not null,\n  address_id varchar(40) not null,\n  constraint pk_contact_info primary key (contact_id),\n  constraint fk_contact_info_1 foreign key (address_id) references address (address_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "contact_info",
+     "line_start": 93,
+     "line_end": 101,
+     "excerpt": "CREATE TABLE contact_info (\n  contact_id varchar2(40) not null,\n  family_name varchar2(80) not null,\n  given_name varchar2(80) not null,\n  telephone varchar2(40) not null,\n  email varchar2(120) not null,\n  address_id varchar2(40) not null,\n  constraint pk_contact_info primary key (contact_id),\n  constraint fk_contact_info_1 foreign key (address_id) references address (address_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "contact_info",
+    "db.kind": "table",
+    "db.reads": "address"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0003",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL store a payment card with mandatory card number, card type and expiry date (up to 10 characters), identified by a unique card identifier.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "regulated",
+   "basis": "credit_card: card_number, card_type, expiry_date not null; pk card_id. Expiry is free text, no format check in DDL.",
+   "plain_text": "Every stored payment card has a number, a type and an expiry date.",
+   "technical_note": "CREATE TABLE credit_card; card_number varchar(40) stored as plain column; expiry_date varchar(10).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "credit_card",
+     "line_start": 105,
+     "line_end": 110,
+     "excerpt": "CREATE TABLE credit_card (\n  card_id varchar(40) not null,\n  card_number varchar(40) not null,\n  card_type varchar(40) not null,\n  expiry_date varchar(10) not null,\n  constraint pk_credit_card primary key (card_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "credit_card",
+     "line_start": 105,
+     "line_end": 110,
+     "excerpt": "CREATE TABLE credit_card (\n  card_id varchar2(40) not null,\n  card_number varchar2(40) not null,\n  card_type varchar2(40) not null,\n  expiry_date varchar2(10) not null,\n  constraint pk_credit_card primary key (card_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "credit_card",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0004",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL store an account with a mandatory status, and SHALL require each account to reference an existing contact and an existing payment card.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "account status not null; fk_account_1 to contact_info; fk_account_2 to credit_card.",
+   "plain_text": "Every customer account has a status, contact details and a payment card on file.",
+   "technical_note": "CREATE TABLE account; status varchar(20); no CHECK on status values.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "account",
+     "line_start": 114,
+     "line_end": 121,
+     "excerpt": "CREATE TABLE account (\n  account_id varchar(40) not null,\n  status varchar(20) not null,\n  contact_id varchar(40) not null,\n  card_id varchar(40) not null,\n  constraint pk_account primary key (account_id),\n  constraint fk_account_1 foreign key (contact_id) references contact_info (contact_id),\n  constraint fk_account_2 foreign key (card_id) references credit_card (card_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "account",
+     "line_start": 114,
+     "line_end": 121,
+     "excerpt": "CREATE TABLE account (\n  account_id varchar2(40) not null,\n  status varchar2(20) not null,\n  contact_id varchar2(40) not null,\n  card_id varchar2(40) not null,\n  constraint pk_account primary key (account_id),\n  constraint fk_account_1 foreign key (contact_id) references contact_info (contact_id),\n  constraint fk_account_2 foreign key (card_id) references credit_card (card_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "account",
+    "db.kind": "table",
+    "db.reads": "contact_info,credit_card"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0005",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL identify a customer by the sign-on user name, and SHALL require each customer to reference an existing sign-on user, an existing account and an existing profile.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard.",
+   "risk_class": "operational",
+   "basis": "customer pk user_id; fk_customer_1 to signon_user(username); fk_customer_2 to account; fk_customer_3 to profile.",
+   "plain_text": "Each customer is tied to one sign-on user, one account and one set of storefront preferences.",
+   "technical_note": "CREATE TABLE customer; user_id varchar(50).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "customer",
+     "line_start": 135,
+     "line_end": 142,
+     "excerpt": "CREATE TABLE customer (\n  user_id varchar(50) not null,\n  account_id varchar(40) not null,\n  profile_id varchar(40) not null,\n  constraint pk_customer primary key (user_id),\n  constraint fk_customer_1 foreign key (user_id) references signon_user (username),\n  constraint fk_customer_2 foreign key (account_id) references account (account_id),\n  constraint fk_customer_3 foreign key (profile_id) references profile (profile_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "customer",
+     "line_start": 135,
+     "line_end": 142,
+     "excerpt": "CREATE TABLE customer (\n  user_id varchar2(50) not null,\n  account_id varchar2(40) not null,\n  profile_id varchar2(40) not null,\n  constraint pk_customer primary key (user_id),\n  constraint fk_customer_1 foreign key (user_id) references signon_user (username),\n  constraint fk_customer_2 foreign key (account_id) references account (account_id),\n  constraint fk_customer_3 foreign key (profile_id) references profile (profile_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "customer",
+    "db.kind": "table",
+    "db.reads": "signon_user,account,profile"
+   }
+  },
+  {
+   "record_key": "INV-ENT-0001",
+   "kind": "entity",
+   "capability_key": "inventory-management",
+   "requirement": "The system SHALL hold one stock quantity per item, keyed by item identifier, and SHALL require the quantity to be present.",
+   "confidence": "high",
+   "confidence_basis": "Declared identically in the Cloudscape and Oracle DDL scripts (2 places); no application code read in this shard. No CHECK prevents negative quantity.",
+   "risk_class": "financial",
+   "basis": "inventory pk item_id, quantity integer not null; no foreign key to item declared.",
+   "plain_text": "Each item has exactly one stock count.",
+   "technical_note": "CREATE TABLE inventory; no FK to item and no non-negative CHECK.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "inventory",
+     "line_start": 206,
+     "line_end": 209,
+     "excerpt": "CREATE TABLE inventory (\n  item_id char(10) not null,\n  quantity integer not null,\n  constraint pk_inventory primary key (item_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "inventory",
+     "line_start": 206,
+     "line_end": 209,
+     "excerpt": "CREATE TABLE inventory (\n  item_id varchar2(10) not null,\n  quantity integer not null,\n  constraint pk_inventory primary key (item_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "inventory",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CAT-ENT-0004",
+   "kind": "entity",
+   "capability_key": "catalog-data-maintenance",
+   "requirement": "The system SHALL keep named integer counters, one per unique counter name, each with a mandatory value.",
+   "confidence": "medium",
+   "confidence_basis": "Declared identically in both scripts, but purpose (identifier generation) is inferred from the name, not read from code; capability fit is inferred.",
+   "risk_class": "operational",
+   "basis": "counter pk name, counter integer not null. Filed under closest listed capability; purpose not visible in DDL.",
+   "plain_text": "The system keeps named running counters, likely used to generate identifiers.",
+   "technical_note": "CREATE TABLE counter(name, counter).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "counter",
+     "line_start": 213,
+     "line_end": 216,
+     "excerpt": "CREATE TABLE counter (\n  name varchar(40) not null,\n  counter integer not null,\n  constraint pk_counter primary key (name));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "counter",
+     "line_start": 213,
+     "line_end": 216,
+     "excerpt": "CREATE TABLE counter (\n  name varchar2(40) not null,\n  counter integer not null,\n  constraint pk_counter primary key (name));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "counter",
+    "db.kind": "table"
+   }
+  }
+ ],
+ "findings": [],
+ "suspected_defects": [
+  {
+   "capability_key": "inventory-management",
+   "record_keys": [
+    "INV-ENT-0001"
+   ],
+   "severity": "low",
+   "category": "other",
+   "title": "Stock quantity has no non-negative constraint or link to item",
+   "description": "Inventory quantity is only NOT NULL; nothing at database level stops negative stock or rows for nonexistent items.",
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "inventory",
+     "line_start": 206,
+     "line_end": 209,
+     "excerpt": "CREATE TABLE inventory (\n  item_id char(10) not null,\n  quantity integer not null,\n  constraint pk_inventory primary key (item_id));"
+    }
+   ]
+  }
+ ]
+}
