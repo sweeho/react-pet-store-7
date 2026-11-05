@@ -1,0 +1,856 @@
+{
+  "version": 1,
+  "run": "SX-0001",
+  "stage": "discovery",
+  "root": "legacy-source",
+  "notes": "java-import edges count import statements between modules; jms/ejb-remote/http edges are runtime couplings from deployment descriptors and scripts; db-table-owner is the module whose CMP bean or populate code defines the table.",
+  "nodes": [
+    {
+      "id": "legacy-source/app/src/apps/opc",
+      "kind": "application",
+      "loc": 5472,
+      "screens": 0,
+      "risk": "high",
+      "score": 10,
+      "capabilities": [
+        "order-approval",
+        "order-fulfillment",
+        "order-notifications",
+        "sales-reporting"
+      ]
+    },
+    {
+      "id": "legacy-source/app/src/apps/petstore",
+      "kind": "application",
+      "loc": 18144,
+      "screens": 19,
+      "risk": "high",
+      "score": 9,
+      "capabilities": [
+        "catalog-browsing",
+        "shopping-cart",
+        "customer-accounts",
+        "sign-on",
+        "checkout",
+        "catalog-data-maintenance"
+      ]
+    },
+    {
+      "id": "legacy-source/app/src/apps/supplier",
+      "kind": "application",
+      "loc": 3985,
+      "screens": 7,
+      "risk": "high",
+      "score": 9,
+      "capabilities": [
+        "order-fulfillment",
+        "inventory-management",
+        "sign-on",
+        "catalog-data-maintenance"
+      ]
+    },
+    {
+      "id": "legacy-source/db/schema",
+      "kind": "data",
+      "loc": 472,
+      "screens": 0,
+      "risk": "high",
+      "score": 8,
+      "capabilities": [
+        "customer-accounts",
+        "checkout",
+        "order-fulfillment",
+        "inventory-management",
+        "catalog-browsing"
+      ]
+    },
+    {
+      "id": "legacy-source/app/src/components/processmanager",
+      "kind": "component",
+      "loc": 1179,
+      "screens": 0,
+      "risk": "high",
+      "score": 8,
+      "capabilities": ["order-approval", "order-fulfillment"]
+    },
+    {
+      "id": "legacy-source/app/src/components/purchaseorder",
+      "kind": "component",
+      "loc": 2174,
+      "screens": 0,
+      "risk": "high",
+      "score": 8,
+      "capabilities": ["checkout", "order-fulfillment"]
+    },
+    {
+      "id": "legacy-source/app/src/components/cart",
+      "kind": "component",
+      "loc": 664,
+      "screens": 0,
+      "risk": "high",
+      "score": 8,
+      "capabilities": ["shopping-cart"]
+    },
+    {
+      "id": "legacy-source/app/src/components/signon",
+      "kind": "component",
+      "loc": 1417,
+      "screens": 0,
+      "risk": "high",
+      "score": 7,
+      "capabilities": ["sign-on", "customer-accounts"]
+    },
+    {
+      "id": "legacy-source/db/batch",
+      "kind": "data",
+      "loc": 85,
+      "screens": 0,
+      "risk": "high",
+      "score": 7,
+      "capabilities": ["order-batch-operations", "catalog-data-maintenance"]
+    },
+    {
+      "id": "legacy-source/batch",
+      "kind": "batch",
+      "loc": 113,
+      "screens": 0,
+      "risk": "high",
+      "score": 7,
+      "capabilities": ["order-batch-operations", "catalog-data-maintenance"]
+    },
+    {
+      "id": "legacy-source/app/src/apps/admin",
+      "kind": "application",
+      "loc": 5533,
+      "screens": 8,
+      "risk": "medium",
+      "score": 7,
+      "capabilities": ["order-approval", "sales-reporting", "sign-on"]
+    },
+    {
+      "id": "legacy-source/app/src/components/supplierpo",
+      "kind": "component",
+      "loc": 1736,
+      "screens": 0,
+      "risk": "medium",
+      "score": 6,
+      "capabilities": ["order-fulfillment"]
+    },
+    {
+      "id": "legacy-source/app/src/components/catalog",
+      "kind": "component",
+      "loc": 2709,
+      "screens": 0,
+      "risk": "medium",
+      "score": 6,
+      "capabilities": ["catalog-browsing"]
+    },
+    {
+      "id": "legacy-source/app/src/components/customer",
+      "kind": "component",
+      "loc": 2218,
+      "screens": 0,
+      "risk": "medium",
+      "score": 6,
+      "capabilities": ["customer-accounts"]
+    },
+    {
+      "id": "legacy-source/scheduler/control-m",
+      "kind": "schedule",
+      "loc": 109,
+      "screens": 0,
+      "risk": "medium",
+      "score": 6,
+      "capabilities": ["order-batch-operations", "catalog-data-maintenance"]
+    },
+    {
+      "id": "legacy-source/conf",
+      "kind": "config",
+      "loc": 112,
+      "screens": 0,
+      "risk": "medium",
+      "score": 5,
+      "capabilities": ["order-batch-operations", "order-approval"]
+    },
+    {
+      "id": "legacy-source/app/src/components/creditcard",
+      "kind": "component",
+      "loc": 605,
+      "screens": 0,
+      "risk": "medium",
+      "score": 5,
+      "capabilities": ["customer-accounts", "checkout"]
+    },
+    {
+      "id": "legacy-source/app/src/components/lineitem",
+      "kind": "component",
+      "loc": 685,
+      "screens": 0,
+      "risk": "medium",
+      "score": 5,
+      "capabilities": ["checkout", "order-fulfillment"]
+    },
+    {
+      "id": "legacy-source/app/src/components/mailer",
+      "kind": "component",
+      "loc": 677,
+      "screens": 0,
+      "risk": "medium",
+      "score": 5,
+      "capabilities": ["order-notifications"]
+    },
+    {
+      "id": "legacy-source/app/src/components/xmldocuments",
+      "kind": "component",
+      "loc": 2080,
+      "screens": 0,
+      "risk": "medium",
+      "score": 5,
+      "capabilities": ["checkout", "order-approval", "order-fulfillment", "order-notifications"]
+    },
+    {
+      "id": "legacy-source/app/src/waf",
+      "kind": "framework",
+      "loc": 8540,
+      "screens": 0,
+      "risk": "medium",
+      "score": 4,
+      "capabilities": ["catalog-browsing", "sign-on"]
+    },
+    {
+      "id": "legacy-source/app/src/components/contactinfo",
+      "kind": "component",
+      "loc": 1087,
+      "screens": 0,
+      "risk": "low",
+      "score": 4,
+      "capabilities": ["customer-accounts", "checkout"]
+    },
+    {
+      "id": "legacy-source/app/src/components/address",
+      "kind": "component",
+      "loc": 829,
+      "screens": 0,
+      "risk": "low",
+      "score": 4,
+      "capabilities": ["customer-accounts", "checkout"]
+    },
+    {
+      "id": "legacy-source/app/src/components/uidgen",
+      "kind": "component",
+      "loc": 606,
+      "screens": 0,
+      "risk": "low",
+      "score": 4,
+      "capabilities": ["checkout"]
+    },
+    {
+      "id": "legacy-source/app/src/components/asyncsender",
+      "kind": "component",
+      "loc": 399,
+      "screens": 0,
+      "risk": "low",
+      "score": 3,
+      "capabilities": []
+    },
+    {
+      "id": "legacy-source/app/src/components/servicelocator",
+      "kind": "component",
+      "loc": 658,
+      "screens": 0,
+      "risk": "low",
+      "score": 2,
+      "capabilities": []
+    },
+    {
+      "id": "legacy-source/app/src/components/encodingfilter",
+      "kind": "component",
+      "loc": 80,
+      "screens": 0,
+      "risk": "low",
+      "score": 2,
+      "capabilities": []
+    },
+    {
+      "id": "legacy-source/app/src/components/util",
+      "kind": "component",
+      "loc": 80,
+      "screens": 0,
+      "risk": "low",
+      "score": 1,
+      "capabilities": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/components/asyncsender",
+      "kind": "java-import",
+      "weight": 3
+    },
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/address",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/contactinfo",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/lineitem",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/mailer",
+      "kind": "java-import",
+      "weight": 3
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/processmanager",
+      "kind": "java-import",
+      "weight": 24
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/purchaseorder",
+      "kind": "java-import",
+      "weight": 17
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 26
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 18
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/address",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/asyncsender",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/cart",
+      "kind": "java-import",
+      "weight": 13
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/catalog",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/contactinfo",
+      "kind": "java-import",
+      "weight": 11
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/creditcard",
+      "kind": "java-import",
+      "weight": 9
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/customer",
+      "kind": "java-import",
+      "weight": 19
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/lineitem",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/purchaseorder",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 10
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/signon",
+      "kind": "java-import",
+      "weight": 10
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/uidgen",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/util",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/waf",
+      "kind": "java-import",
+      "weight": 82
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/components/lineitem",
+      "kind": "java-import",
+      "weight": 3
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/components/processmanager",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 10
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/components/supplierpo",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 7
+    },
+    {
+      "from": "legacy-source/app/src/components/address",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/asyncsender",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/cart",
+      "to": "legacy-source/app/src/components/catalog",
+      "kind": "java-import",
+      "weight": 3
+    },
+    {
+      "from": "legacy-source/app/src/components/cart",
+      "to": "legacy-source/app/src/components/util",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/catalog",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/components/catalog",
+      "to": "legacy-source/app/src/components/util",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/contactinfo",
+      "to": "legacy-source/app/src/components/address",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/components/contactinfo",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/contactinfo",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/creditcard",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/customer",
+      "to": "legacy-source/app/src/components/contactinfo",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/components/customer",
+      "to": "legacy-source/app/src/components/creditcard",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/components/lineitem",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/mailer",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 3
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/address",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/contactinfo",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/creditcard",
+      "kind": "java-import",
+      "weight": 6
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/lineitem",
+      "kind": "java-import",
+      "weight": 8
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/app/src/components/address",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/app/src/components/contactinfo",
+      "kind": "java-import",
+      "weight": 4
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/app/src/components/lineitem",
+      "kind": "java-import",
+      "weight": 5
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/app/src/components/xmldocuments",
+      "kind": "java-import",
+      "weight": 1
+    },
+    {
+      "from": "legacy-source/app/src/waf",
+      "to": "legacy-source/app/src/components/servicelocator",
+      "kind": "java-import",
+      "weight": 2
+    },
+    {
+      "from": "legacy-source/app/src/waf",
+      "to": "legacy-source/app/src/components/util",
+      "kind": "java-import",
+      "weight": 8
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "jms",
+      "channel": "jms/opc/OrderQueue",
+      "message": "PurchaseOrder XML",
+      "evidence": "legacy-source/app/src/apps/petstore/src/sun-j2ee-ri.xml:489-498"
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/apps/supplier",
+      "kind": "jms",
+      "channel": "jms/supplier/PurchaseOrderQueue",
+      "message": "SupplierOrder XML",
+      "evidence": "legacy-source/app/src/apps/opc/src/sun-j2ee-ri.xml:228"
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "jms",
+      "channel": "jms/opc/InvoiceTopic",
+      "message": "Invoice XML",
+      "evidence": "legacy-source/app/src/apps/supplier/src/sun-j2ee-ri.xml:61-70"
+    },
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "jms",
+      "channel": "jms/opc/OrderApprovalQueue",
+      "message": "OrderApproval XML",
+      "evidence": "legacy-source/app/src/apps/admin/src/sun-j2ee-ri.xml:89-97"
+    },
+    {
+      "from": "legacy-source/app/src/apps/opc",
+      "to": "legacy-source/app/src/components/mailer",
+      "kind": "jms",
+      "channel": "jms/opc/MailQueue",
+      "message": "Mail XML",
+      "evidence": "legacy-source/app/src/apps/opc/src/sun-j2ee-ri.xml:273"
+    },
+    {
+      "from": "legacy-source/app/src/apps/admin",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "ejb-remote",
+      "target": "OPCAdminFacadeEJB (getOrdersByStatus, getChartInfo)",
+      "evidence": "legacy-source/app/src/apps/opc/src/com/sun/j2ee/blueprints/opc/admin/ejb/OPCAdminFacadeEJB.java:131-169"
+    },
+    {
+      "from": "legacy-source/app/src/apps/petstore",
+      "to": "legacy-source/app/src/components/encodingfilter",
+      "kind": "servlet-filter",
+      "evidence": "legacy-source/app/src/apps/petstore/src/docroot/WEB-INF/web.xml"
+    },
+    {
+      "from": "legacy-source/app/src/components/catalog",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/signon",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/customer",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/cart",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/purchaseorder",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/processmanager",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/supplierpo",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/uidgen",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/contactinfo",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/address",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/creditcard",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/components/lineitem",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner"
+    },
+    {
+      "from": "legacy-source/app/src/apps/supplier",
+      "to": "legacy-source/db/schema",
+      "kind": "db-table-owner",
+      "tables": ["inventory"]
+    },
+    {
+      "from": "legacy-source/db/batch",
+      "to": "legacy-source/db/schema",
+      "kind": "db-read-write",
+      "tables": [
+        "purchase_order",
+        "po_line_item",
+        "order_manager",
+        "supplier_order",
+        "supplier_line_item",
+        "contact_info",
+        "address",
+        "credit_card",
+        "inventory",
+        "item",
+        "item_details",
+        "category",
+        "category_details",
+        "product"
+      ]
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/db/batch",
+      "kind": "runs-sql"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/conf",
+      "kind": "sources-config",
+      "evidence": "legacy-source/conf/env.sh"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/app/src/apps/petstore",
+      "kind": "http",
+      "target": "/Populate?forcefully=false",
+      "evidence": "legacy-source/batch/ps_catalog_check.sh"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/app/src/apps/petstore",
+      "kind": "http",
+      "target": "main.screen",
+      "evidence": "legacy-source/batch/ps_health_check.sh"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/app/src/apps/opc",
+      "kind": "http",
+      "target": "EntityCatalog.jsp",
+      "evidence": "legacy-source/batch/ps_health_check.sh"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/app/src/apps/supplier",
+      "kind": "http",
+      "target": "/",
+      "evidence": "legacy-source/batch/ps_health_check.sh"
+    },
+    {
+      "from": "legacy-source/batch",
+      "to": "legacy-source/app/src/apps/admin",
+      "kind": "http",
+      "target": "/",
+      "evidence": "legacy-source/batch/ps_health_check.sh"
+    },
+    {
+      "from": "legacy-source/scheduler/control-m",
+      "to": "legacy-source/batch",
+      "kind": "schedules",
+      "jobs": [
+        "PS_DB_BACKUP",
+        "PS_ORDER_EXTRACT",
+        "PS_ORDER_AGING_REPORT",
+        "PS_INVENTORY_REPORT",
+        "PS_ORDER_PURGE",
+        "PS_CATALOG_CHECK",
+        "PS_HEALTH_CHECK"
+      ]
+    }
+  ],
+  "runtime_flow": [
+    "petstore -> OrderQueue -> opc PurchaseOrderMDB (auto-approve or PENDING)",
+    "admin client -> OrderApprovalQueue -> opc OrderApprovalMDB",
+    "opc -> PurchaseOrderQueue -> supplier SupplierOrderMDB -> ship from inventory",
+    "supplier -> InvoiceTopic -> opc InvoiceMDB -> COMPLETED when all lines shipped",
+    "opc mail MDBs -> MailQueue -> mailer"
+  ],
+  "batch_chain": [
+    "01:00 PS_DB_BACKUP",
+    "01:30 PS_ORDER_EXTRACT (needs backup OK)",
+    "01:45 PS_ORDER_AGING_REPORT (needs extract OK)",
+    "01:50 PS_INVENTORY_REPORT (needs extract OK)",
+    "Sun 02:00 PS_ORDER_PURGE (needs extract OK)",
+    "06:00 PS_CATALOG_CHECK",
+    "every 10 min PS_HEALTH_CHECK"
+  ]
+}

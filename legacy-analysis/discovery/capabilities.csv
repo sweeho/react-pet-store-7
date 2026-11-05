@@ -1,0 +1,13 @@
+capability_key,name,summary
+catalog-browsing,Catalog browsing and search,"Category, product and item navigation, paged lists, keyword search, displayed prices and per-locale (en_US, ja_JP, zh_CN) catalog content"
+shopping-cart,Shopping cart,"Adding, updating and removing items in the cart and how the cart total is computed"
+customer-accounts,Customer accounts,"Signing up, and the account, contact, address, payment-card and storefront-preference data a customer keeps and edits"
+sign-on,Sign-on and access control,"Credentials, which storefront, supplier and admin screens require sign-on or the administrator role, and session behaviour"
+checkout,Checkout and order placement,"Entering billing and shipping information, rejecting an empty-cart order, and creating and submitting the purchase order"
+order-approval,Order approval,"Locale-specific auto-approval limits and the administrator approving or denying pending orders"
+order-fulfillment,Order fulfilment and invoicing,"Supplier receipt of approved orders, shipping line items from stock (including partial shipments), invoicing, and order completion and status transitions"
+inventory-management,Supplier inventory,"Viewing and changing supplier stock levels and re-attempting pending supplier orders after a stock change"
+order-notifications,Customer notifications,"Order confirmation, approval/denial and completed-order e-mails, their per-locale content and the switches that enable them"
+sales-reporting,Order and sales reporting,"Admin client views of orders by status and revenue/order-count charts by period and category"
+order-batch-operations,Order batch operations,"Nightly Finance order extract, stuck-order aging report, low-stock report, order purge retention, database backup and web health checks, and their schedule"
+catalog-data-maintenance,Catalog data loading and integrity,"First-load population of catalog, user, customer and inventory data, and the daily catalog integrity checks"
