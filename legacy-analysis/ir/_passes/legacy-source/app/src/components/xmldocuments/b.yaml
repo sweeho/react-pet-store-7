@@ -1,11 +1,248 @@
-records: []
-findings:
-  - kind: unparseable
-    path: legacy-source/app/src/components/xmldocuments
+records:
+  - record_key: ORDER-FULFILLMENT-INTEGRATION-0001
+    kind: integration
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL build a supplier order document containing the order id, the order date
+      (formatted yyyy-MM-dd), a shipping address (first name, last name, street, city, state,
+      country, zip code, email, phone) and one or more line items, in the TPA SupplierOrder
+      namespace, for transmission to the supplier.
+    confidence: high
+    confidence_basis: >
+      Builder code and the XSD/DTD both fix the element set and order (two places). Which
+      callers use it is outside this shard, so the live flow was not seen.
+    risk_class: operational
+    basis: >
+      The editor class sets each element and serialises them in a fixed order; the schema
+      requires the same sequence.
+    plain_text: >
+      When an approved order goes to the supplier, it is sent as a standard document holding the
+      order number, order date, the customer's shipping name and contact details, and the items ordered.
+    technical_note: >
+      TPASupplierOrderXDE.copyDocument appends OrderId, OrderDate, ShippingAddress, LineItems in that order;
+      TPASupplierOrder.xsd declares the same xsd:sequence. Date via SimpleDateFormat yyyy-MM-dd.
+    interface: true
+    stack_metadata:
+      framework: DOM/JAXP
+      xml.namespace: http://blueprints.j2ee.sun.com/TPASupplierOrder
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/tpa/TPASupplierOrderXDE.java
+        line_start: 119
+        line_end: 131
+        excerpt: |
+          public void copyDocument(Result result) throws XMLDocumentException {
+            Element supplierOrderElement = supplierOrderDocument.createElementNS(XML_NAMESPACE, XML_SUPPLIERORDER);
+            supplierOrderElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + XML_PREFIX, XML_NAMESPACE);
+            supplierOrderElement.appendChild(orderIdElement);
+            supplierOrderElement.appendChild(orderDateElement);
+            supplierOrderElement.appendChild(shippingAddressElement);
+            supplierOrderElement.appendChild(lineItemsElement);
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/rsrc/schemas/TPASupplierOrder.xsd
+        line_start: 11
+        line_end: 30
+        excerpt: |
+          <xsd:element name="SupplierOrder">
+          	<xsd:complexType>
+          		<xsd:sequence>
+          			<xsd:element name="OrderId" type="xsd:string" />
+          			<xsd:element name="OrderDate" type="xsd:date" />
+          			<xsd:element name="ShippingAddress" type="address" />
+  - record_key: ORDER-FULFILLMENT-INTEGRATION-0002
+    kind: integration
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL build an invoice document containing the order id, user id, order date and
+      shipping date (each date formatted yyyy-MM-dd) and one or more line items, in the TPA Invoice namespace.
+    confidence: high
+    confidence_basis: >
+      Builder code and XSD both state the sequence. Callers are outside this shard.
+    risk_class: financial
+    basis: Invoice editor sets and serialises the five parts in fixed order; the schema requires the same.
+    plain_text: >
+      An invoice is produced as a standard document with the order number, customer id, order date,
+      shipping date and the invoiced items.
+    technical_note: >
+      TPAInvoiceXDE.copyDocument; TPAInvoice.xsd sequence OrderId, UserId, OrderDate, ShippingDate, LineItems.
+    interface: true
+    stack_metadata:
+      framework: DOM/JAXP
+      xml.namespace: http://blueprints.j2ee.sun.com/TPAInvoice
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/tpa/TPAInvoiceXDE.java
+        line_start: 113
+        line_end: 126
+        excerpt: |
+          public void copyDocument(Result result) throws XMLDocumentException {
+            Element invoiceElement = invoiceDocument.createElementNS(XML_NAMESPACE, XML_INVOICE);
+            invoiceElement.appendChild(orderIdElement);
+            invoiceElement.appendChild(userIdElement);
+            invoiceElement.appendChild(orderDateElement);
+            invoiceElement.appendChild(shippingDateElement);
+            invoiceElement.appendChild(lineItemsElement);
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/rsrc/schemas/TPAInvoice.xsd
+        line_start: 11
+        line_end: 29
+        excerpt: |
+          <xsd:element name="Invoice">
+          	<xsd:complexType>
+          		<xsd:sequence>
+          			<xsd:element name="OrderId" type="xsd:string" />
+          			<xsd:element name="UserId" type="xsd:string" />
+          			<xsd:element name="OrderDate" type="xsd:date" />
+          			<xsd:element name="ShippingDate" type="xsd:date" />
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0003
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      The system SHALL carry each line item in supplier-order and invoice documents with category id,
+      product id, item id, line number, quantity and unit price. When schema validation is applied,
+      quantity SHALL be a positive integer, line number a non-negative integer, unit price a decimal
+      of at least 0, at least one line item SHALL be present, and item ids SHALL be unique within the document.
+    confidence: high
+    confidence_basis: >
+      Enforced declaratively in the XSD (both documents) and mirrored by the builder's attribute set; the
+      constraints are only checked when XSD validation is on, which callers decide (not seen).
+    risk_class: financial
+    basis: Line item attributes are required in the XSD; uniqueness is an xsd:unique on itemId.
+    plain_text: >
+      Every order or invoice must list at least one item, each with a distinct item number, a
+      quantity of one or more and a price of zero or more.
+    technical_note: >
+      TPALineItemUtils.addLineItem writes namespaced attributes; TPALineItem.xsd types; xsd:unique itemIdUniqueness in TPASupplierOrder.xsd and TPAInvoice.xsd. Unit price is a Java float.
+    interface: true
+    stack_metadata:
+      framework: DOM/JAXP
+      xml.namespace: http://blueprints.j2ee.sun.com/TPALineItem
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/rsrc/schemas/TPALineItem.xsd
+        line_start: 10
+        line_end: 24
+        excerpt: |
+          <xsd:attribute name="lineNo" type="xsd:nonNegativeInteger" use="required" />
+          <xsd:attribute name="quantity" type="xsd:positiveInteger" use="required" />
+          <xsd:attribute name="unitPrice" type="positiveDecimal" use="required" />
+          <xsd:minInclusive value="0.0" />
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/rsrc/schemas/TPASupplierOrder.xsd
+        line_start: 20
+        line_end: 26
+        excerpt: |
+          <xsd:element ref="tpali:LineItem" minOccurs="1" maxOccurs="unbounded" />
+          <xsd:unique name="itemIdUniqueness">
+              <xsd:selector xpath="tpali:LineItem"/>
+              <xsd:field xpath="@itemId"/>
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/tpa/TPALineItemUtils.java
+        line_start: 64
+        line_end: 77
+        excerpt: |
+          public static void addLineItem(Document document, Element lineItemsElement,
+                                         String categoryId, String productId, String itemId, String lineNo,
+                                         int quantity, float unitPrice) {
+            lineItemElement.setAttributeNS(XML_NAMESPACE, XML_QUANTITY, Long.toString(quantity));
+            lineItemElement.setAttributeNS(XML_NAMESPACE, XML_UNITPRICE, Float.toString(unitPrice));
+  - record_key: ORDER-APPROVAL-INTEGRATION-0004
+    kind: integration
+    capability_key: order-approval
+    requirement: >
+      The system SHALL represent a batch of order status changes as an OrderApproval document holding
+      one or more Order entries, each with an order id and an order status, and SHALL read such documents
+      back, validating them against the OrderApproval DTD by default.
+    confidence: high
+    confidence_basis: >
+      DTD (Order+, OrderId, OrderStatus) plus the Java reader/writer and a VALIDATING=true constant.
+      The status vocabulary is not constrained anywhere in this shard.
+    risk_class: operational
+    basis: OrderApproval/ChangedOrder serialise to and parse from the documented shape.
+    plain_text: >
+      Approval or denial decisions on pending orders are exchanged as a list of order numbers with
+      their new status; a list must contain at least one order.
+    technical_note: >
+      OrderApproval.fromXML defaults validating=true; fromDOM requires an OrderApproval root and an
+      OrderId then OrderStatus per Order. OrderApproval.dtd: OrderApproval (Order+), Order (OrderId, OrderStatus). Status is free PCDATA (DTD comment "FIXME should be attribute").
+    interface: true
+    stack_metadata:
+      framework: DOM/JAXP
+      dtd.public_id: "-//Sun Microsystems, Inc. - J2EE Blueprints Group//DTD Order Approval 1.0//EN"
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/rsrc/schemas/OrderApproval.dtd
+        line_start: 38
+        line_end: 45
+        excerpt: |
+          <!ELEMENT OrderApproval (Order+)>
+          <!ELEMENT Order (OrderId, OrderStatus)>
+          <!ELEMENT OrderId (#PCDATA)>
+          <!-- FIXME should be attribute -->
+          <!ELEMENT OrderStatus (#PCDATA)>
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/OrderApproval.java
+        line_start: 118
+        line_end: 128
+        excerpt: |
+          public static OrderApproval fromXML(Source source) throws XMLDocumentException {
+            return fromXML(source, null, VALIDATING);
+          }
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/ChangedOrder.java
+        line_start: 80
+        line_end: 90
+        excerpt: |
+          changedOrder.orderId = XMLDocumentUtils.getContentAsString(child = XMLDocumentUtils.getFirstChild(element, XML_ORDERID, false), false);
+          changedOrder.orderStatus = XMLDocumentUtils.getContentAsString(child = XMLDocumentUtils.getNextSibling(child, XML_ORDERSTATUS, false), false);
+  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0005
+    kind: business-rule
+    capability_key: order-fulfillment
+    requirement: >
+      GIVEN a document that is parsed with validation on, WHEN its document type does not match the
+      expected type, THEN the system SHALL reject it with a "Document not of type" error.
+    confidence: medium
+    confidence_basis: One clear place (XMLDocumentUtils.fromXML); no test or config seen.
+    risk_class: operational
+    basis: Type check is skipped when validation is off.
+    plain_text: >
+      An incoming order document of the wrong kind is refused rather than processed.
+    technical_note: >
+      XMLDocumentUtils.fromXML calls checkDocumentType only when validating; otherwise returns the document.
+    interface: true
+    stack_metadata:
+      framework: DOM/JAXP
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/XMLDocumentUtils.java
+        line_start: 541
+        line_end: 545
+        excerpt: |
+          if (!validating || XMLDocumentUtils.checkDocumentType(document, dtdPublicId)) {
+                return document;
+          }
+          throw new XMLDocumentException("Document not of type: " + dtdPublicId);
+suspected_defects:
+  - capability_key: order-approval
+    record_keys: [ORDER-APPROVAL-INTEGRATION-0004]
+    severity: medium
+    category: error-swallowed
+    title: Non-fatal XML validation errors are logged and ignored
     description: >
-      The shard path does not exist. legacy-source/ is not present in the worktree
-      (git ls-tree HEAD has no legacy-source entries) and no directory named xmldocuments
-      exists anywhere on the host. legacy-analysis/discovery/capabilities.csv is also absent
-      from the worktree, and no extracted.md documents are present. No records were invented.
-      A human needs to confirm the shard path and make the source available.
-suspected_defects: []
+      The parser error handler prints validation "error" and "warning" events to stderr and returns,
+      so a document that violates the DTD (but is well-formed) is still accepted. Only fatal errors throw.
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/XMLDocumentUtils.java
+        line_start: 520
+        line_end: 534
+  - capability_key: order-fulfillment
+    record_keys: [ORDER-FULFILLMENT-INTEGRATION-0001, ORDER-FULFILLMENT-INTEGRATION-0002]
+    severity: medium
+    category: other
+    title: Document builders fail if a part was not set; unit price is a float
+    description: >
+      copyDocument appends each part element unconditionally, so a missing part (e.g. no shipping address,
+      no line items) passes null to appendChild and fails with an unchecked error instead of a validation message. Unit prices travel as Java float, which can lose precision for money values.
+    traces:
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/tpa/TPASupplierOrderXDE.java
+        line_start: 122
+        line_end: 125
+      - path: legacy-source/app/src/components/xmldocuments/src/com/sun/j2ee/blueprints/xmldocuments/tpa/TPALineItemUtils.java
+        line_start: 66
+        line_end: 74
+findings:
+  - kind: ambiguity
+    path: legacy-source/app/src/components/xmldocuments/src/rsrc/schemas/EntityCatalog.properties
+    description: >
+      Entity catalogs map DTD public ids to resource paths in other components; whether the TPA
+      editors or the plain OrderApproval path is actually used at runtime cannot be established from this shard.
+      No documents (extracted.md) bearing on this module were found in the worktree.
