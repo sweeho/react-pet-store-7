@@ -1,0 +1,38 @@
+recommendations:
+  - record_key: ORDER-APPROVAL-INTEGRATION-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      The DTD and the Java reader agree on the shape. The status vocabulary is unconstrained in the document, so the schema CHECK is the only limit.
+  - record_key: APPR-BR-0001
+    recommendation: edit
+    confidence: medium
+    reason: >
+      The key is used by two records (OPC auto-approval limit and schema status values); the code is trusted for the limit. The exactly-500 conflict with the user guide goes to Intent for the Business Owner.
+    edited_requirement: >
+      The system SHALL automatically approve an en_US order with total strictly less than 500 and leave other en_US orders PENDING; and SHALL restrict order status to PENDING, APPROVED, DENIED or COMPLETED.
+  - record_key: APPR-BR-0002
+    recommendation: accept
+    confidence: low
+    reason: >
+      A bare literal in one place with no document confirming it; the code is the only source. Confirm the yen figure with the Business Owner.
+  - record_key: APPR-BR-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      The code falls through to false, which contradicts the guide's "all orders under $500". Recommend confirming what production does; the conflict goes to Intent.
+  - record_key: APPR-WF-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      Code, queue wiring and the deployment descriptor agree.
+  - record_key: APPR-BR-0005
+    recommendation: accept
+    confidence: medium
+    reason: >
+      One clear code guard with a matching comment; no schema constraint backs it.
+  - record_key: APPROVAL-BR-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      CHECK constraint, comment and index agree. Note fulfilment code writes SHIPPED_PART, which the four-value list omits; confirm which is true in production.
