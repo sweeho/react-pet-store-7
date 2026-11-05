@@ -1,0 +1,108 @@
+recommendations:
+  - record_key: SIGNON-REQ-0001
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Single clear flow in session and entity bean; plain-text compare is a legacy defect for the Business Owner.
+  - record_key: SIGNON-REQ-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Filter control flow is clear; null original URL case is a legacy defect.
+  - record_key: SIGNON-REQ-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Exact matching read from filter and config; roles unchecked.
+  - record_key: SIGNON-REQ-0004
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Cookie set before authentication, so also on failure; confirm that is intended.
+  - record_key: SIGNON-REQ-0005
+    recommendation: edit
+    confidence: low
+    reason: >
+      Maximum password length is redacted in the source; the value must be supplied before approval.
+    edited_requirement: >
+      The system SHALL reject creation of a user whose user name exceeds 25 characters or contains '%' or '*', or whose password exceeds a maximum length to be confirmed.
+  - record_key: SIGNON-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      DDL primary key and not-null in both passes plus explicit plain-text comment.
+  - record_key: SIGN-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Same fact as SIGNON-ENT-0001 from the DDL; merge.
+  - record_key: SO-REQ-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Web.xml constraint plus programmatic check agree.
+  - record_key: SIGN-BR-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Config and filter mapping agree; the order submission action is unprotected, which goes to the Business Owner.
+  - record_key: SO-SCR-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Both pages are declared in web.xml; merge with SIGN-SCR-0004.
+  - record_key: SIGN-SCR-0004
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Pre-filled demo credentials are a legacy defect to confirm; duplicate of SO-SCR-0002.
+  - record_key: SO-REQ-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      logout.jsp is the one place; duplicate of SIGN-BR-0003.
+  - record_key: SO-BR-0004
+    recommendation: accept
+    confidence: low
+    reason: >
+      Bare literal 54 with no source; confirm value with the Business Owner.
+  - record_key: SIGN-BR-0002
+    recommendation: accept
+    confidence: low
+    reason: >
+      Bare literal 54, duplicate of SO-BR-0004.
+  - record_key: SIGN-BR-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Two independent places apply the preferred language.
+  - record_key: SIGN-BR-0004
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Action and page agree; the SignOffEJBAction mapping looks dead and is a finding.
+  - record_key: SIGN-BR-0005
+    recommendation: accept
+    confidence: low
+    reason: >
+      One declarative setting, no document; confirm 15 minutes.
+  - record_key: SIGN-SCR-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Page and config agree; production pre-filling of j2ee/j2ee goes to the Business Owner.
+  - record_key: SIGN-SCR-0006
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Read directly from banner.jsp.
+  - record_key: DATA-BR-0005
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Data file and user guide agree on users; passwords are redacted.
+  - record_key: CUSTACC-REQ-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Declarative config shows no roles; protection depends on callers, a risk for the Business Owner.
