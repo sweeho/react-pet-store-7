@@ -3,9 +3,11 @@ findings:
   - kind: unparseable
     path: legacy-source/app/src/components/mailer
     description: >
-      The shard directory does not exist in the worktree or on the pushed branch
-      (no legacy-source/ tree is committed), and legacy-analysis/discovery/capabilities.csv
-      is also absent, so no closed capability list could be read. No records were
-      extracted and none were invented. Re-run once legacy-source and the capabilities
-      list are present on the branch.
+      The shard directory legacy-source/app/src/components/mailer does not exist
+      in the worktree, on the pushed branch, or in any other checkout in the
+      container (searched the filesystem for a directory named mailer). The only
+      legacy-source tree found (a scratch copy) holds app/src/apps/opc, whose mail
+      transition delegates and Mail*MDB classes are outside this shard. No records
+      were extracted and none invented. A human needs to confirm whether the shard
+      path is wrong or the source was not committed.
 suspected_defects: []
