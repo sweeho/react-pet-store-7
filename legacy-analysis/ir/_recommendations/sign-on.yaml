@@ -1,108 +1,63 @@
 recommendations:
   - record_key: SIGNON-REQ-0001
     recommendation: accept
-    confidence: medium
+    confidence: high
     reason: >
-      Single clear flow in session and entity bean; plain-text compare is a legacy defect for the Business Owner.
-  - record_key: SIGNON-REQ-0002
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Filter control flow is clear; null original URL case is a legacy defect.
+      Exact case-sensitive password comparison is read directly in the sign-on component; unknown users fail. Plain-text comparison is a legacy trait the Business Owner may want to log as a defect.
   - record_key: SIGNON-REQ-0003
     recommendation: accept
-    confidence: medium
+    confidence: high
     reason: >
-      Exact matching read from filter and config; roles unchecked.
-  - record_key: SIGNON-REQ-0004
+      The filter and signon-config.xml agree on the protected list with exact-match semantics. Overlaps SIGN-BR-0001, which is already approved; confirm it is not a duplicate. Roles in the config are parsed but never checked.
+  - record_key: SIGNON-REQ-0005
     recommendation: accept
     confidence: medium
     reason: >
-      Cookie set before authentication, so also on failure; confirm that is intended.
-  - record_key: SIGNON-REQ-0005
-    recommendation: edit
-    confidence: low
-    reason: >
-      Maximum password length is redacted in the source; the value must be supplied before approval.
-    edited_requirement: >
-      The system SHALL reject creation of a user whose user name exceeds 25 characters or contains '%' or '*', or whose password exceeds a maximum length to be confirmed.
+      Length and forbidden-character limits come from the user-creation code; one source only, so confirm the 25-character and password limits.
   - record_key: SIGNON-ENT-0001
     recommendation: accept
     confidence: high
     reason: >
-      DDL primary key and not-null in both passes plus explicit plain-text comment.
-  - record_key: SIGN-ENT-0001
-    recommendation: accept
-    confidence: high
+      Duplicate of the approved SIGN-ENT-0001 from the schema pass; the two passes agree. Merge rather than approve separately.
+  - record_key: CUSTACC-REQ-0002
+    recommendation: edit
+    confidence: low
     reason: >
-      Same fact as SIGNON-ENT-0001 from the DDL; merge.
+      A statement of absence of role checks is weak as a requirement and belongs to customer-accounts or a security defect register entry. Confirm what the code does; whether it is right is the Business Owner's decision.
+    edited_requirement: >
+      The order processing centre component methods SHALL be invocable without a caller role check (legacy behaviour, to be confirmed).
   - record_key: SO-REQ-0001
     recommendation: accept
     confidence: high
     reason: >
-      Web.xml constraint plus programmatic check agree.
-  - record_key: SIGN-BR-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Config and filter mapping agree; the order submission action is unprotected, which goes to the Business Owner.
-  - record_key: SO-SCR-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Both pages are declared in web.xml; merge with SIGN-SCR-0004.
-  - record_key: SIGN-SCR-0004
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Pre-filled demo credentials are a legacy defect to confirm; duplicate of SO-SCR-0002.
+      Declared in the supplier web.xml security constraint and enforced by the inventory screen; two places agree.
   - record_key: SO-REQ-0003
     recommendation: accept
     confidence: medium
     reason: >
-      logout.jsp is the one place; duplicate of SIGN-BR-0003.
+      Logout behaviour read in the supplier code, one source.
   - record_key: SO-BR-0004
     recommendation: accept
     confidence: low
     reason: >
-      Bare literal 54 with no source; confirm value with the Business Owner.
+      The 54-minute timeout is a bare literal in web.xml with no explanation; the same rule appears as SIGN-BR-0002 in the other pass. Confirm the value with the Business Owner.
   - record_key: SIGN-BR-0002
     recommendation: accept
     confidence: low
     reason: >
-      Bare literal 54, duplicate of SO-BR-0004.
-  - record_key: SIGN-BR-0003
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Two independent places apply the preferred language.
-  - record_key: SIGN-BR-0004
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Action and page agree; the SignOffEJBAction mapping looks dead and is a finding.
-  - record_key: SIGN-BR-0005
-    recommendation: accept
-    confidence: low
-    reason: >
-      One declarative setting, no document; confirm 15 minutes.
+      Same rule as SO-BR-0004 (supplier 54-minute idle timeout); merge the two and confirm the unusual value.
   - record_key: SIGN-SCR-0002
     recommendation: accept
     confidence: medium
     reason: >
-      Page and config agree; production pre-filling of j2ee/j2ee goes to the Business Owner.
-  - record_key: SIGN-SCR-0006
+      Read directly in the sign-in page; the pre-filled sample credentials are demo behaviour the Business Owner should confirm are wanted in the rebuild.
+  - record_key: SO-SCR-0002
     recommendation: accept
     confidence: medium
     reason: >
-      Read directly from banner.jsp.
-  - record_key: DATA-BR-0005
+      Matches SIGN-SCR-0004 from the other pass; both read the login and error pages. Pre-filled demo credentials need Business Owner confirmation.
+  - record_key: SIGN-SCR-0004
     recommendation: accept
     confidence: medium
     reason: >
-      Data file and user guide agree on users; passwords are redacted.
-  - record_key: CUSTACC-REQ-0002
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Declarative config shows no roles; protection depends on callers, a risk for the Business Owner.
+      Same screen as SO-SCR-0002; merge the two. Pre-filled demo credentials need Business Owner confirmation.
