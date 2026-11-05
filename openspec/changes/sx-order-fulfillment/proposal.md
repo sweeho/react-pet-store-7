@@ -15,5 +15,5 @@ The legacy pet-store supplier application receives approved purchase orders from
 ## Scope notes
 
 - 42 IR records were ingested; no `kind: screen` records exist, so no screen requirements are written.
-- Two requirements are approved and keyed; the rest are drafts without IDs awaiting SME decision.
+- Records approved by an SME carry IDs; the rest are drafts without IDs awaiting SME decision.
 - Where sources disagree (status sets), the conflict is recorded in design.md and left open.

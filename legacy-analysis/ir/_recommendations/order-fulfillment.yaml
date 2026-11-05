@@ -1,218 +1,93 @@
 recommendations:
   - record_key: ORDER-FULFILLMENT-ENTITY-0001
-    recommendation: accept
+    recommendation: edit
     confidence: medium
     reason: >
-      Two different records share this key (line item pass A, supplier order pass B); both are supported by descriptor and DDL. Confirm both meanings are kept.
-  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0001
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Line-item copy constructor (A) and PENDING default on create (B); each is stated in one clear code place.
-  - record_key: ORDER-FULFILLMENT-REQUIREMENT-0001
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Line item mutability (A) and status lookup (B) are both read directly from the bean interfaces.
-  - record_key: ORDER-FULFILLMENT-REQUIREMENT-0002
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Snapshot-without-shipped-quantity is an implementation detail of the value object; accept but low business value.
-  - record_key: ORDER-FULFILLMENT-INTEGRATION-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      XML formats appear in DTD, builder code and both passes; fixed element order is documented.
-  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0002
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Status values are in code; PENDING to APPROVED to COMPLETED is documented only. DDL allows only PENDING/COMPLETED, conflict goes to Intent.
-  - record_key: ORDER-FULFILLMENT-WORKFLOW-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Creation of contact and lines with shipped 0 is visible in the entity code and matches pass A ORDF-REQ-0001.
+      Two records share this key (line item in pass A, supplier order in pass B); both are backed by descriptors and DDL. Split into two records rather than losing one meaning.
+    edited_requirement: >
+      The system SHALL keep, for each order line item, the category id, product id, item id, line number, ordered quantity, unit price and quantity shipped so far.
   - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0003
     recommendation: accept
     confidence: medium
     reason: >
-      Date fallback is a silent default in the parser; confirm with Business Owner it is intended rather than a defect.
-  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0004
+      The current-date fallback is read directly in the order reader. Whether it hides bad data is a Business Owner decision.
+  - record_key: ORDER-FULFILLMENT-WORKFLOW-0001
     recommendation: accept
     confidence: high
     reason: >
-      Explicit error on wrong root element.
+      Both the create code and the descriptor agree; duplicates ORDF-REQ-0001, so merge on approval.
   - record_key: ORDER-FULFILLMENT-INTEGRATION-0002
     recommendation: accept
     confidence: high
     reason: >
-      Invoice builder is directly readable.
-  - record_key: ORDER-FULFILLMENT-BUSINESS-RULE-0005
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Validation-on type check; merge with document type rejection.
+      Builder code and the XSD agree on fields and namespace.
   - record_key: CHK-REQ-0001
     recommendation: accept
     confidence: medium
     reason: >
-      Date-range finder; inclusive bounds read from the query.
-  - record_key: ORDF-ENT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Descriptor and DTD agree.
-  - record_key: ORDF-BR-0001
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Single place (ejbCreate); pass B agrees.
-  - record_key: ORDF-WF-0001
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Progression is from comments only. Code and DDL differ (DDL: PENDING/COMPLETED), so the conflict goes to Intent.
-  - record_key: ORDF-REQ-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Both passes agree.
-  - record_key: ORDF-REQ-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Finder by status exists.
-  - record_key: ORDF-REQ-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Cascade-delete declared in the descriptor.
-  - record_key: FUL-INT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Queue binding and MDB read directly.
-  - record_key: FUL-BR-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Whole-line stock rule is stated in both passes (the pass B record under this key concerns persisting as PENDING first; both are supported).
+      A single finder in the descriptor; no caller seen, so confirm reachability.
   - record_key: FUL-BR-0003
     recommendation: accept
     confidence: high
     reason: >
-      Skip of fully shipped lines is explicit; passes agree.
-  - record_key: FUL-BR-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Completion rule agrees across passes. The pass B record under this key is the skip rule.
-  - record_key: FUL-BR-0005
-    recommendation: accept
-    confidence: high
-    reason: >
-      Missing stock record handled explicitly.
+      Both passes read the same skip check; makes reprocessing idempotent.
   - record_key: FUL-BR-0006
     recommendation: accept
     confidence: high
     reason: >
-      Partial shipment and invoice content; the fixed addressee text is a literal, confirm it is wanted.
+      Both passes agree; the fixed addressee text is legacy wording the Business Owner may drop.
   - record_key: FUL-BR-0007
     recommendation: accept
-    confidence: high
+    confidence: medium
     reason: >
-      Invoice content in pass B.
-  - record_key: FUL-INT-0007
-    recommendation: accept
-    confidence: high
-    reason: >
-      Invoice publication.
-  - record_key: FUL-INT-0008
-    recommendation: accept
-    confidence: high
-    reason: >
-      Pass A: order XML mapping; pass B: invoice publication. Both are read from code.
+      Overlaps FUL-BR-0006 (same invoice rule); keep one on approval.
   - record_key: FUL-INT-0009
     recommendation: accept
     confidence: high
     reason: >
-      Order mapping.
-  - record_key: FUL-BR-0009
-    recommendation: accept
-    confidence: high
-    reason: >
-      Transaction rollback and redelivery.
+      The stylesheet mapping is read directly; overlaps FUL-INT-0008.
   - record_key: FUL-BR-0010
     recommendation: accept
     confidence: high
     reason: >
-      Same rule as FUL-BR-0009 in pass A; merge.
+      Descriptor and message bean agree on rollback and redelivery; overlaps FUL-BR-0009.
   - record_key: FUL-ENT-0011
     recommendation: accept
     confidence: medium
     reason: >
-      Matches DDL not-null constraints.
-  - record_key: FULF-INT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      OPC sender builds this document.
-  - record_key: FULF-INT-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Root and namespace check in the receiver.
-  - record_key: FULF-WF-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Status logic is explicit. SHIPPED_PART is absent from DDL and the supplier-side set; Intent decides.
-  - record_key: FULF-INT-0004
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Catalog publication is deployment configuration.
-  - record_key: FULF-ENT-0005
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Status set differs from the DDL for the supplier order; separate tables, confirm.
+      Descriptor and DTD agree; overlaps ORDF-ENT-0001.
   - record_key: FULF-ENT-0006
     recommendation: accept
-    confidence: medium
-    reason: >
-      Purchase order shape; payment card fields carry sensitive data, flag for security review.
-  - record_key: FULF-REQ-0007
-    recommendation: accept
     confidence: high
     reason: >
-      Container transaction semantics.
+      The descriptor fields match the DDL.
   - record_key: FULFIL-ENT-0001
     recommendation: accept
     confidence: medium
     reason: >
-      Shipped <= ordered CHECK appears in pass B only; confirm against the DDL.
+      The shipped-over-ordered CHECK is stated by one pass only; confirm in the DDL before approving that part.
   - record_key: FULFIL-BR-0002
-    recommendation: edit
-    confidence: medium
-    reason: >
-      DDL allows only PENDING/COMPLETED yet code uses more values; confirm what code does and keep the conflict for Intent.
-    edited_requirement: >
-      The system SHALL restrict a stored supplier order status in the database to PENDING or COMPLETED and SHALL link each supplier order to a contact; the wider status set used by code is an open conflict.
-  - record_key: FULF-ENT-0001
     recommendation: accept
     confidence: medium
     reason: >
-      Agrees with pass B FULFIL-BR-0002 on DDL status restriction.
-  - record_key: ORD-REQ-0003
+      The status CHECK of PENDING or COMPLETED conflicts with the supplier entity documenting APPROVED and DENIED; the conflict goes to Intent for the Business Owner, who should confirm what production stores.
+  - record_key: OFL-ENT-0001
     recommendation: accept
-    confidence: high
+    confidence: medium
     reason: >
-      Quantity accumulation is explicit.
-  - record_key: ORD-REQ-0004
+      Duplicates OFU-ENT-0001 and FULF-ENT-0005 in a DDL-only view; keep as the schema-level constraint.
+  - record_key: OFL-REQ-0003
     recommendation: accept
-    confidence: high
+    confidence: low
     reason: >
-      Equality test is explicit.
+      An index in the DDL, a performance detail rather than business behaviour; the Business Owner may reject.
+  - record_key: OFL-REQ-0004
+    recommendation: accept
+    confidence: low
+    reason: >
+      An index in the DDL, a performance detail rather than business behaviour; the Business Owner may reject.
+  - record_key: OFL-REQ-0005
+    recommendation: accept
+    confidence: low
+    reason: >
+      An index in the DDL, a performance detail rather than business behaviour; the Business Owner may reject.
