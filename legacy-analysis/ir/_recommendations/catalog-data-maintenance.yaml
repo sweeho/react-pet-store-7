@@ -1,0 +1,68 @@
+recommendations:
+  - record_key: DATA-WF-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Servlet, populators and welcome page agree.
+  - record_key: DATA-BR-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      web.xml and servlet code agree. An unauthenticated data-wipe endpoint is a likely legacy defect; confirm what the code does and send the question to the Business Owner's defect register.
+  - record_key: DATA-INT-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      populating.jsp and the servlet both show the chained load with the same force flag.
+  - record_key: DATA-ENT-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      PopulateSQL.xml states the columns directly.
+  - record_key: CAT-BR-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (CDM-REQ-0001 in supplier) agree on conditional load and replace-by-item; pass A adds the quantity-0 rule, so write the spec from pass A.
+  - record_key: CAT-WF-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Overlaps CDM-WF-0003; both passes agree. Merge the two and keep one.
+  - record_key: CDM-REQ-0001
+    recommendation: edit
+    confidence: medium
+    reason: >
+      This key is used by two different records (supplier stock load in supplier/b.yaml and the C1/C2 integrity check in db/batch/b.yaml); the platform must disambiguate. Both are sound against the code.
+    edited_requirement: Treat as two records; accept each as written.
+  - record_key: CDM-BR-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Seed file lists 29 items at 10000.
+  - record_key: CDM-WF-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Duplicates CAT-WF-0002 with the same behaviour; its many incidental traces (order fulfilment, XSL) add nothing.
+  - record_key: CDM-REQ-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      catalog_check.sql states C3 and C4 directly. Flagging price below cost while the schema allows it is consistent, not a conflict.
+  - record_key: CDM-REQ-0003
+    recommendation: edit
+    confidence: medium
+    reason: >
+      C5 and the logged totals come from catalog_check.sql; traces to order_purge, inventory_report and order_aging belong to other capabilities and should be dropped.
+    edited_requirement: The system SHALL flag any catalog item that has no supplier inventory record (C5), and SHALL log the total category and item counts.
+  - record_key: CATB-BR-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B agree on the DDL. Whether price below cost is acceptable is the Business Owner's decision.
+  - record_key: CATALOG-BR-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Same fact as CATB-BR-0003 from pass B; keep one.
