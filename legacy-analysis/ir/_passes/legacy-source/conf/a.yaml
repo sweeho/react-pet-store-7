@@ -1,0 +1,11 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/conf
+    description: >
+      The shard path legacy-source/conf does not exist in the worktree (there is no legacy-source
+      directory at all on branch vortex/legacy-spec/sx-0001), and legacy-analysis/discovery/capabilities.csv
+      is also absent, so no records could be extracted or filed under a capability key. Nothing was
+      invented. A human needs to confirm whether the conf directory was meant to be committed, or
+      whether the shard should be dropped.
