@@ -1,0 +1,181 @@
+recommendations:
+  - record_key: CHK-SCR-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Both passes agree and the JSP is explicit. Pass A says e-mail is required in the browser; pass B says optional on the server; Intent should settle.
+  - record_key: CHK-SCR-0009
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Page and response object agree. The page promises an e-mail the code may not send; goes to Intent.
+  - record_key: CHK-SCR-0010
+    recommendation: edit
+    confidence: low
+    reason: >
+      Reachability unresolved: mapping names a class and screen that do not exist. Keep only once someone runs the legacy app.
+    edited_requirement: >
+      Keep the behaviour as extracted and record it in the defect register for a decision.
+  - record_key: CHK-BR-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Code, mapping and error page agree.
+  - record_key: CHK-BR-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Single float loop; rounding implicit, confirm with Business Owner. Pass A (CHK-BR-0004) flags a dispute.
+  - record_key: CHK-BR-0004
+    recommendation: edit
+    confidence: medium
+    reason: >
+      Same rule as CHK-BR-0003; the float rounding is a suspected defect for the defect register.
+    edited_requirement: >
+      Keep the behaviour as extracted and record it in the defect register for a decision.
+  - record_key: CHK-REQ-0004
+    recommendation: accept
+    confidence: medium
+    reason: >
+      One clear place in code.
+  - record_key: CHK-BR-0005
+    recommendation: edit
+    confidence: medium
+    reason: >
+      Hard-coded placeholder card, a suspected legacy defect. Confirm what the code does; whether to keep it is the Business Owner's decision.
+    edited_requirement: >
+      Keep the behaviour as extracted and record it in the defect register for a decision.
+  - record_key: CHK-BR-0006
+    recommendation: edit
+    confidence: medium
+    reason: >
+      Server check silently drops missing fields; treat as suspected defect. Pass B says e-mail optional, pass A says required; trust the code (pass B) and send the conflict to Intent.
+    edited_requirement: >
+      Keep the behaviour as extracted and record it in the defect register for a decision.
+  - record_key: CHK-INT-0007
+    recommendation: accept
+    confidence: high
+    reason: >
+      Code, JMS binding and user guide agree. The swallowed send failure is a suspected defect.
+  - record_key: CHK-BR-0008
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Single place, corroborated by the error page wording.
+  - record_key: CHK-BR-0011
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Lists explicit in each locale; the China omission may be unintended.
+  - record_key: CHK-WF-0005
+    recommendation: accept
+    confidence: high
+    reason: >
+      Matches CHK-REQ-0004, CHK-BR-0008 and CHK-INT-0007; merged into Order placement.
+  - record_key: CHK-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Descriptor, bean and DDL agree.
+  - record_key: CHK-REQ-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Counter code agrees in both passes.
+  - record_key: CHK-REQ-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Both passes agree on creation of the order, contact, card and lines.
+  - record_key: CHK-REQ-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Card copied without validation, a risk for the regulated data; confirm.
+  - record_key: CHK-REQ-0005
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Fail path in pass B only; pass A shows no role restriction.
+  - record_key: CHK-REQ-0006
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Role restriction absent in descriptor; confirm intent.
+  - record_key: CHK-BR-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Counter rule agrees in both passes.
+  - record_key: CHK-INT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      DTD and bean agree.
+  - record_key: CHK-INT-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      DTD only.
+  - record_key: CHK-RULE-0004
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Code only.
+  - record_key: CHK-RULE-0005
+    recommendation: edit
+    confidence: low
+    reason: >
+      Default 01/2010 looks like a defect; confirm and let the Business Owner decide.
+    edited_requirement: >
+      Keep the behaviour as extracted and record it in the defect register for a decision.
+  - record_key: CHK-ENT-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      DDL and descriptor agree.
+  - record_key: CHKO-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      DDL in both dialects.
+  - record_key: CHKO-BR-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Check constraints in DDL.
+  - record_key: CHKO-BR-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Duplicate of counter rule.
+  - record_key: INVM-BR-0001
+    recommendation: reject
+    confidence: medium
+    reason: >
+      Stock quantity belongs to inventory management, not checkout.
+  - record_key: SAL-REQ-0001
+    recommendation: reject
+    confidence: low
+    reason: >
+      Wrong capability; the record is a sales item.
+  - record_key: CHECKOUT-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      DDL agrees.
+  - record_key: CHECKOUT-BR-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      DDL check.
+  - record_key: CHECKOUT-ENT-0003
+    recommendation: accept
+    confidence: medium
+    reason: >
+      DDL and code agree.
+  - record_key: DATA-BR-0005
+    recommendation: reject
+    confidence: medium
+    reason: >
+      Initial data load for users and categories, not checkout behaviour.
