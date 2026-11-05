@@ -1,0 +1,13 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/lineitem
+    description: >
+      The shard path does not exist. legacy-source/ is not present in the worktree
+      (git ls-tree HEAD has no legacy-source entries), and no directory or file named
+      lineitem exists in any other legacy-source copy found on the host. Neither the source
+      nor legacy-analysis/discovery/capabilities.csv are in the worktree, and no
+      extracted.md documents are present. No records were invented. A human needs to
+      confirm the shard path (for example, whether lineitem is a package inside
+      purchaseorder) and make the source available.
+suspected_defects: []
