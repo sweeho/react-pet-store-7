@@ -1,0 +1,55 @@
+%% EXTRACTED FROM LEGACY SOURCE — evidence of what exists, not a build target. Where this disagrees with a capability delta spec, the delta spec wins.
+%% Derived from architecture/schema.sql (legacy DDL). Column lists abbreviated to keys and notable constraints.
+erDiagram
+  category ||--o{ category_details : "per locale"
+  category ||--o{ product : contains
+  product ||--o{ product_details : "per locale"
+  product ||--o{ item : contains
+  item ||--o{ item_details : "per locale"
+  signon_user ||--|| customer : "user_id"
+  customer }o--|| account : has
+  customer }o--|| profile : has
+  account }o--|| contact_info : contact
+  account }o--|| credit_card : card
+  contact_info }o--|| address : address
+  purchase_order }o--|| contact_info : contact
+  purchase_order }o--|| credit_card : card
+  purchase_order ||--o{ po_line_item : lines
+  purchase_order ||--|| order_manager : "status (order_id = po_id)"
+  supplier_order }o--|| contact_info : contact
+  supplier_order ||--o{ supplier_line_item : lines
+  item ||..o| inventory : "item_id (no FK declared)"
+  category { string catid PK }
+  product { string productid PK
+    string catid FK }
+  item { string itemid PK
+    string productid FK }
+  item_details { string itemid PK
+    string locale PK
+    decimal listprice
+    decimal unitcost }
+  signon_user { string username PK
+    string password "plain text" }
+  customer { string user_id PK
+    string account_id FK
+    string profile_id FK }
+  account { string account_id PK
+    string status }
+  credit_card { string card_id PK
+    string card_number
+    string expiry_date }
+  purchase_order { string po_id PK
+    string po_user_id
+    decimal po_value }
+  po_line_item { string po_id PK
+    string line_number PK
+    int quantity
+    int quantity_shipped }
+  order_manager { string order_id PK
+    string status }
+  supplier_order { string po_id PK
+    string po_status }
+  inventory { string item_id PK
+    int quantity }
+  counter { string name PK
+    int counter }

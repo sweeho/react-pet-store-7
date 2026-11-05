@@ -1,0 +1,96 @@
+# EXTRACTED FROM LEGACY SOURCE — evidence of what exists, not a build target. Where this disagrees with a capability delta spec, the delta spec wins.
+# Reconstructed from the extraction IR and openspec change specs; the legacy app is a Struts-style
+# web app (screens, form posts, a JMS/XML hand-off), not a REST API. Paths below are the legacy
+# URLs, described so a rebuild can see which interactions exist. Request/response bodies are approximate.
+openapi: 3.0.3
+info:
+  title: Java Pet Store (legacy, as extracted)
+  version: legacy
+paths:
+  /category.screen:
+    get:
+      summary: Category page with paged product list (2 rows per page)
+      parameters:
+        - {name: category_id, in: query, schema: {type: string}}
+        - {name: start, in: query, schema: {type: integer}}
+        - {name: count, in: query, schema: {type: integer}}
+      responses: {"200": {description: HTML page}}
+  /product.screen:
+    get:
+      summary: Product page with paged item list
+      parameters:
+        - {name: product_id, in: query, schema: {type: string}}
+      responses: {"200": {description: HTML page}}
+  /item.screen:
+    get:
+      summary: Item detail with list price and "Your Price" (unit cost)
+      parameters:
+        - {name: item_id, in: query, schema: {type: string}}
+      responses: {"200": {description: HTML page}}
+  /search.do:
+    get:
+      summary: Keyword search over the catalog (path approximate)
+      parameters:
+        - {name: keywords, in: query, schema: {type: string}}
+      responses: {"200": {description: HTML page}}
+  /cart.do:
+    post:
+      summary: Add, update or remove cart lines (session cart, available when anonymous)
+      responses: {"200": {description: Cart screen}}
+  /enter_order_information.screen:
+    get:
+      summary: Order information form (protected; requires sign-on)
+      responses: {"200": {description: HTML page}, "302": {description: Redirect to sign-in}}
+  /order.do:
+    post:
+      summary: Place order from the cart; empty cart is refused; hands the order off asynchronously
+      responses: {"200": {description: Order complete screen with order id}}
+  /signon_welcome.screen:
+    get:
+      summary: Storefront sign-in screen
+      responses: {"200": {description: HTML page}}
+  /j_signon_check:
+    post:
+      summary: Storefront credential check (path approximate)
+      responses: {"302": {description: Redirect}}
+  /customer.screen:
+    get:
+      summary: Account screen (protected)
+      responses: {"200": {description: HTML page}}
+  /update_customer.screen:
+    get:
+      summary: Account edit form (protected)
+      responses: {"200": {description: HTML page}}
+  /RcvrRequestProcessor:
+    get:
+      summary: Supplier application entry (role administrator, FORM login); GET always shows home page
+      responses: {"200": {description: HTML page}}
+    post:
+      summary: Supplier actions - display inventory, update inventory, logout
+      responses: {"200": {description: HTML page}}
+  /Populate:
+    get:
+      summary: Seed data load for storefront and supplier (not covered by the security constraint)
+      responses: {"302": {description: Redirect after load}}
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        orderId: {type: string}
+        userId: {type: string}
+        email: {type: string}
+        locale: {type: string}
+        totalPrice: {type: number}
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              lineNumber: {type: integer}
+              itemId: {type: string}
+              quantity: {type: integer}
+              unitPrice: {type: number}
+    OrderStatus:
+      type: string
+      enum: [PENDING, APPROVED, DENIED, COMPLETED]
