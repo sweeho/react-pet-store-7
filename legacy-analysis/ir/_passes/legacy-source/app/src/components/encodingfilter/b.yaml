@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/encodingfilter
+    description: >
+      The shard path does not exist in the worktree (no legacy-source/ directory at all),
+      nor anywhere on the filesystem, and legacy-analysis/discovery/capabilities.csv
+      and legacy-analysis/sources are also absent. No source was read, so no record was
+      emitted rather than inventing behaviour. Re-run once legacy-source is committed.
+suspected_defects: []
