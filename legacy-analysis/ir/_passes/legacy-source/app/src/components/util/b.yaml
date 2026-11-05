@@ -1,12 +1,15 @@
 records: []
 suspected_defects: []
 findings:
-  - kind: unparseable
-    path: legacy-source/app/src/components/util
+  - kind: ambiguity
+    path: legacy-source/app/src/components/util/tracer/src/com/sun/j2ee/blueprints/util/tracer/Debug.java
     description: >
-      The shard path does not exist in the worktree. The branch holds no legacy-source/
-      directory at all (git ls-tree HEAD lists only legacy-analysis IR files), and no
-      legacy-analysis/discovery/capabilities.csv or legacy-analysis/sources/ either.
-      No code could be read, so no record was emitted rather than invent behaviour.
-      A human needs to confirm the legacy source was committed to this branch and
-      re-open the stage.
+      The only source files in this module are the tracer Debug helper and its Ant build.xml
+      (read from commit 0683ff9; the working tree on this branch no longer contains legacy-source/).
+      Debug.java has a compile-time constant debuggingOn = false (lines 46-58, 68-75) that
+      gates every print to stderr/stdout, so the helper emits nothing in the shipped build.
+      build.xml only compiles and packages it. There is no business rule, validation, workflow
+      or integration here, so no requirement record was emitted. Also, legacy-analysis/discovery/capabilities.csv
+      and legacy-analysis/sources/ do not exist on this branch, so no closed-list capability_key
+      could be checked and no document source could be cited. A human should confirm that
+      excluding diagnostics-only code from the specification is intended.
