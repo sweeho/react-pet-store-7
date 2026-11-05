@@ -1,0 +1,11 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-analysis/inventory/units/ddl-export-default-003.md
+    description: >
+      The unit file listing the 12 items of ddl-export-default-003 is not present in the
+      worktree (legacy-analysis/inventory/ does not exist; legacy-source/ and
+      legacy-analysis/discovery/capabilities.csv are also absent from /workspace/repo).
+      No item text could be read, so no records were extracted. A human must restore the
+      unit file and re-run this shard.
+suspected_defects: []
