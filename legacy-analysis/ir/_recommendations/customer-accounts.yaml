@@ -1,238 +1,162 @@
 recommendations:
-  - record_key: CUSTACC-RULE-0001
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-RULE-0002
+  - record_key: ACCT-REQ-0001
     recommendation: accept
     confidence: high
     reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-ENT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-RULE-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-RULE-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-REQ-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0006
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-BR-0007
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-ENT-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-ENT-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-ENT-0005
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-WFL-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-WFL-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACC-REQ-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-ENT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-REQ-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-RULE-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-RULE-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-REQ-0005
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-RULE-0006
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-BR-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-BR-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-BR-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-BR-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-REQ-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-INT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUST-INT-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACCT-ENT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACCT-ENT-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACCT-ENT-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: CUSTACCT-ENT-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-WF-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-WF-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-ENT-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-BR-0004
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-BR-0006
-    recommendation: accept
-    confidence: high
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-BR-0007
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-SCR-0008
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-BR-0009
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
-  - record_key: ACCT-BR-0010
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
   - record_key: SIGNON-REQ-0006
     recommendation: accept
     confidence: high
     reason: >
-      Passes and sources agree; the rule is read directly from code or schema.
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: ACCT-REQ-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: ACCT-BR-0004
+    recommendation: edit
+    confidence: low
+    reason: >
+      The two passes disagree: one reads required fields, the other input length limits; both are in the form handler and JSP. Edit to state both; confirm with the Business Owner.
+    edited_requirement: >
+      See the requirement text in spec.md and split or correct as noted above.
   - record_key: ACCT-BR-0005
     recommendation: edit
     confidence: medium
     reason: >
-      Option lists and stored values disagree between sign-up, edit and locales ("Meow Club", "Blue Jay Club", "Meow Card"). Business Owner should decide the intended list; confirm what the code does first.
-    edited_requirement: The system SHALL offer card types "Java(TM) Card", "Duke Express" and "Meow Card" and SHALL check only that the card number is not blank.
-  - record_key: ACCT-BR-0011
+      Pass B lists the choices; pass A adds year ranges that differ between sign-up and edit and option values that disagree across locales (Meow Club vs Meow Card). Confirm which values are true in production.
+    edited_requirement: >
+      See the requirement text in spec.md and split or correct as noted above.
+  - record_key: ACCT-BR-0008
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Duplicates ACCT-BR-0009 from the second pass; accept one and reject the other as a duplicate.
+  - record_key: ACCT-ENT-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: ACCT-ENT-0010
+    recommendation: reject
+    confidence: medium
+    reason: >
+      Duplicate of ACCT-ENT-0003 and the customer data model records.
+  - record_key: ACCT-REQ-0006
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: ACCT-SCR-0008
+    recommendation: accept
+    confidence: high
+    reason: >
+      Screen read directly from the account page; card number shown unmasked, which the Business Owner should review as a possible defect.
+  - record_key: CUST-BR-0004
     recommendation: edit
     confidence: medium
     reason: >
-      Stored country values differ ("USA" versus "United States") and shipping omits China on some forms; confirm current behaviour, then the Business Owner decides in the defect register.
-    edited_requirement: The address forms SHALL offer fixed locale-specific state and country lists.
+      The schema has no CHECK on status values while the code limits it to active and disabled; keep as schema fact and rely on the status-values record.
+    edited_requirement: >
+      See the requirement text in spec.md and split or correct as noted above.
+  - record_key: CUST-ENT-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-ENT-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-INT-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-REQ-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-REQ-0005
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-RULE-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-RULE-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUST-RULE-0006
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-BR-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-BR-0006
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-BR-0007
+    recommendation: accept
+    confidence: high
+    reason: >
+      Declared in ejb-jar transaction attributes and the code; passes agree.
+  - record_key: CUSTACC-ENT-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-ENT-0005
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-REQ-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-RULE-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-RULE-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACC-RULE-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACCT-ENT-0002
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACCT-ENT-0003
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
+  - record_key: CUSTACCT-ENT-0004
+    recommendation: accept
+    confidence: high
+    reason: >
+      Pass A and pass B (or code and schema) agree and the rule is read directly from the source.
