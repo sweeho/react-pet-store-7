@@ -1,0 +1,14 @@
+recommendations:
+  - {record_key: NOTIF-REQ-0002, recommendation: accept, confidence: high, reason: "Switch, topic subscription and stylesheet all agree. Shipped default of the switch is redacted and unread."}
+  - {record_key: NOTIF-REQ-0003, recommendation: accept, confidence: high, reason: "Code, descriptor and trigger wiring agree. Final shipment also yields a shipment e-mail (see NOTIF-REQ-0002)."}
+  - {record_key: NOTIF-BR-0004, recommendation: accept, confidence: medium, reason: "Code path and stylesheets agree. Failure on unsupported locale is a suspected defect; Business Owner decides whether to keep it. zh_CN dollar format also needs owner review."}
+  - {record_key: NOTIF-BR-0005, recommendation: accept, confidence: medium, reason: "Read directly from stylesheets and constants; single source each."}
+  - {record_key: NOTIF-INT-0006, recommendation: accept, confidence: high, reason: "Three delegates and queue bindings agree."}
+  - {record_key: ORDNOT-INT-0001, recommendation: accept, confidence: medium, reason: "Bean and descriptor agree, but the link to order e-mails is inferred and no caller was seen; SME should confirm the capability home."}
+  - {record_key: ORDNOT-REQ-0002, recommendation: accept, confidence: medium, reason: "Single bean source. Confirm current behaviour; swallowed close errors are a suspected defect for the Business Owner."}
+  - {record_key: ORDNOT-BR-0003, recommendation: accept, confidence: medium, reason: "Descriptor only; the transacted-session interaction is unverified."}
+  - {record_key: ORDER-NOTIFICATIONS-INT-0001, recommendation: reject, confidence: medium, reason: "Shared infrastructure helper with no notification behaviour of its own; duplicates checkout CHK-REQ-0001. Better kept under one capability, not here."}
+  - {record_key: ORDER-NOTIFICATIONS-REQ-0002, recommendation: reject, confidence: medium, reason: "Duplicate of checkout CHK-BR-0002; infrastructure, not a notification rule."}
+  - {record_key: ORDER-NOTIFICATIONS-REQ-0003, recommendation: reject, confidence: low, reason: "Absence of caching, intent unstated; infrastructure detail that a rebuild would not need to copy."}
+  - {record_key: ORDER-NOTIFICATIONS-REQ-0004, recommendation: reject, confidence: medium, reason: "Duplicate of checkout CHK-REQ-0004; infrastructure."}
+  - {record_key: ONT-REQ-0003, recommendation: edit, confidence: medium, reason: "Only the mail-switch part belongs here; switch names and values are defined outside the module and redacted.", edited_requirement: "The system SHALL read each order e-mail switch as a boolean configuration entry by name."}
