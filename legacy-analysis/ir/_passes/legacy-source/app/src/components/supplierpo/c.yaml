@@ -1,0 +1,11 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/supplierpo
+    description: >
+      Pass C could not read this module. The directory legacy-source/app/src/components/supplierpo
+      does not exist in the worktree (no legacy-source/ tree at all on branch vortex/legacy-spec/sx-0001,
+      and no legacy-analysis/discovery/capabilities.csv or sources/ either). No records were extracted
+      and none were invented. A human needs to confirm whether the module was committed under a different
+      path, then re-run pass C.
