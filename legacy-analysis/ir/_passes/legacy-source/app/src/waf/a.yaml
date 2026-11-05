@@ -1,0 +1,11 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/waf
+    description: >
+      The shard path does not exist in the worktree (no legacy-source/ directory at all on
+      branch vortex/legacy-spec/sx-0001), and legacy-analysis/discovery/capabilities.csv and
+      legacy-analysis/sources/ are also absent. No records could be extracted without
+      inventing content. A human needs to confirm the legacy source was committed and
+      the shard path is correct, then re-run this stage.
