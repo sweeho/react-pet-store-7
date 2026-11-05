@@ -1,0 +1,49 @@
+recommendations:
+  - record_key: CATALOG-ENT-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Not an order-batch record; belongs to catalog-browsing and is out of this shard's scope. Listed only if mis-keyed.
+  - record_key: BATCH-ENT-0001
+    recommendation: accept
+    confidence: medium
+    reason: >
+      View and index DDL is unambiguous. Consumers are only named in a comment, which does not change the structure.
+  - record_key: OBO-REQ-0001
+    recommendation: accept
+    confidence: high
+    reason: >
+      Query and header comment agree. Inner join drops orders without a manager row; confirm with the Business Owner that this is intended.
+  - record_key: OBO-REQ-0002
+    recommendation: accept
+    confidence: medium
+    reason: >
+      SQL is clear; the 24-hour value lives in conf/env.sh and should be confirmed.
+  - record_key: OBO-REQ-0003
+    recommendation: accept
+    confidence: medium
+    reason: Single clear query.
+  - record_key: OBO-REQ-0004
+    recommendation: accept
+    confidence: medium
+    reason: Query is clear; the lost-message cause is the author's assumption only.
+  - record_key: OBO-REQ-0005
+    recommendation: accept
+    confidence: medium
+    reason: >
+      Query clear; en_US-only join silently omits items, a suspected legacy defect to confirm in the defect register.
+  - record_key: OBO-REQ-0006
+    recommendation: accept
+    confidence: high
+    reason: >
+      SQL and comments agree on statuses and 180 days. Orders without a contact are never purged (suspected defect; Business Owner decides).
+  - record_key: OBO-REQ-0007
+    recommendation: edit
+    confidence: low
+    reason: >
+      Comment only; SQL enforces nothing. Confirm the scheduler enforces ordering, else the rule is aspirational and goes to Intent.
+    edited_requirement: The system SHALL NOT purge orders that have not been included in a completed order extract.
+  - record_key: OBO-REQ-0008
+    recommendation: accept
+    confidence: medium
+    reason: Single procedure call; the hard-coded path and dated move are implementation detail.
