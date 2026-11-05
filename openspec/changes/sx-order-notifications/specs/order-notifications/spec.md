@@ -20,6 +20,7 @@ When order-status mail is switched on, the system SHALL send each customer whose
 
 ### Requirement: Shipment e-mail
 
+ID: SWHR6-R-0137
 Recovered from: NOTIF-REQ-0002
 When shipment mail is switched on, the system SHALL send the customer an e-mail for every supplier invoice received for their order, including the final one, with subject "Java Pet Store Order Shipped: <order id>" and a body listing category, product, quantity and unit price of each line in that shipment, rendered in the order's locale.
 
@@ -37,6 +38,7 @@ When shipment mail is switched on, the system SHALL send the customer an e-mail 
 
 ### Requirement: Completed-order e-mail
 
+ID: SWHR6-R-0138
 Recovered from: NOTIF-REQ-0003
 When completed-order mail is switched on and an order becomes COMPLETED, the system SHALL send the customer one e-mail with subject "Java Pet Store Order COMPLETED: <order id>" stating that the entire order has shipped and listing every line of the order (category, product, quantity, unit price), rendered in the order's locale.
 
@@ -48,6 +50,7 @@ When completed-order mail is switched on and an order becomes COMPLETED, the sys
 
 ### Requirement: Locale templates and price format
 
+ID: SWHR6-R-0100
 Recovered from: NOTIF-BR-0004
 The system SHALL render each customer e-mail body from a template for the order's locale, with templates for en_US, ja_JP and zh_CN and a default English template used when the order has no recognisable locale. Prices SHALL be shown as "$#,##0.00" in en_US, zh_CN and default templates and as "￥#,##0" in ja_JP.
 
@@ -65,6 +68,7 @@ The system SHALL render each customer e-mail body from a template for the order'
 
 ### Requirement: Status wording and subject language
 
+ID: SWHR6-R-0101
 Recovered from: NOTIF-BR-0005
 The system SHALL word the order-status e-mail as an approval ("approved! We will now fulfill your order.") when the decision is APPROVED and as a refusal ("denied unfortunately. Sorry we could not place your order.") when DENIED, with equivalent wording in ja_JP and zh_CN, and subject lines SHALL be in English for every locale.
 
@@ -76,6 +80,7 @@ The system SHALL word the order-status e-mail as an approval ("approved! We will
 
 ### Requirement: Hand-off to mail service
 
+ID: SWHR6-R-0136
 Recovered from: NOTIF-INT-0006
 The system SHALL hand every customer e-mail to the mail service as one message carrying the recipient address, subject and an HTML body.
 
@@ -87,6 +92,7 @@ The system SHALL hand every customer e-mail to the mail service as one message c
 
 ### Requirement: Asynchronous message hand-off
 
+ID: SWHR6-R-0106
 Recovered from: ORDNOT-INT-0001
 The system SHALL provide a stateless asynchronous-send service that accepts a text message and delivers it as a single text message onto a configured point-to-point queue for later processing.
 
@@ -98,6 +104,7 @@ The system SHALL provide a stateless asynchronous-send service that accepts a te
 
 ### Requirement: Asynchronous send failure
 
+ID: SWHR6-R-0107
 Recovered from: ORDNOT-REQ-0002
 The system SHALL fail creation of the sender when the queue or connection factory cannot be resolved, and SHALL report any send failure to the caller as an error and release the queue connection.
 
@@ -109,6 +116,7 @@ The system SHALL fail creation of the sender when the queue or connection factor
 
 ### Requirement: Asynchronous send transaction and access
 
+ID: SWHR6-R-0105
 Recovered from: ORDNOT-BR-0003
 The system SHALL execute the asynchronous send within the caller's transaction, or start one, and SHALL permit any caller to invoke it without role restriction.
 
@@ -120,6 +128,7 @@ The system SHALL execute the asynchronous send within the caller's transaction, 
 
 ### Requirement: Named resource lookup
 
+ID: SWHR6-R-0139
 Recovered from: ORDER-NOTIFICATIONS-INT-0001
 The system SHALL resolve named infrastructure resources (EJB homes, queue and topic connection factories, queues, topics, data sources, and URL, boolean and string configuration entries) by name through a single lookup facility and return the resolved object.
 
@@ -131,6 +140,7 @@ The system SHALL resolve named infrastructure resources (EJB homes, queue and to
 
 ### Requirement: Lookup caching
 
+ID: SWHR6-R-0140
 Recovered from: ORDER-NOTIFICATIONS-REQ-0002
 The web-tier lookup facility SHALL be a single shared instance and SHALL return a previously resolved home, factory, queue, topic or data source for a repeated name without a new lookup.
 
@@ -142,6 +152,7 @@ The web-tier lookup facility SHALL be a single shared instance and SHALL return 
 
 ### Requirement: Configuration entries not cached
 
+ID: SWHR6-R-0103
 Recovered from: ORDER-NOTIFICATIONS-REQ-0003
 The system SHALL perform a fresh lookup each time a URL, boolean or string configuration entry is requested from the web tier and MUST NOT cache it.
 
@@ -153,6 +164,7 @@ The system SHALL perform a fresh lookup each time a URL, boolean or string confi
 
 ### Requirement: Lookup failure reporting
 
+ID: SWHR6-R-0104
 Recovered from: ORDER-NOTIFICATIONS-REQ-0004
 The system SHALL report any failure to resolve a named resource as a single locator error type that retains the underlying cause, whose root cause is the innermost cause and whose text is that of the wrapped cause.
 
@@ -164,6 +176,7 @@ The system SHALL report any failure to resolve a named resource as a single loca
 
 ### Requirement: Configuration switches read by name
 
+ID: SWHR6-R-0102
 Recovered from: ONT-REQ-0003
 The system SHALL read configuration switches such as the confirmation-mail switch as boolean entries by name, and SHALL supply string and URL entries by name.
 
@@ -172,3 +185,14 @@ The system SHALL read configuration switches such as the confirmation-mail switc
 - **GIVEN** a switch is not defined in configuration
 - **WHEN** it is read
 - **THEN** a locator error is raised
+
+### Requirement: Independent e-mail switches
+
+Recovered from: NOT-RULE-0005
+The system SHALL provide three independent on/off switches for customer e-mail: one for approval/denial notices, one for per-shipment notices and one for completed-order notices, each read once when the notification service starts and not per message.
+
+#### Scenario: One switch off
+
+- **GIVEN** the shipment switch is on and the completed-order switch is off
+- **WHEN** an order completes through a final supplier invoice
+- **THEN** the shipment e-mail is sent and no completed-order e-mail is sent
