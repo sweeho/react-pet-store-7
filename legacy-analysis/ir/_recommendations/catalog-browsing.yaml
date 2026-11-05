@@ -1,0 +1,24 @@
+recommendations:
+  - {record_key: CAT-SCR-0002, recommendation: accept, confidence: high, reason: "Pass B CATB-SCR-0003 agrees with the JSP reading."}
+  - {record_key: CAT-BR-0003, recommendation: accept, confidence: medium, reason: "Code and pass B agree on what is shown; whether the list-price/unit-cost inconsistency is intended goes to the Business Owner defect register."}
+  - {record_key: CAT-BR-0004, recommendation: edit, confidence: low, reason: "Contradicts the user guide on case sensitivity; DAO class in web.xml is redacted, so production behaviour is unknown. Goes to Intent for the Business Owner.", edited_requirement: "The system SHALL return items matching any whitespace-separated keyword; case sensitivity is pending Business Owner decision."}
+  - {record_key: CAT-BR-0006, recommendation: accept, confidence: high, reason: "Pass B CATB-REQ-0007 agrees."}
+  - {record_key: CAT-BR-0007, recommendation: accept, confidence: medium, reason: "Pass B CATB-SCR-0009 agrees on first 5 categories."}
+  - {record_key: CAT-BR-0008, recommendation: accept, confidence: medium, reason: "Pass B CATB-BR-0008 agrees on 5 minutes."}
+  - {record_key: CAT-REQ-0004, recommendation: accept, confidence: medium, reason: "Index is DDL-evident but a performance detail rather than business behaviour."}
+  - {record_key: CATB-REQ-0001, recommendation: accept, confidence: high, reason: "Filter and web.xml agree; filed here only as closest capability."}
+  - {record_key: CATB-BR-0002, recommendation: accept, confidence: medium, reason: "Pass-through behaviour is an implementation detail; key is reused by an encoding and a schema record, so confirm which is meant."}
+  - {record_key: CATALOG-ENT-0001, recommendation: accept, confidence: high, reason: "DDL foreign keys confirm the hierarchy."}
+  - {record_key: CATALOG-ENT-0002, recommendation: accept, confidence: high, reason: "DDL not-null constraints confirm it."}
+  - {record_key: CATB-ENT-0001, recommendation: accept, confidence: high, reason: "Duplicate of the hierarchy and details records; DDL agrees."}
+  - {record_key: CATB-SCR-0001, recommendation: accept, confidence: high, reason: "Home page markup and user guide agree."}
+  - {record_key: CATB-REQ-0002, recommendation: accept, confidence: high, reason: "Matches CAT-SCR-0001 paging."}
+  - {record_key: CATB-SCR-0003, recommendation: accept, confidence: high, reason: "Matches CAT-SCR-0002."}
+  - {record_key: CATB-BR-0004, recommendation: accept, confidence: medium, reason: "Same rule as CAT-BR-0003."}
+  - {record_key: CATB-REQ-0005, recommendation: accept, confidence: medium, reason: "Same as CAT-BR-0004; carries the case-sensitivity conflict with the user guide."}
+  - {record_key: CATB-REQ-0006, recommendation: accept, confidence: high, reason: "Same as approved CAT-BR-0005."}
+  - {record_key: CATB-REQ-0007, recommendation: accept, confidence: high, reason: "Same as CAT-BR-0006."}
+  - {record_key: CATB-BR-0008, recommendation: accept, confidence: medium, reason: "Same as CAT-BR-0008."}
+  - {record_key: CATB-SCR-0009, recommendation: accept, confidence: medium, reason: "Same as CAT-BR-0007."}
+  - {record_key: CATB-ENT-0010, recommendation: accept, confidence: high, reason: "DDL confirms."}
+  - {record_key: CATB-BR-0011, recommendation: accept, confidence: medium, reason: "Per-locale currency formatting is stated only in pass B and the item-detail record; confirm currencies with the Business Owner."}
