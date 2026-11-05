@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/mailer
+    description: >
+      The module directory does not exist in the worktree. legacy-source/ is absent entirely,
+      as are legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/. No records
+      were extracted; nothing was inferred. A human must confirm the legacy source was committed
+      to the branch, then re-run this stage.
