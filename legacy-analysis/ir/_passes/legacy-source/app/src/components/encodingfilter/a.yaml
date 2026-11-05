@@ -1,0 +1,121 @@
+records:
+  - record_key: CATB-REQ-0001
+    kind: requirement
+    capability_key: catalog-browsing
+    requirement: >
+      The system SHALL interpret the character encoding of every incoming storefront request
+      as UTF-8 before any request parameter is read, so that non-ASCII text (for example
+      ja_JP and zh_CN input) is decoded correctly.
+    confidence: high
+    confidence_basis: >
+      The filter sets the request encoding from its configured parameter, and the storefront
+      deployment descriptor both configures the value UTF-8 and maps the filter to every URL.
+      Two places agree. No test or document was found.
+    risk_class: presentational
+    basis: >
+      EncodingFilter.doFilter calls setCharacterEncoding with the configured value, then
+      continues the chain. web.xml of the petstore storefront supplies encoding=UTF-8 and maps
+      the filter to /*. No listed capability covers character handling, so it is filed under
+      catalog-browsing, the closest one because that capability names per-locale content and
+      search input.
+    plain_text: >
+      Whatever a shopper types, including Japanese or Chinese characters, is read as UTF-8 so
+      it is not garbled.
+    technical_note: >
+      Servlet filter EncodingFilter reads init-param "encoding" in init() and applies it with
+      request.setCharacterEncoding() in doFilter(). Declared in petstore web.xml with value
+      UTF-8, mapped to /*. It is declared before SignOnFilter, and the mappings are in the same order.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/encodingfilter/src/com/sun/j2ee/blueprints/encodingfilter/web/EncodingFilter.java
+        line_start: 61
+        line_end: 78
+        excerpt: |
+          public void init(FilterConfig config) throws ServletException {
+              this.config = config;
+              this.targetEncoding = config.getInitParameter("encoding");
+          }
+          ...
+              HttpServletRequest request = (HttpServletRequest)srequest;
+              request.setCharacterEncoding(targetEncoding);
+              // move on to the next
+             chain.doFilter(srequest,sresponse);
+      - path: legacy-source/app/src/apps/petstore/src/docroot/WEB-INF/web.xml
+        line_start: 48
+        line_end: 57
+        excerpt: |
+          <filter>
+            <filter-name>EncodingFilter</filter-name>
+            <display-name>EncodingFilter</display-name>
+            <description>no description</description>
+            <filter-class>com.sun.j2ee.blueprints.encodingfilter.web.EncodingFilter</filter-class>
+            <init-param>
+              <param-name>encoding</param-name>
+              <param-value>UTF-8</param-value>
+            </init-param>
+          </filter>
+      - path: legacy-source/app/src/apps/petstore/src/docroot/WEB-INF/web.xml
+        line_start: 68
+        line_end: 73
+        excerpt: |
+          <filter-mapping>
+            <filter-name>EncodingFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+          </filter-mapping>
+    stack_metadata:
+      framework: servlet-filter
+      web.xml.filter: EncodingFilter
+  - record_key: CATB-BR-0002
+    kind: business-rule
+    capability_key: catalog-browsing
+    requirement: >
+      GIVEN a request that reaches the encoding filter WHEN the filter has finished setting the
+      encoding THEN the system SHALL pass the same request and response on to the next filter in
+      the chain without altering the response.
+    confidence: medium
+    confidence_basis: >
+      One clear place (doFilter); the response is neither read nor modified there.
+    risk_class: presentational
+    basis: >
+      doFilter only sets the request encoding and delegates; response encoding is not set.
+    plain_text: >
+      Reading the text encoding never blocks or changes a request; it carries on as normal.
+    technical_note: >
+      chain.doFilter(srequest, sresponse) is called unconditionally; no response charset is set here.
+    interface: false
+    traces:
+      - path: legacy-source/app/src/components/encodingfilter/src/com/sun/j2ee/blueprints/encodingfilter/web/EncodingFilter.java
+        line_start: 71
+        line_end: 78
+        excerpt: |
+           public  void doFilter(ServletRequest srequest, ServletResponse  sresponse, FilterChain chain)
+              throws IOException, ServletException {
+              HttpServletRequest request = (HttpServletRequest)srequest;
+              request.setCharacterEncoding(targetEncoding);
+              // move on to the next
+             chain.doFilter(srequest,sresponse);
+          }
+    stack_metadata:
+      framework: servlet-filter
+suspected_defects:
+  - capability_key: catalog-browsing
+    record_keys: [CATB-REQ-0001]
+    severity: low
+    category: other
+    title: Documented ASCII default is overwritten by a missing parameter
+    description: >
+      The field defaults to "ASCII", but init() unconditionally overwrites it with the
+      configured parameter. If a deployment omitted the "encoding" parameter, the value
+      becomes null and setCharacterEncoding(null) is called, so the default never applies.
+      The petstore descriptor does set UTF-8, so this does not occur today.
+    traces:
+      - path: legacy-source/app/src/components/encodingfilter/src/com/sun/j2ee/blueprints/encodingfilter/web/EncodingFilter.java
+        line_start: 58
+        line_end: 63
+findings:
+  - kind: ambiguity
+    path: legacy-source/app/src/components/encodingfilter/src/build.xml
+    description: >
+      The legacy-source tree is absent from the working tree of this branch; the module was read
+      from the source commit 0683ff9. Other apps' web.xml files were not checked for the filter
+      mapping and no document extracts exist for this module.
