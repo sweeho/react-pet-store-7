@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/contactinfo
+    description: >
+      The shard path does not exist in the worktree or on origin/vortex/legacy-spec/sx-0001.
+      legacy-source/ and legacy-analysis/discovery/capabilities.csv are both absent, so no
+      source could be read and no capability_key list was available. No records were invented.
+      A human must confirm whether the module exists and whether legacy-source was committed.
+suspected_defects: []
