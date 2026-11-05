@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/conf
+    description: >
+      The directory legacy-source/conf does not exist in the worktree (no legacy-source/ tree at all),
+      and legacy-analysis/discovery/capabilities.csv and legacy-analysis/sources/**/extracted.md are also
+      absent. No records were emitted because nothing could be read or traced. A human needs to confirm
+      the legacy source was committed to the branch, then re-run this shard.
