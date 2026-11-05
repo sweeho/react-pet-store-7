@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/asyncsender
+    description: >
+      The shard path does not exist in the worktree or on origin/vortex/legacy-spec/sx-0001
+      (no legacy-source/ directory, no legacy-analysis/discovery/capabilities.csv, no
+      legacy-analysis/sources). Nothing could be read, so no records were emitted.
+      The legacy source must be committed to the branch before this shard can be extracted.
+suspected_defects: []
