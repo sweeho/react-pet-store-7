@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/waf
+    description: >
+      The shard directory legacy-source/app/src/waf does not exist in the worktree
+      (no legacy-source/ at all), nor do legacy-analysis/discovery/capabilities.csv
+      or legacy-analysis/sources. Nothing could be read, so no records were
+      extracted. Re-run once the legacy source and capability list are committed.
