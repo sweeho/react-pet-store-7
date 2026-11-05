@@ -59,6 +59,16 @@ jobs:
       - name: Unit and integration tests
         run: bun run test -- --reporter=default --reporter=junit --outputFile.junit=.vortex-results/unit.xml
 
+      # The locked acceptance suite (tests/acceptance/**) is written before the
+      # product code, so it is red until the Build phase makes it pass. The merge
+      # gate reads each ticket's locked tests from this run, so it must run even
+      # when an earlier step failed (a skipped step leaves nothing to read).
+      # TODO: remove continue-on-error once the Build phase has made the suite green.
+      - name: Acceptance tests
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: bun run test:acceptance --reporter=default --reporter=junit --outputFile.junit=.vortex-results/acceptance/junit.xml
+
       - name: Build
         run: bun run build
 
@@ -69,6 +79,14 @@ jobs:
         run: bun run test:e2e -- --reporter=list,junit
         env:
           PLAYWRIGHT_JUNIT_OUTPUT_NAME: .vortex-results/e2e.xml
+
+      # Browser specs of the acceptance suite; JUnit goes to
+      # .vortex-results/acceptance/e2e-junit.xml (CI is set, see playwright.acceptance.config.ts).
+      # TODO: remove continue-on-error once the Build phase has made the suite green.
+      - name: Acceptance E2E tests
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: bun run test:acceptance:e2e
 
       - name: Upload test results for Vortex
         if: ${{ !cancelled() }}
@@ -81,6 +99,16 @@ jobs:
           # finds no official result for any test case.
           include-hidden-files: true
           if-no-files-found: error
+
+      - name: Upload acceptance test results for Vortex
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vortex-test-results-acceptance
+          path: .vortex-results/acceptance/*.xml
+          include-hidden-files: true
+          # The suite may not exist yet, so an empty upload is not an error.
+          if-no-files-found: warn
 
   # Replays the pull request's [tdd:red] and [tdd:green] commits (Vortex plan 105)
   # and uploads what they report as `vortex-tdd-replay`; the merge gate judges it.

@@ -108,3 +108,16 @@ testEvidence:
     unit: build-and-test
     integration: build-and-test
     e2e: build-and-test
+  # The locked acceptance suite (tests/acceptance/**): how the platform runs a
+  # ticket's locked tests. `{files}` is replaced with the locked files to run.
+  # Kept out of the default command above; CI runs it as its own steps.
+  acceptance:
+    suites:
+      - kind: unit
+        command: "bun run test:acceptance --reporter=default --reporter=junit --outputFile.junit=.vortex-results/acceptance/junit.xml {files}"
+        junitPath: .vortex-results/acceptance/junit.xml
+        testGlobs: ["tests/acceptance/**/*.test.ts", "tests/acceptance/**/*.test.tsx"]
+      - kind: browser
+        command: "CI=1 bun run test:acceptance:e2e {files}"
+        junitPath: .vortex-results/acceptance/e2e-junit.xml
+        testGlobs: ["tests/acceptance/**/e2e/**/*.spec.ts"]
