@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/contactinfo
+    description: >
+      The module directory legacy-source/app/src/components/contactinfo does not exist in the worktree
+      (no legacy-source/ directory at all), and legacy-analysis/discovery/capabilities.csv and
+      legacy-analysis/sources/ are also absent. No records could be extracted without inventing them.
+      A human must supply the source and capability list, then re-run this shard.
