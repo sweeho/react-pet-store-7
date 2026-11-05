@@ -1,34 +1,18 @@
 recommendations:
-  - record_key: INVM-BR-0001
-    recommendation: accept
-    confidence: high
+  - record_key: INV-BR-0004
+    recommendation: edit
+    confidence: low
     reason: >
-      Primary key and CHECK in the Oracle DDL agree with the guide. The container-generated
-      table has no CHECK, so enforcement differs by script; the DDL is the stronger source.
-  - record_key: INVENTORY-BR-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Duplicate of INVM-BR-0001 from the other pass; same DDL evidence. Merge into one requirement.
-  - record_key: INV-ENT-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      DDL primary key and NOT NULL agree with the bean descriptor.
-  - record_key: INV-BR-0003
-    recommendation: accept
-    confidence: high
-    reason: >
-      The servlet code and user guide agree. Confirm with the Business Owner that the unhandled
-      non-numeric input is a defect to list in the defect register.
-  - record_key: INV-WF-0004
+      Pass A infers the failure from a missing catch for NumberFormatException; the visible page and
+      rollback of earlier rows depend on container behaviour. Confirm what the code does, then decide
+      in the defect register whether rejecting with a clear message is the rebuild behaviour.
+    edited_requirement: >
+      GIVEN a ticked row whose new quantity is not a whole number WHEN inventory changes are submitted
+      THEN the system SHALL reject the submission with an error and SHALL NOT show the success page.
+  - record_key: INV-WF-0005
     recommendation: accept
     confidence: medium
     reason: >
-      Pass B reads the code and trusts it. The user guide describes OPC notification instead,
-      so the conflict goes to Intent for the Business Owner to say which is true in production.
-  - record_key: INV-SCR-0005
-    recommendation: accept
-    confidence: high
-    reason: >
-      JSPs and the dispatcher agree and the guide names the same actions.
+      The servlet and facade code show the transaction sequence and the success text. The user guide
+      says the Supplier notifies the OPC after every update, which differs in wording from the code
+      that publishes invoices only; the conflict goes to Intent for the Business Owner.

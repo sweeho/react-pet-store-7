@@ -2,7 +2,9 @@
 
 ### Requirement: Stock record per item
 
-The system SHALL keep exactly one stock record per item, identified uniquely by the item id, holding a mandatory whole-number quantity on hand.
+ID: SWHR6-R-0125
+Recovered from: INV-ENT-0001
+The system SHALL keep one stock record per item, identified uniquely by the item id, holding a mandatory whole-number quantity on hand.
 
 #### Scenario: One record per item
 
@@ -10,9 +12,17 @@ The system SHALL keep exactly one stock record per item, identified uniquely by 
 - **WHEN** a second record for the same item id is created
 - **THEN** the creation is rejected
 
+#### Scenario: Quantity is mandatory
+
+- **GIVEN** a new stock record for an item
+- **WHEN** it is stored without a quantity
+- **THEN** the store is rejected
+
 ### Requirement: Stock quantity is never negative
 
-The system SHALL NOT allow a stock quantity below zero.
+ID: SWHR6-R-0126
+Recovered from: INVM-BR-0001
+The system SHALL keep one stock quantity per item and SHALL reject any stock quantity below zero.
 
 #### Scenario: Negative quantity stored
 
@@ -44,56 +54,78 @@ The system SHALL provide an inventory screen that, for a user in the administrat
 - **WHEN** the inventory screen is displayed
 - **THEN** the message "You are not authorised to update the status of orders." is shown instead of the list
 
-### Requirement: Supplier home and confirmation screen
+### Requirement: Supplier home screen
 
-The system SHALL provide a supplier home screen explaining that it is used to update inventory so that back-ordered items can be filled, with a "Display Inventory" action and a "Logout" action, and SHALL show this home screen for any plain navigation (GET) to the supplier application entry point. After a successful stock update it SHALL show "Inventory was updated successfully" with the same two actions.
+ID: SWHR6-R-0069
+Recovered from: INV-SCR-0006
+The system SHALL show a supplier home page explaining that it is used to update inventory so that back-ordered items can be filled, with a "Display Inventory" action and a "Logout" action; a direct (GET) visit to the supplier entry point SHALL always show this home page, and submitted actions SHALL be routed to the inventory screen, the inventory update, or logout according to the action chosen.
 
-#### Scenario: Home screen on navigation
+#### Scenario: Plain navigation
 
-- **GIVEN** a user navigating to the supplier entry point
+- **GIVEN** a user navigating directly to the supplier entry point
 - **WHEN** the page is requested
-- **THEN** the home screen is shown with Display Inventory and Logout actions
+- **THEN** the home page is shown with a "Display Inventory" action and a "Logout" action
 
-#### Scenario: Confirmation after update
+#### Scenario: Display Inventory chosen
 
-- **GIVEN** a stock update that committed
-- **WHEN** the result is displayed
-- **THEN** "Inventory was updated successfully" is shown with Display Inventory and Logout actions
+- **GIVEN** the supplier home page
+- **WHEN** the user chooses "Display Inventory"
+- **THEN** the inventory screen is shown
+
+#### Scenario: Logout chosen
+
+- **GIVEN** the supplier home page
+- **WHEN** the user chooses "Logout"
+- **THEN** the logout page is shown
 
 ### Requirement: Stock update rules
 
-WHEN the stock clerk submits the inventory update screen THEN the system SHALL, for each row whose update box is ticked and whose new quantity is not empty, replace the item's stock quantity with the entered value. GIVEN the entered value is negative THEN that row SHALL be ignored without a message. GIVEN a row is not ticked THEN its entered value SHALL be ignored.
+ID: SWHR6-R-0124
+Recovered from: INV-BR-0003
+The system SHALL, when inventory changes are submitted, replace the stock quantity of each item whose update box is ticked with the entered new quantity. GIVEN a ticked row with an empty new quantity THEN that item SHALL be left unchanged. GIVEN a negative new quantity THEN that item SHALL be left unchanged. GIVEN an unticked row THEN its entered quantity SHALL be ignored.
 
-#### Scenario: Ticked row with a value
+#### Scenario: Ticked row replaces quantity
 
-- **GIVEN** item A with quantity 5, ticked, new quantity 12
-- **WHEN** the form is submitted
-- **THEN** item A's quantity is 12
+- **GIVEN** an item with quantity 5
+- **WHEN** a ticked row with new quantity 12 is submitted
+- **THEN** the item's quantity is 12
 
-#### Scenario: Negative value
+#### Scenario: Blank or negative ignored
 
-- **GIVEN** item A with quantity 5, ticked, new quantity -3
-- **WHEN** the form is submitted
-- **THEN** item A's quantity remains 5 and no message is shown
+- **GIVEN** an item with quantity 5
+- **WHEN** a ticked row with an empty or negative new quantity is submitted
+- **THEN** the quantity remains 5
 
-#### Scenario: Unticked row
+#### Scenario: Unticked row ignored
 
-- **GIVEN** item A with quantity 5, not ticked, new quantity 12
-- **WHEN** the form is submitted
-- **THEN** item A's quantity remains 5
+- **GIVEN** an item with quantity 5
+- **WHEN** an unticked row with new quantity 12 is submitted
+- **THEN** the quantity remains 5
+
+### Requirement: Non-numeric quantity fails the update
+
+Recovered from: INV-BR-0004
+GIVEN a ticked row whose new quantity is not a whole number WHEN inventory changes are submitted THEN the system SHALL fail the request with an error and SHALL NOT show the success page.
+
+#### Scenario: Non-numeric entry
+
+- **GIVEN** a ticked row with new quantity "abc"
+- **WHEN** the changes are submitted
+- **THEN** an error is raised and the success page is not shown
 
 ### Requirement: Retry pending orders after stock update
 
-WHEN the stock clerk submits stock changes THEN the system SHALL, as one unit of work, apply the changes, re-attempt fulfilment of every supplier order still PENDING, publish an invoice to the order processing center for each order that shipped something, and then show a confirmation that the inventory was updated.
+Recovered from: INV-WF-0005
+The system SHALL, after applying submitted inventory changes, re-attempt fulfilment of every pending supplier order, publish an invoice for each order that shipped at least one line in that attempt, and then show the message "Inventory was updated successfully" with options to display inventory again or log out; the stock changes, the re-attempt and the invoice publication SHALL be performed in one transaction.
 
-#### Scenario: Waiting order now shippable
+#### Scenario: Pending order now fulfillable
 
-- **GIVEN** a PENDING supplier order whose item had no stock
-- **WHEN** the clerk raises that item's stock to cover the line and submits
-- **THEN** the line ships, an invoice is published and the confirmation is shown
+- **GIVEN** a pending supplier order that the updated stock can now ship
+- **WHEN** the stock changes are submitted
+- **THEN** the order is fulfilled, an invoice is published, and "Inventory was updated successfully" is shown with Display Inventory and Logout options
 
-#### Scenario: No pending order ships
+#### Scenario: Pending order still unfulfillable
 
-- **GIVEN** no PENDING order can ship after the update
-- **WHEN** the clerk submits
-- **THEN** no invoice is published and the confirmation is shown
+- **GIVEN** a pending order that cannot ship after the update
+- **WHEN** the stock changes are submitted
+- **THEN** no invoice is published for it and the confirmation is still shown
