@@ -12,28 +12,6 @@ The system SHALL let a new visitor sign up by entering a user name, a password a
 - **WHEN** a visitor submits it at sign-up
 - **THEN** the in-use message is shown and no user is created
 
-### Requirement: Sign-up asks for account information
-
-Recovered from: ACCT-REQ-0001
-The system SHALL let a new visitor sign up by choosing a user name and password entered twice and SHALL then ask for their account information; WHEN the chosen user name already exists, the system SHALL show the in-use message and SHALL NOT create the account.
-
-#### Scenario: Sign-up asks for account information
-
-- **GIVEN** an unused user name
-- **WHEN** the visitor submits sign-up
-- **THEN** the account information form is shown
-
-### Requirement: New-user creation outcome
-
-Recovered from: SIGNON-REQ-0006
-WHEN a new-user form is submitted with user name and password, the system SHALL create the user credentials and continue; WHEN creation is rejected, the system SHALL go to the user creation error page.
-
-#### Scenario: New-user creation outcome
-
-- **GIVEN** user creation is rejected
-- **WHEN** the new-user form is submitted
-- **THEN** the user creation error page is shown
-
 ### Requirement: Customer details submission
 
 ID: SWHR6-R-0054
@@ -46,17 +24,6 @@ WHEN a new user submits the customer details form, the system SHALL create the c
 - **WHEN** the details form is submitted
 - **THEN** the user is signed on, the storefront uses the chosen language and the cart is shown
 
-### Requirement: Account creation captures details
-
-Recovered from: ACCT-REQ-0002
-The system SHALL capture, when a customer account is created, contact information (first name, last name, street address lines 1 and 2, city, state or province, postal code, country, telephone, e-mail), one payment card (number, card type, expiry month and year) and storefront preferences (preferred language, favourite category, MyList on/off, banners on/off).
-
-#### Scenario: Account creation captures details
-
-- **GIVEN** the customer details form
-- **WHEN** it is displayed
-- **THEN** fields for contact, card and preferences are offered
-
 ### Requirement: Required contact fields
 
 ID: SWHR6-R-0048
@@ -68,28 +35,6 @@ The system SHALL treat last name, first name, street address, city, state or pro
 - **GIVEN** a form with city blank
 - **WHEN** it is submitted
 - **THEN** the missing field is recorded but the customer is shown no message
-
-### Requirement: Contact form input and checks
-
-Recovered from: ACCT-BR-0004
-The system SHALL limit account form input to 30 characters for first name, last name and card number, 70 characters for street address lines, city, telephone and e-mail, and 12 characters for postal code; and, per the other pass, WHEN a required field is blank the system SHALL record a "Missing Address Data" error naming the fields and not build the contact details, both for accounts and for order billing and shipping addresses.
-
-#### Scenario: Contact form input and checks
-
-- **GIVEN** a postal code of 13 characters
-- **WHEN** it is typed into the form
-- **THEN** input is limited to 12 characters
-
-### Requirement: Card form options
-
-Recovered from: ACCT-BR-0005
-The system SHALL offer card types "Java(TM) Card", "Duke Express" and "Meow Card", expiry months 01-12 and expiry years 2001-2004 at sign-up and 2002-2005 on account edit, and SHALL check only that the card number is not blank.
-
-#### Scenario: Card form options
-
-- **GIVEN** card number "abc"
-- **WHEN** the form is submitted
-- **THEN** it is accepted
 
 ### Requirement: Profile preference options
 
@@ -114,17 +59,6 @@ WHEN a signed-on customer saves changes to their account, the system SHALL overw
 - **GIVEN** a signed-on customer
 - **WHEN** they save with language ja_JP
 - **THEN** details are replaced and the storefront is Japanese
-
-### Requirement: MyList panel on storefront pages
-
-Recovered from: ACCT-BR-0008
-The system SHALL show a "My List" panel of up to 10 products from the customer's favourite category, each linking to its product page, on storefront pages when the customer has turned MyList on.
-
-#### Scenario: MyList panel on storefront pages
-
-- **GIVEN** MyList on and favourite category Dogs
-- **WHEN** a storefront page is shown
-- **THEN** up to 10 Dogs products are listed
 
 ### Requirement: MyList panel
 
@@ -162,50 +96,6 @@ The address forms SHALL offer a fixed, locale-specific list of states or provinc
 - **WHEN** it is displayed
 - **THEN** the state list holds California, New York and Texas
 
-### Requirement: Customer data keyed by user name
-
-Recovered from: ACCT-ENT-0003
-The system SHALL keep for each customer, keyed by user name, contact information, one credit card (number, card type, expiry as "MM/YYYY") and a profile of four preferences.
-
-#### Scenario: Customer data keyed by user name
-
-- **GIVEN** an existing customer
-- **WHEN** the record is read
-- **THEN** contact, card and profile are available
-
-### Requirement: One customer record per user id
-
-Recovered from: ACCT-ENT-0010
-The system SHALL keep one customer record per user id, holding an account (contact information with one address, and one payment card) and a profile.
-
-#### Scenario: One customer record per user id
-
-- **GIVEN** two customers with different user ids
-- **WHEN** they are stored
-- **THEN** each has its own account and profile
-
-### Requirement: View and edit account
-
-Recovered from: ACCT-REQ-0006
-The system SHALL let a signed-on customer view their account information (contact, payment card, preferences) and edit and save all of it.
-
-#### Scenario: View and edit account
-
-- **GIVEN** a signed-on customer
-- **WHEN** they open the account and save edits
-- **THEN** the changes are stored
-
-### Requirement: Account screen display
-
-Recovered from: ACCT-SCR-0008
-The account screen SHALL show the signed-on customer's contact information, card type, full card number, expiry month and year, and profile preferences, and SHALL offer a link to edit the account.
-
-#### Scenario: Account screen display
-
-- **GIVEN** a signed-on customer
-- **WHEN** the account screen is displayed
-- **THEN** contact, card type, full card number, expiry month and year, preferences and an edit link are shown
-
 ### Requirement: Address stored without validation
 
 ID: SWHR6-R-0055
@@ -242,17 +132,6 @@ The system SHALL keep per customer a storefront profile with a mandatory preferr
 - **WHEN** it is stored
 - **THEN** it is accepted
 
-### Requirement: Account status mandatory
-
-Recovered from: CUST-BR-0004
-The system SHALL record a mandatory status on every account, with no restriction in the schema on its permitted values.
-
-#### Scenario: Account status mandatory
-
-- **GIVEN** an account without status
-- **WHEN** it is stored
-- **THEN** it is rejected
-
 ### Requirement: Customer, address, card and profile entities
 
 ID: SWHR6-R-0022
@@ -264,28 +143,6 @@ The system SHALL represent a customer as a record keyed by the sign-on user name
 - **GIVEN** a customer
 - **WHEN** its record is read
 - **THEN** one account, one profile, contact, address and card are reachable
-
-### Requirement: Contact information entity
-
-Recovered from: CUST-ENT-0002
-The system SHALL store contact information with mandatory family name, given name, telephone and e-mail, and SHALL require each contact to reference an existing address.
-
-#### Scenario: Contact information entity
-
-- **GIVEN** a contact referencing no address
-- **WHEN** it is stored
-- **THEN** it is rejected
-
-### Requirement: Payment card entity
-
-Recovered from: CUST-ENT-0003
-The system SHALL store a payment card with mandatory card number, card type and expiry date (up to 10 characters), identified by a unique card identifier.
-
-#### Scenario: Payment card entity
-
-- **GIVEN** a card with all three values
-- **WHEN** it is stored
-- **THEN** it gets a unique identifier
 
 ### Requirement: Account entity
 
@@ -323,17 +180,6 @@ The system SHALL write an address as an XML element Address containing a street 
 - **WHEN** it is written as XML
 - **THEN** only one street name element is written
 
-### Requirement: Address XML input
-
-Recovered from: CUST-INT-0002
-WHEN an incoming XML document is read as an address, the system SHALL require the root element to be Address and street name, city, state, zip code and country elements in order, with a second street name optional, and SHALL reject anything else as an XML document error.
-
-#### Scenario: Address XML input
-
-- **GIVEN** a document with root element Order
-- **WHEN** it is read as an address
-- **THEN** it is rejected
-
 ### Requirement: Address creation forms
 
 ID: SWHR6-R-0060
@@ -345,61 +191,6 @@ The system SHALL allow an address to be created from six values, from an existin
 - **GIVEN** an existing address
 - **WHEN** an address is created from it
 - **THEN** all six values are copied
-
-### Requirement: Payment card creation forms
-
-Recovered from: CUST-REQ-0002
-The system SHALL allow a payment card to be created empty, from its three values, or from a copy of an existing card, copying card number, card type and expiry date unchanged without validation.
-
-#### Scenario: Payment card creation forms
-
-- **GIVEN** an existing card
-- **WHEN** a card is created from it
-- **THEN** number, type and expiry are copied unchanged
-
-### Requirement: Card XML exchange
-
-Recovered from: CUST-REQ-0005
-The system SHALL exchange a payment card as an XML element CreditCard containing, in order, CardNumber, CardType and ExpiryDate, and SHALL reject any document whose root element is not CreditCard.
-
-#### Scenario: Card XML exchange
-
-- **GIVEN** a document whose root is not CreditCard
-- **WHEN** it is read as a card
-- **THEN** it is rejected
-
-### Requirement: Card expiry month and year
-
-Recovered from: CUST-RULE-0003
-The system SHALL derive the expiry month as the text before the first "/" in the stored expiry date, and the expiry year as the text after it.
-
-#### Scenario: Card expiry month and year
-
-- **GIVEN** expiry date "04/2005"
-- **WHEN** month and year are requested
-- **THEN** "04" and "2005" are returned
-
-### Requirement: Card expiry defaults
-
-Recovered from: CUST-RULE-0004
-WHEN a card's expiry date is absent or contains no "/", the system SHALL return month "01" and year "2010".
-
-#### Scenario: Card expiry defaults
-
-- **GIVEN** expiry date "0405"
-- **WHEN** month and year are requested
-- **THEN** "01" and "2010" are returned
-
-### Requirement: Card operations transactional, no role
-
-Recovered from: CUST-RULE-0006
-The system SHALL permit any caller to create, read, change and remove stored payment cards without a role check, and SHALL run each such operation within a transaction.
-
-#### Scenario: Card operations transactional, no role
-
-- **GIVEN** a caller with no role
-- **WHEN** it creates a card
-- **THEN** the operation is permitted
 
 ### Requirement: Account status values
 
@@ -437,39 +228,6 @@ WHEN a customer is removed, the system SHALL also remove its account and profile
 - **WHEN** the customer is removed
 - **THEN** all dependent records are removed
 
-### Requirement: Default profile preferences
-
-Recovered from: CUSTACC-BR-0004
-The system SHALL give a new customer profile preferred language "en_US", no favourite category, "my list" on and banner on.
-
-#### Scenario: Default profile preferences
-
-- **GIVEN** a new customer
-- **WHEN** its profile is read
-- **THEN** the defaults are present
-
-### Requirement: Customer removal cascade
-
-Recovered from: CUSTACC-BR-0006
-WHEN a customer is removed, the system SHALL also remove its account, profile, contact information, address and payment card.
-
-#### Scenario: Customer removal cascade
-
-- **GIVEN** a customer with all dependents
-- **WHEN** it is removed
-- **THEN** none of its dependents remain
-
-### Requirement: Transactional customer operations
-
-Recovered from: CUSTACC-BR-0007
-The system SHALL perform every customer, account and profile operation inside a transaction.
-
-#### Scenario: Transactional customer operations
-
-- **GIVEN** a customer operation that fails midway
-- **WHEN** it fails
-- **THEN** no partial change is kept
-
 ### Requirement: Customer owns account and profile
 
 ID: SWHR6-R-0123
@@ -494,28 +252,6 @@ The system SHALL hold per customer a profile with preferred language, favourite 
 - **WHEN** its profile is read
 - **THEN** the four preferences are present
 
-### Requirement: Account contact and card
-
-Recovered from: CUSTACC-ENT-0003
-The system SHALL hold for each account contact information (given name, family name, telephone, email, address) and a credit card (type, number, expiry date).
-
-#### Scenario: Account contact and card
-
-- **GIVEN** an account
-- **WHEN** it is read
-- **THEN** contact and card are present
-
-### Requirement: Customer data model
-
-Recovered from: CUSTACC-ENT-0005
-The system SHALL keep per customer a unique user id, an account (status), contact information, a payment card, and a profile of four storefront preferences.
-
-#### Scenario: Customer data model
-
-- **GIVEN** an existing customer
-- **WHEN** the record is read
-- **THEN** account, contact, card and profile are available
-
 ### Requirement: Customer creation and listing
 
 ID: SWHR6-R-0064
@@ -528,39 +264,6 @@ The system SHALL create exactly one account and one profile for every new custom
 - **WHEN** all customers are requested
 - **THEN** three customers are returned
 
-### Requirement: Empty contact and card with account
-
-Recovered from: CUSTACC-REQ-0003
-The system SHALL create, with each new account, one empty contact-information record and one empty payment-card record linked to it.
-
-#### Scenario: Empty contact and card with account
-
-- **GIVEN** a new account
-- **WHEN** it is created
-- **THEN** empty contact and card records exist
-
-### Requirement: Customer creation provisions account
-
-Recovered from: CUSTACC-RULE-0001
-WHEN a customer record is created, the system SHALL also create an account with status "active" and a profile with default preferences.
-
-#### Scenario: Customer creation provisions account
-
-- **GIVEN** a new user id
-- **WHEN** the customer is created
-- **THEN** an active account and default profile exist
-
-### Requirement: Profile defaults
-
-Recovered from: CUSTACC-RULE-0002
-The system SHALL give a new profile preferred language en_US, no favourite category, my-list enabled and banner enabled.
-
-#### Scenario: Profile defaults
-
-- **GIVEN** a new profile
-- **WHEN** it is read
-- **THEN** the defaults apply
-
 ### Requirement: Empty contact and card when none supplied
 
 ID: SWHR6-R-0065
@@ -572,17 +275,6 @@ WHEN an account is created without supplied contact and card details, the system
 - **GIVEN** an account created without details
 - **WHEN** it is created
 - **THEN** empty contact and card are attached
-
-### Requirement: Customer deletion cascade
-
-Recovered from: CUSTACC-RULE-0004
-WHEN a customer is deleted, the system SHALL also delete its account, profile, contact information, address and credit card.
-
-#### Scenario: Customer deletion cascade
-
-- **GIVEN** a customer with dependents
-- **WHEN** it is deleted
-- **THEN** dependents are deleted
 
 ### Requirement: Customer creation workflow
 
@@ -619,36 +311,3 @@ The system SHALL represent a customer as a record keyed by the sign-on user name
 - **GIVEN** a sign-on user name
 - **WHEN** a customer is created
 - **THEN** it is linked to one account and one profile
-
-### Requirement: Account mandatory parts
-
-Recovered from: CUSTACCT-ENT-0002
-The system SHALL keep for each account a status, one contact record and one payment card, all mandatory, where the contact has family name, given name, telephone, e-mail and an address, and the address has street, city, state, postal code and country mandatory with a second street line optional.
-
-#### Scenario: Account mandatory parts
-
-- **GIVEN** an account without a card
-- **WHEN** it is stored
-- **THEN** it is rejected
-
-### Requirement: Card storage in schema
-
-Recovered from: CUSTACCT-ENT-0003
-The system SHALL store a payment card as card number, card type and expiry date (free text such as 04/04), all mandatory, with the card number held unencrypted.
-
-#### Scenario: Card storage in schema
-
-- **GIVEN** a card number
-- **WHEN** it is stored
-- **THEN** it is held in clear text
-
-### Requirement: Profile schema
-
-Recovered from: CUSTACCT-ENT-0004
-The system SHALL store per customer a profile with a mandatory preferred language, an optional favorite category, and mandatory on/off flags for the my-list and banner preferences.
-
-#### Scenario: Profile schema
-
-- **GIVEN** a profile with no language
-- **WHEN** it is stored
-- **THEN** it is rejected
