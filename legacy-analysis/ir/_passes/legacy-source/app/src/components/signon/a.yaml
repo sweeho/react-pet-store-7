@@ -1,0 +1,10 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/signon
+    description: >
+      The shard directory does not exist. The worktree has no legacy-source/ directory, the remote branch
+      holds no legacy-source files, and legacy-analysis/discovery/capabilities.csv (the closed capability
+      list) and legacy-analysis/sources/ are also missing. No records were emitted because nothing could
+      be read or cited. Re-run once the legacy source and capabilities list are committed.
+suspected_defects: []
