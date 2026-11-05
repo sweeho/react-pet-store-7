@@ -1,0 +1,10 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/apps/admin
+    description: >
+      The shard path does not exist in the worktree or on any branch of the clone
+      (no legacy-source/ directory at all, and legacy-analysis/discovery/capabilities.csv
+      is absent). No records were extracted, to avoid inventing behaviour. Re-run once
+      the legacy source and capability list are committed to the branch.
