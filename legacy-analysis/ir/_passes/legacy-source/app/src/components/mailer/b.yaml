@@ -1,0 +1,11 @@
+records: []
+findings:
+  - kind: unparseable
+    path: legacy-source/app/src/components/mailer
+    description: >
+      The shard directory does not exist in the worktree or on the pushed branch
+      (no legacy-source/ tree is committed), and legacy-analysis/discovery/capabilities.csv
+      is also absent, so no closed capability list could be read. No records were
+      extracted and none were invented. Re-run once legacy-source and the capabilities
+      list are present on the branch.
+suspected_defects: []
