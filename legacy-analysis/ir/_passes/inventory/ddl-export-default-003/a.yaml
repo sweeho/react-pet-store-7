@@ -1,0 +1,269 @@
+{
+ "records": [
+  {
+   "record_key": "SIGN-ENT-0001",
+   "kind": "entity",
+   "capability_key": "sign-on",
+   "requirement": "The system SHALL store one sign-on credential per username, with a mandatory username (max 50 characters) as unique key and a mandatory password (max 50 characters).",
+   "confidence": "high",
+   "confidence_basis": "Primary key and NOT NULL identical in both DDL scripts; no application code read in this shard, so how the password is checked or protected is not seen.",
+   "risk_class": "regulated",
+   "basis": "signon_user has pk on username, username and password not null.",
+   "plain_text": "Each user has one unique username and must have a password to sign on.",
+   "technical_note": "CREATE TABLE signon_user (varchar(50) cloudscape / varchar2(50) oracle). Password column is plain varchar with no hashing indicated in DDL.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "signon_user",
+     "line_start": 74,
+     "line_end": 77,
+     "excerpt": "CREATE TABLE signon_user (\n  username varchar(50) not null,\n  password varchar(50) not null,\n  constraint pk_signon_user primary key (username));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "signon_user",
+     "line_start": 74,
+     "line_end": 77,
+     "excerpt": "CREATE TABLE signon_user (\n  username varchar2(50) not null,\n  password varchar2(50) not null,\n  constraint pk_signon_user primary key (username));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "signon_user",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CUST-ENT-0001",
+   "kind": "entity",
+   "capability_key": "customer-accounts",
+   "requirement": "The system SHALL store one storefront preference profile per profile identifier, requiring a preferred language, a my-list preference flag and a banner preference flag, and treating the favourite category as optional.",
+   "confidence": "high",
+   "confidence_basis": "Constraints identical in both DDL scripts; no foreign key on favorite_category, and application usage not read here.",
+   "risk_class": "presentational",
+   "basis": "profile pk profile_id; preferred_language, my_list_preference, banner_preference not null; favorite_category nullable.",
+   "plain_text": "A customer keeps a preferred language, whether to show their list and banner, and optionally a favourite category.",
+   "technical_note": "CREATE TABLE profile; flags are smallint (cloudscape) / number(1) (oracle); favorite_category char(10)/varchar2(10) with no FK to category.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "profile",
+     "line_start": 125,
+     "line_end": 131,
+     "excerpt": "CREATE TABLE profile (\n  profile_id varchar(40) not null,\n  preferred_language varchar(10) not null,\n  favorite_category char(10),\n  my_list_preference smallint not null,\n  banner_preference smallint not null,\n  constraint pk_profile primary key (profile_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "profile",
+     "line_start": 125,
+     "line_end": 131,
+     "excerpt": "CREATE TABLE profile (\n  profile_id varchar2(40) not null,\n  preferred_language varchar2(10) not null,\n  favorite_category varchar2(10),\n  my_list_preference number(1) not null,\n  banner_preference number(1) not null,\n  constraint pk_profile primary key (profile_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "profile",
+    "db.kind": "table"
+   }
+  },
+  {
+   "record_key": "CHK-ENT-0001",
+   "kind": "entity",
+   "capability_key": "checkout",
+   "requirement": "The system SHALL store each purchase order under a unique order identifier with mandatory user, e-mail, date, locale, value, contact information and payment card, and SHALL reject an order whose contact or card does not exist.",
+   "confidence": "high",
+   "confidence_basis": "Primary key, NOT NULL and two foreign keys identical in both scripts; no application code read here.",
+   "risk_class": "financial",
+   "basis": "purchase_order pk po_id; all columns not null; fk_purchase_order_1 to contact_info, fk_purchase_order_2 to credit_card.",
+   "plain_text": "Every order has a unique number, the buyer, email, date, locale and total, and refers to an existing contact and payment card.",
+   "technical_note": "CREATE TABLE purchase_order. po_date is epoch bigint/number(19).",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "purchase_order",
+     "line_start": 146,
+     "line_end": 157,
+     "excerpt": "CREATE TABLE purchase_order (\n  po_id varchar(40) not null,\n  po_user_id varchar(50) not null,\n  po_email_id varchar(120) not null,\n  po_date bigint not null,\n  po_locale varchar(10) not null,\n  po_value double not null,\n  contact_id varchar(40) not null,\n  card_id varchar(40) not null,\n  constraint pk_purchase_order primary key (po_id),\n  constraint fk_purchase_order_1 foreign key (contact_id) references contact_info (contact_id),\n  constraint fk_purchase_order_2 foreign key (card_id) references credit_card (card_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "purchase_order",
+     "line_start": 146,
+     "line_end": 157,
+     "excerpt": "CREATE TABLE purchase_order (\n  po_id varchar2(40) not null,\n  po_user_id varchar2(50) not null,\n  po_email_id varchar2(120) not null,\n  po_date number(19) not null,\n  po_locale varchar2(10) not null,\n  po_value number(12,2) not null,\n  contact_id varchar2(40) not null,\n  card_id varchar2(40) not null,\n  constraint pk_purchase_order primary key (po_id),\n  constraint fk_purchase_order_1 foreign key (contact_id) references contact_info (contact_id),\n  constraint fk_purchase_order_2 foreign key (card_id) references credit_card (card_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "purchase_order",
+    "db.kind": "table",
+    "db.reads": "contact_info, credit_card"
+   }
+  },
+  {
+   "record_key": "FULF-ENT-0001",
+   "kind": "entity",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL store each supplier order under a unique order identifier with mandatory date, status and contact information, and SHALL reject a supplier order whose contact does not exist.",
+   "confidence": "high",
+   "confidence_basis": "Key, NOT NULL and FK identical in both scripts; status values are constrained elsewhere in the DDL (outside this unit) and not read here.",
+   "risk_class": "operational",
+   "basis": "supplier_order pk po_id; po_date, po_status, contact_id not null; fk_supplier_order_1 to contact_info.",
+   "plain_text": "Each order sent to a supplier has a unique number, a date, a status and a contact.",
+   "technical_note": "CREATE TABLE supplier_order; a separate ALTER (ck_supplier_order_status) restricts the status column, not part of this unit.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "supplier_order",
+     "line_start": 182,
+     "line_end": 188,
+     "excerpt": "CREATE TABLE supplier_order (\n  po_id varchar(40) not null,\n  po_date bigint not null,\n  po_status varchar(20) not null,\n  contact_id varchar(40) not null,\n  constraint pk_supplier_order primary key (po_id),\n  constraint fk_supplier_order_1 foreign key (contact_id) references contact_info (contact_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "supplier_order",
+     "line_start": 182,
+     "line_end": 188,
+     "excerpt": "CREATE TABLE supplier_order (\n  po_id varchar2(40) not null,\n  po_date number(19) not null,\n  po_status varchar2(20) not null,\n  contact_id varchar2(40) not null,\n  constraint pk_supplier_order primary key (po_id),\n  constraint fk_supplier_order_1 foreign key (contact_id) references contact_info (contact_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "supplier_order",
+    "db.kind": "table",
+    "db.reads": "contact_info"
+   }
+  },
+  {
+   "record_key": "FULF-ENT-0002",
+   "kind": "entity",
+   "capability_key": "order-fulfillment",
+   "requirement": "The system SHALL store supplier order lines keyed by order and line number, each with mandatory category, product, item, quantity, unit price and quantity shipped, and SHALL reject a line whose supplier order does not exist.",
+   "confidence": "high",
+   "confidence_basis": "Composite key, NOT NULL and FK identical in both scripts; shipped-quantity limits are not in these lines.",
+   "risk_class": "operational",
+   "basis": "supplier_line_item pk (po_id, line_number); all columns not null; fk to supplier_order.",
+   "plain_text": "Each supplier order consists of numbered lines giving the item, quantity ordered, price and quantity already shipped.",
+   "technical_note": "CREATE TABLE supplier_line_item. No FK to item/product/category; references are by value only.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "supplier_line_item",
+     "line_start": 192,
+     "line_end": 202,
+     "excerpt": "CREATE TABLE supplier_line_item (\n  po_id varchar(40) not null,\n  line_number varchar(10) not null,\n  category_id char(10) not null,\n  product_id char(10) not null,\n  item_id char(10) not null,\n  quantity integer not null,\n  unit_price double not null,\n  quantity_shipped integer not null,\n  constraint pk_supplier_line_item primary key (po_id, line_number),\n  constraint fk_supplier_line_item_1 foreign key (po_id) references supplier_order (po_id));"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "supplier_line_item",
+     "line_start": 192,
+     "line_end": 202,
+     "excerpt": "CREATE TABLE supplier_line_item (\n  po_id varchar2(40) not null,\n  line_number varchar2(10) not null,\n  category_id varchar2(10) not null,\n  product_id varchar2(10) not null,\n  item_id varchar2(10) not null,\n  quantity integer not null,\n  unit_price number(12,2) not null,\n  quantity_shipped integer not null,\n  constraint pk_supplier_line_item primary key (po_id, line_number),\n  constraint fk_supplier_line_item_1 foreign key (po_id) references supplier_order (po_id));"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "supplier_line_item",
+    "db.kind": "table",
+    "db.reads": "supplier_order"
+   }
+  },
+  {
+   "record_key": "RPT-REQ-0001",
+   "kind": "requirement",
+   "capability_key": "sales-reporting",
+   "requirement": "The system SHALL provide an order-status view that lists, for each purchase order, its identifier, user, date, value and the current status held by the order manager.",
+   "confidence": "medium",
+   "confidence_basis": "One clear definition, identical in both scripts; consumers of the view were not read.",
+   "risk_class": "operational",
+   "basis": "v_order_status joins purchase_order to order_manager on order id (inner join, so orders without an order manager row are excluded).",
+   "plain_text": "Orders can be listed with their buyer, date, total and current status.",
+   "technical_note": "CREATE VIEW v_order_status; inner JOIN. Consumers not confirmed here.",
+   "interface": false,
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "v_order_status",
+     "line_start": 226,
+     "line_end": 228,
+     "excerpt": "CREATE VIEW v_order_status AS\n  SELECT p.po_id, p.po_user_id, p.po_date, p.po_value, m.status\n  FROM purchase_order p JOIN order_manager m ON m.order_id = p.po_id;"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "v_order_status",
+     "line_start": 226,
+     "line_end": 228,
+     "excerpt": "CREATE VIEW v_order_status AS\n  SELECT p.po_id, p.po_user_id, p.po_date, p.po_value, m.status\n  FROM purchase_order p JOIN order_manager m ON m.order_id = p.po_id;"
+    }
+   ],
+   "stack_metadata": {
+    "db.object": "v_order_status",
+    "db.kind": "view",
+    "db.reads": "purchase_order, order_manager"
+   }
+  }
+ ],
+ "findings": [],
+ "suspected_defects": [
+  {
+   "capability_key": "checkout",
+   "record_keys": [
+    "CHK-ENT-0001"
+   ],
+   "severity": "medium",
+   "category": "inconsistent-rounding",
+   "title": "Order value is binary floating point in one dialect and fixed-point in the other",
+   "description": "purchase_order.po_value and supplier_line_item.unit_price are double in the Cloudscape script but number(12,2) in the Oracle script, so the same order total can differ by rounding between deployments.",
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "purchase_order",
+     "line_start": 146,
+     "line_end": 157,
+     "excerpt": "po_value double not null"
+    },
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_oracle.sql",
+     "anchor": "purchase_order",
+     "line_start": 146,
+     "line_end": 157,
+     "excerpt": "po_value number(12,2) not null"
+    }
+   ]
+  },
+  {
+   "capability_key": "sign-on",
+   "record_keys": [
+    "SIGN-ENT-0001"
+   ],
+   "severity": "high",
+   "category": "other",
+   "title": "Password column has no protection indicated",
+   "description": "signon_user.password is a plain varchar(50); the DDL gives no indication of hashing, so credentials may be stored in clear text.",
+   "traces": [
+    {
+     "kind": "db_object",
+     "path": "db/schema/petstore_cloudscape.sql",
+     "anchor": "signon_user",
+     "line_start": 74,
+     "line_end": 77,
+     "excerpt": "password varchar(50) not null,"
+    }
+   ]
+  }
+ ]
+}
