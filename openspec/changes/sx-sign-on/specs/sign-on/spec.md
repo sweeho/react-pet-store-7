@@ -2,6 +2,8 @@
 
 ### Requirement: Sign-on credential record
 
+ID: SWHR6-R-0025
+Recovered from: SIGN-ENT-0001
 The system SHALL keep exactly one sign-on credential record per user name, holding the user name and a password, both mandatory.
 
 #### Scenario: Duplicate user name
@@ -12,6 +14,7 @@ The system SHALL keep exactly one sign-on credential record per user name, holdi
 
 ### Requirement: User creation limits
 
+Recovered from: SIGNON-REQ-0005
 The system SHALL reject creation of a user whose user name exceeds 25 characters, whose password exceeds the maximum password length, or whose user name contains '%' or '\*'.
 
 #### Scenario: Forbidden character
@@ -28,6 +31,7 @@ The system SHALL reject creation of a user whose user name exceeds 25 characters
 
 ### Requirement: Credential authentication
 
+Recovered from: SIGNON-REQ-0001
 The system SHALL authenticate a sign-on attempt by looking up the user by user name and comparing the supplied password for exact, case-sensitive equality with the stored password, and an unknown user name SHALL fail authentication.
 
 #### Scenario: Matching password
@@ -44,6 +48,8 @@ The system SHALL authenticate a sign-on attempt by looking up the user by user n
 
 ### Requirement: Sign-on outcome
 
+ID: SWHR6-R-0114
+Recovered from: SIGNON-REQ-0002
 When authentication succeeds the system SHALL mark the session as signed on, record the user name in the session and redirect the user to the originally requested resource, and when it fails the system SHALL redirect to the sign-on error page.
 
 #### Scenario: Success after a protected request
@@ -60,6 +66,8 @@ When authentication succeeds the system SHALL mark the session as signed on, rec
 
 ### Requirement: Customer context on sign-on
 
+ID: SWHR6-R-0110
+Recovered from: SIGN-BR-0003
 When a customer signs on the system SHALL load that customer's account and switch the storefront and the cart to the customer's preferred language.
 
 #### Scenario: Preferred language applied
@@ -70,6 +78,8 @@ When a customer signs on the system SHALL load that customer's account and switc
 
 ### Requirement: Storefront protected resources
 
+ID: SWHR6-R-0024
+Recovered from: SIGN-BR-0001
 The system SHALL require sign-on before showing the account screen, performing an account action, showing the order information (checkout) screen or showing the sign-in welcome screen, matching the requested name by exact equality, and SHALL remember the requested address; all other storefront screens and actions, including the cart, order submission and account edit screen, SHALL be reachable without sign-on.
 
 #### Scenario: Protected page, not signed on
@@ -92,6 +102,8 @@ The system SHALL require sign-on before showing the account screen, performing a
 
 ### Requirement: Remember user name
 
+ID: SWHR6-R-0115
+Recovered from: SIGNON-REQ-0004
 When a sign-on form is submitted with the remember-user-name option the system SHALL store the user name in a cookie lasting 2678400 seconds (31 days), and when the option is absent it SHALL expire any existing sign-on cookie.
 
 #### Scenario: Option selected
@@ -108,6 +120,8 @@ When a sign-on form is submitted with the remember-user-name option the system S
 
 ### Requirement: Storefront sign-out
 
+ID: SWHR6-R-0111
+Recovered from: SIGN-BR-0004
 When a customer signs out the system SHALL end the session, discarding the signed-on state and the cart, start a new session that keeps the current language, and show "You are signed out." with a link to sign in again.
 
 #### Scenario: Sign out
@@ -118,6 +132,8 @@ When a customer signs out the system SHALL end the session, discarding the signe
 
 ### Requirement: Storefront idle timeout
 
+ID: SWHR6-R-0112
+Recovered from: SIGN-BR-0005
 The system SHALL end an idle storefront session after 15 minutes of inactivity.
 
 #### Scenario: Idle session
@@ -128,6 +144,7 @@ The system SHALL end an idle storefront session after 15 minutes of inactivity.
 
 ### Requirement: Supplier administrator access
 
+Recovered from: SO-REQ-0001
 The system SHALL require sign-on with the administrator role for every request to the supplier inventory application, using a sign-in form, and a signed-in user without that role SHALL see "You are not authorised to update the status of orders." instead of the inventory table.
 
 #### Scenario: Not signed in
@@ -144,6 +161,7 @@ The system SHALL require sign-on with the administrator role for every request t
 
 ### Requirement: Supplier logout
 
+Recovered from: SO-REQ-0003
 When the supplier chooses Logout the system SHALL end the session and offer a link to sign in again.
 
 #### Scenario: Logout
@@ -154,6 +172,7 @@ When the supplier chooses Logout the system SHALL end the session and offer a li
 
 ### Requirement: Supplier idle timeout
 
+Recovered from: SO-BR-0004
 The system SHALL end an idle supplier session after 54 minutes.
 
 #### Scenario: Idle supplier session
@@ -164,6 +183,7 @@ The system SHALL end an idle supplier session after 54 minutes.
 
 ### Requirement: Order processing centre role checks
 
+Recovered from: CUSTACC-REQ-0002
 The order processing centre SHALL NOT itself restrict by role who may invoke its component methods, and the customer data component SHALL NOT require any role.
 
 #### Scenario: Caller without role
@@ -172,18 +192,9 @@ The order processing centre SHALL NOT itself restrict by role who may invoke its
 - **WHEN** a method is invoked
 - **THEN** no role check is performed
 
-### Requirement: Sample sign-on users
-
-The initial data load SHALL create the sign-on users j2ee, j2ee-ja, shopper and j2ee-zh with matching customer details.
-
-#### Scenario: Initial load
-
-- **GIVEN** an empty database
-- **WHEN** the initial load runs
-- **THEN** the four sample users exist
-
 ### Requirement: Storefront sign-in screen
 
+Recovered from: SIGN-SCR-0002
 The storefront sign-in screen SHALL offer a returning-customer form (user name, password, "Remember My User Name") and a new-customer sign-up form; the user name SHALL be pre-filled and the password blank when a remembered user name exists, otherwise both fields SHALL be pre-filled with the sample credentials "j2ee"/"j2ee"; and when sign-in fails it SHALL show "There were errors signing you in..." and offer to try again.
 
 #### Scenario: Remembered user name
@@ -206,6 +217,8 @@ The storefront sign-in screen SHALL offer a returning-customer form (user name, 
 
 ### Requirement: Storefront page header
 
+ID: SWHR6-R-0113
+Recovered from: SIGN-SCR-0006
 Every storefront page header SHALL show a search box and links to Account and Cart, and SHALL show "Sign out" when the visitor is signed on and "Sign in" otherwise.
 
 #### Scenario: Signed-on visitor
@@ -222,6 +235,7 @@ Every storefront page header SHALL show a search box and links to Account and Ca
 
 ### Requirement: Supplier sign-in screen
 
+Recovered from: SO-SCR-0002
 The supplier sign-in screen SHALL ask for user id and password pre-filled with "supplier" and "supplier", and when credentials are rejected a Login Error screen SHALL state "You could not be authenticated with the information provided. Please check your Username and Password." with a link back to sign in.
 
 #### Scenario: Screen displayed
