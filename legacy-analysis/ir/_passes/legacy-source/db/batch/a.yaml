@@ -1,0 +1,12 @@
+records: []
+suspected_defects: []
+findings:
+  - kind: unparseable
+    path: legacy-source/db/batch
+    description: >
+      The shard path legacy-source/db/batch does not exist in this worktree: the
+      legacy-source/ directory is absent from branch vortex/legacy-spec/sx-0001
+      (HEAD and origin), and legacy-analysis/discovery/capabilities.csv and
+      legacy-analysis/sources are absent too. No source could be read, so no
+      records were emitted rather than inventing any. A human must confirm the
+      legacy application was committed under legacy-source/ and re-run this shard.
