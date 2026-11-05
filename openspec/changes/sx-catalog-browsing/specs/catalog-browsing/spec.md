@@ -188,7 +188,7 @@ The system SHALL interpret the character encoding of every incoming storefront r
 
 ### Requirement: Catalog lookup indexes
 
-The system SHOULD support retrieval of products by category and items by product efficiently via secondary indexes on product category and item product.
+The system SHALL support retrieval of products by category and items by product efficiently via secondary indexes on product category and item product.
 
 #### Scenario: Items by product
 
