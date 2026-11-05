@@ -5,9 +5,11 @@ findings:
     path: legacy-source/app/src/components/catalog
     description: >
       The shard path legacy-source/app/src/components/catalog does not exist in this
-      worktree, on origin/vortex/legacy-spec/sx-0001 (no legacy-source/ files are
-      committed there), or in any /tmp scratch directory. legacy-analysis/discovery/capabilities.csv
-      and legacy-analysis/sources are also absent from the branch, so no capability_key
-      could be chosen from the closed list and no document source could be cited. No
-      records were emitted rather than inventing any. A human must commit the legacy
-      application sources under legacy-source/ and the discovery files, then re-run this shard.
+      worktree or on origin/vortex/legacy-spec/sx-0001 (no legacy-source/ files are
+      committed there), so there was nothing to read. legacy-analysis/discovery/capabilities.csv
+      and legacy-analysis/sources are also absent from the branch. A scratch copy at
+      /tmp/chk/root holds a capabilities.csv and a partial legacy-source tree (apps/opc only,
+      47 files, no components/catalog); it is not part of this branch and was not used as a
+      source. No records were emitted rather than inventing any. A human must commit the
+      legacy application sources under legacy-source/ (including components/catalog) and
+      the discovery files to the branch, then re-run this shard.
