@@ -4,8 +4,11 @@ findings:
   - kind: unparseable
     path: legacy-source/app/src/apps/admin
     description: >
-      The shard path legacy-source/app/src/apps/admin does not exist in this worktree
-      or on the branch: no legacy-source/ directory is committed, and no
-      legacy-analysis/discovery/capabilities.csv or legacy-analysis/sources exists
-      either. No records were emitted rather than inventing any. A human must commit
-      the legacy sources and the capability list, then re-run this shard.
+      The shard path legacy-source/app/src/apps/admin does not exist. The worktree has
+      no legacy-source/ directory; a separate checkout at /tmp/chk/root holds
+      legacy-source/app/src/apps/ with only opc (no admin, petstore or supplier), and
+      legacy-analysis/sources does not exist. The capability list
+      (legacy-analysis/discovery/capabilities.csv) was found only in that checkout.
+      No records were emitted rather than inventing any. A human must confirm whether
+      the admin module was meant to be part of the legacy source (possibly it lives
+      under another path, e.g. a different app directory), commit it, and re-run.
