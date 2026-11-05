@@ -2,6 +2,8 @@
 
 ### Requirement: Order status view and indexes
 
+ID: SWHR6-R-0072
+Recovered from: BATCH-ENT-0001
 The system SHALL provide an order status view listing for each order its id, user, date, value and processing status, and SHALL index orders by user and date and processing status by status.
 
 #### Scenario: Status view lists orders
@@ -12,6 +14,7 @@ The system SHALL provide an order status view listing for each order its id, use
 
 ### Requirement: Daily order extract for Finance
 
+Recovered from: OBO-REQ-0001
 The system SHALL export every purchase order dated on or after yesterday 00:00 and before today 00:00 to a comma-separated UTF-8 file with double-quote text delimiter, ordered by order id, with columns order id, user id, order date, locale, order value, line-item count and order status.
 
 #### Scenario: Yesterday's orders exported
@@ -28,6 +31,8 @@ The system SHALL export every purchase order dated on or after yesterday 00:00 a
 
 ### Requirement: Stuck order report
 
+ID: SWHR6-R-0073
+Recovered from: OBO-REQ-0002
 The system SHALL report as STUCK every order whose workflow status is PENDING or APPROVED and whose order date is earlier than now minus 24 hours, listing order id, user id, locale, value and status, oldest first.
 
 #### Scenario: Old pending order
@@ -38,6 +43,8 @@ The system SHALL report as STUCK every order whose workflow status is PENDING or
 
 ### Requirement: Orders per status count
 
+ID: SWHR6-R-0074
+Recovered from: OBO-REQ-0003
 The system SHALL include in the aging report a count of orders per workflow status.
 
 #### Scenario: Status counts
@@ -48,6 +55,8 @@ The system SHALL include in the aging report a count of orders per workflow stat
 
 ### Requirement: Supplier invoice mismatch
 
+ID: SWHR6-R-0075
+Recovered from: OBO-REQ-0004
 The aging report SHALL list as a MISMATCH, with order id, manager status and supplier status, every order whose supplier order is COMPLETED while its order manager status is not COMPLETED.
 
 #### Scenario: Lost invoice message
@@ -58,6 +67,8 @@ The aging report SHALL list as a MISMATCH, with order id, manager status and sup
 
 ### Requirement: Low stock report
 
+ID: SWHR6-R-0076
+Recovered from: OBO-REQ-0005
 The system SHALL list inventory items whose quantity is below the low-stock threshold, showing item id, product id, English description and quantity, lowest quantity first then by item id, followed by the number of tracked items and total units in stock.
 
 #### Scenario: Items below threshold
@@ -74,6 +85,7 @@ The system SHALL list inventory items whose quantity is below the low-stock thre
 
 ### Requirement: Retention purge
 
+Recovered from: OBO-REQ-0006
 The system SHALL delete orders whose workflow status is COMPLETED or DENIED and whose order date is earlier than the 180-day retention cutoff, together with their supplier line items, supplier orders, order line items, order manager record, purchase order, and the contact, address and credit card records referenced, in a single transaction.
 
 #### Scenario: Old completed order purged
@@ -90,6 +102,7 @@ The system SHALL delete orders whose workflow status is COMPLETED or DENIED and 
 
 ### Requirement: Purge follows extract
 
+Recovered from: OBO-REQ-0007
 The system SHALL run the order purge only after the order extract has run, so that purged orders have already been exported.
 
 #### Scenario: Purge ordering
@@ -100,6 +113,8 @@ The system SHALL run the order purge only after the order extract has run, so th
 
 ### Requirement: Database backup
 
+ID: SWHR6-R-0077
+Recovered from: OBO-REQ-0008
 The system SHALL perform an online backup of the order database into a backup folder, to be moved into a dated folder.
 
 #### Scenario: Scheduled backup
