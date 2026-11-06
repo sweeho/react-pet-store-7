@@ -89,3 +89,20 @@ The system SHALL support retrieval of purchase orders by ordering user and by or
 - **GIVEN** a large set of purchase orders
 - **WHEN** orders are retrieved by user id or by an order date range
 - **THEN** the lookup uses an index on the user id or order date column respectively
+
+### Requirement: Orders retrieved by date range
+
+Recovered from: SAL-REQ-0005
+The system SHALL allow retrieving purchase orders whose order date falls between two given instants, inclusive.
+
+#### Scenario: Orders within a date range
+
+- **GIVEN** purchase orders dated before, at the start of, inside, at the end of, and after a date range
+- **WHEN** orders are requested between the two instants
+- **THEN** the orders dated at the start, inside and at the end of the range are returned and the others are not
+
+#### Scenario: Reachability not confirmed
+
+- **GIVEN** the legacy finder is declared in the descriptor but its callers are outside the module
+- **WHEN** this requirement is reviewed
+- **THEN** a reviewer confirms whether reporting or batch callers still use it, as live use was not verified
