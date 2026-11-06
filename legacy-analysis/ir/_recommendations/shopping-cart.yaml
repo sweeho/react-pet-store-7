@@ -1,41 +1,18 @@
 recommendations:
-  - record_key: CART-BR-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Web action, EJB action and page links agree. Pass B splits it into CART-REQ-0001 and CART-REQ-0002; the spec merges them.
-  - record_key: CART-BR-0002
-    recommendation: accept
-    confidence: medium
-    reason: >
-      One clear place in code and both passes agree. What quantity 0 does to the line lives in components/cart and is unconfirmed; goes to the Business Owner.
-  - record_key: CART-BR-0004
-    recommendation: accept
-    confidence: medium
-    reason: >
-      Cart creation per session is explicit; anonymous access is inferred from the protected list. Confirm against the running app.
-  - record_key: CART-REQ-0001
-    recommendation: accept
-    confidence: high
-    reason: >
-      Duplicate of CART-BR-0001 add behaviour, wired in mapping, web and EJB actions. Repeat-add semantics unconfirmed.
-  - record_key: CART-REQ-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Duplicate of the remove part of CART-BR-0001, wired in page and both actions.
   - record_key: CART-BR-0003
     recommendation: accept
     confidence: medium
     reason: >
-      Duplicate of CART-BR-0001 update and CART-BR-0002; downstream effect of 0 or negative values unconfirmed.
+      Pass B restates the quantity-update rule already covered by CART-BR-0001 and CART-BR-0002;
+      accept as a duplicate or merge into them.
   - record_key: CART-SCR-0004
     recommendation: accept
     confidence: medium
     reason: >
-      Duplicate of approved CART-SCR-0003 and consistent with it; keep as one requirement.
+      Pass B restates the cart screen already covered by CART-SCR-0003; accept as a duplicate or merge into it.
   - record_key: CART-REQ-0005
     recommendation: accept
     confidence: medium
     reason: >
-      Duplicate of CART-BR-0004; anonymous access is inferred from the protected list, not stated.
+      Pass B restates the anonymous cart rule of CART-BR-0004 and adds that sign-on is demanded only
+      at checkout; confirm that part against the sign-on capability.
