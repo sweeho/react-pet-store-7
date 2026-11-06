@@ -291,6 +291,7 @@ capabilities:
         - "Supplier home and confirmation screen — Home screen on navigation: the home screen is shown with Display Inventory and Logout actions"
         - "Stock update rules — Ticked row with a value: item A's quantity is 12"
         - "Retry pending orders after stock update — Waiting order now shippable: the line ships, an invoice is published and the confirmation is shown"
+        - "Atomic stock update — Re-attempt or invoice publication fails: the stock changes, the re-attempt and the invoice publication are performed in one transaction, so none of them is kept"
       outOfScope:
         - "Order shipment logic (see order-fulfillment)"
       risksAssumptions: []
@@ -386,15 +387,13 @@ capabilities:
         - sales-reporting
     canvas:
       problem: "Administrators need to list orders by status and see sales charts."
-      solution: "Build orders-by-status listing, revenue and units charts and date-range order lookup."
+      solution: "Build the orders-by-status listing and the order-status view."
       userStories:
-        - "As an administrator, I want sales charts for a period, so that I can track revenue."
+        - "As an administrator, I want to list orders by status, so that I can see where each order stands."
       acceptanceCriteria:
         - "Orders listed by status — Orders requested for a status: exactly the three approved orders are returned, each with order id, user id, date as M/D/YYYY with no zero padding, value and status"
-        - "Revenue chart — Revenue by category: one total per category is returned, each the sum of quantity times unit price"
-        - "Units-ordered chart — Units by category: FISH is 10 and DOGS is 4"
-        - "Orders by date range — Orders in range: the orders at the start, inside and at the end are returned"
-        - "Order lookup by user and date — Indexes present: secondary indexes exist on the ordering user id and on the order date"
+        - "Order status view — Order with a status record: the view lists the order identifier, user, date, value and the current status"
+        - "Order status view — Order without a status record: that order is not listed"
       outOfScope:
         - "Nightly extracts (see order-batch-operations)"
       risksAssumptions: []
