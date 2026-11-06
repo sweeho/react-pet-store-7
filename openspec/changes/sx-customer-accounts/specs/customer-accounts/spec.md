@@ -311,3 +311,135 @@ The system SHALL represent a customer as a record keyed by the sign-on user name
 - **GIVEN** a sign-on user name
 - **WHEN** a customer is created
 - **THEN** it is linked to one account and one profile
+
+### Requirement: Sign-on credential registration
+
+ID: SWHR6-R-0158
+Recovered from: SIGNON-REQ-0006
+The system SHALL, WHEN a new-user form is submitted with a user name and password, create the user credentials and proceed; WHEN creation is rejected, the system SHALL show the user creation error page.
+
+#### Scenario: Credentials accepted
+
+- **GIVEN** an unused user name and a password
+- **WHEN** the new-user form is submitted
+- **THEN** the credentials are created and the visitor proceeds
+
+#### Scenario: Credentials refused
+
+- **GIVEN** credential creation is rejected
+- **WHEN** the new-user form is submitted
+- **THEN** the user creation error page is shown
+
+### Requirement: Required contact fields on accounts and orders
+
+ID: SWHR6-R-0159
+Recovered from: ACCT-BR-0004
+The system SHALL treat first name, last name, street address line 1, city, state or province, postal code and telephone as required contact fields, and street address line 2 and e-mail as optional, both for account create/update and for order billing and shipping addresses.
+
+#### Scenario: Required field blank
+
+- **GIVEN** a required contact field is blank
+- **WHEN** the form is submitted
+- **THEN** a "Missing Address Data" error naming the fields is recorded and the contact details are not built
+
+### Requirement: Card type and expiry options
+
+ID: SWHR6-R-0160
+Recovered from: ACCT-BR-0005
+The system SHALL offer card types "Java(TM) Card", "Duke Express" and "Meow Card", expiry months 01-12, and expiry years 2001-2004 at sign-up and 2002-2005 on account edit, and SHALL check only that the card number is not blank.
+
+#### Scenario: Card number blank
+
+- **GIVEN** a blank card number
+- **WHEN** the form is submitted
+- **THEN** the card is treated as not supplied
+
+#### Scenario: Card number present
+
+- **GIVEN** any non-blank card number and a listed type, month and year
+- **WHEN** the form is submitted
+- **THEN** no further format or future-expiry check is applied
+
+### Requirement: Customer data held per user name
+
+ID: SWHR6-R-0161
+Recovered from: ACCT-ENT-0003
+The system SHALL keep for each customer, keyed by user name, contact information, one credit card with expiry as "MM/YYYY", and a profile (preferred language, favourite category, MyList on/off, pet-tips banners on/off).
+
+#### Scenario: Customer stored
+
+- **GIVEN** a customer with contact details, a card and preferences
+- **WHEN** the customer is saved
+- **THEN** all three groups are held under the user name and the expiry is stored as month/year
+
+### Requirement: Account creation captures details
+
+ID: SWHR6-R-0162
+Recovered from: ACCT-REQ-0002
+The system SHALL capture, when a customer account is created, the contact information (first name, last name, street address lines 1 and 2, city, state or province, postal code, country, telephone, e-mail), one payment card (number, card type, expiry month and year) and storefront preferences (preferred language, favourite category, MyList on/off, pet-tips banners on/off).
+
+#### Scenario: Account created with details
+
+- **GIVEN** a completed account creation form
+- **WHEN** it is submitted
+- **THEN** the contact information, payment card and preferences are persisted for the customer
+
+### Requirement: Account screen
+
+ID: SWHR6-R-0163
+Recovered from: ACCT-SCR-0008
+The account screen SHALL show the signed-on customer's contact information, card type, full card number and expiry month/year, and profile preferences, with a link to edit the account.
+
+#### Scenario: Account displayed
+
+- **GIVEN** a signed-on customer with stored details
+- **WHEN** the account screen is displayed
+- **THEN** contact information, card type, unmasked card number, expiry and preferences are shown with an Edit link
+
+### Requirement: Account status mandatory
+
+ID: SWHR6-R-0164
+Recovered from: CUST-BR-0004
+The system SHALL record a mandatory status on every account, with no restriction in the schema on its permitted values.
+
+#### Scenario: Account without status
+
+- **GIVEN** an account with no status
+- **WHEN** it is stored
+- **THEN** the store rejects it
+
+### Requirement: Contact information mandatory fields
+
+ID: SWHR6-R-0165
+Recovered from: CUST-ENT-0002
+The system SHALL store contact information with mandatory family name, given name, telephone and e-mail, and SHALL require each contact to reference an existing address.
+
+#### Scenario: Contact without address
+
+- **GIVEN** a contact referencing no existing address
+- **WHEN** it is stored
+- **THEN** the store rejects it
+
+### Requirement: Payment card mandatory fields
+
+ID: SWHR6-R-0166
+Recovered from: CUST-ENT-0003
+The system SHALL store a payment card with mandatory card number, card type and expiry date (up to 10 characters), identified by a unique card identifier.
+
+#### Scenario: Card missing expiry
+
+- **GIVEN** a card without an expiry date
+- **WHEN** it is stored
+- **THEN** the store rejects it
+
+### Requirement: Account contact and card fields
+
+ID: SWHR6-R-0167
+Recovered from: CUSTACC-ENT-0003
+The system SHALL hold for each account contact information (given name, family name, telephone, email, address) and a credit card (type, number, expiry date).
+
+#### Scenario: Account fields held
+
+- **GIVEN** an account
+- **WHEN** it is stored
+- **THEN** it carries contact information and a credit card with type, number and expiry date
