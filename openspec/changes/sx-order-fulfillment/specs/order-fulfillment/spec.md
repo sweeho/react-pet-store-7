@@ -514,7 +514,7 @@ The system SHALL keep, for each supplier order, a unique order id, an order date
 
 ID: SWHR6-R-0180
 Recovered from: OFL-REQ-0004
-The system SHOULD support fast lookup of purchase orders by order date.
+The system SHALL support fast lookup of purchase orders by order date.
 
 #### Scenario: Find by date
 
@@ -526,7 +526,7 @@ The system SHOULD support fast lookup of purchase orders by order date.
 
 ID: SWHR6-R-0181
 Recovered from: OFL-REQ-0005
-The system SHOULD support fast lookup of orders in the order manager by status.
+The system SHALL support fast lookup of orders in the order manager by status.
 
 #### Scenario: Find by status
 
