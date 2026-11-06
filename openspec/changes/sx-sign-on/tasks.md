@@ -15,6 +15,7 @@
 - [ ] 3.1 Implement protected-resource list with exact matching and original-URL memory
 - [ ] 3.2 Implement supplier administrator-role gating and not-authorised message
 - [ ] 3.3 Implement storefront 15-minute and supplier 54-minute idle timeouts
+- [ ] 3.4 Leave customer component methods role-free; protect only through calling screens
 
 ## 4. Remember user name and sign-out
 
