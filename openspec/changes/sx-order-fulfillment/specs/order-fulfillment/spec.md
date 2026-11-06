@@ -437,3 +437,141 @@ The system SHALL store supplier order lines keyed by order and line number, each
 - **GIVEN** a line for an unknown supplier order
 - **WHEN** it is stored
 - **THEN** it is rejected
+
+### Requirement: Skip fully shipped lines on retry
+
+ID: SWHR6-R-0175
+Recovered from: FUL-BR-0003
+The system SHALL skip, on every fulfilment attempt, any order line whose shipped quantity already equals its ordered quantity, so a line is never shipped or invoiced twice.
+
+#### Scenario: Retry of a shipped line
+
+- **GIVEN** an order line whose shipped quantity equals its ordered quantity
+- **WHEN** a fulfilment attempt is made for the order
+- **THEN** the line is neither shipped nor invoiced again and its stock is not checked
+
+### Requirement: Per-shipment invoice content
+
+ID: SWHR6-R-0176
+Recovered from: FUL-BR-0006
+The system SHALL produce, for each fulfilment attempt that ships at least one line, one invoice carrying the order id, the original order date, a shipping date equal to the time of the attempt, a fixed addressee of "Dear PetStore Customer", and, for each line shipped in this attempt only, its category, product, item, line number, quantity and unit price.
+
+#### Scenario: Partial shipment invoice
+
+- **GIVEN** an order with two lines of which only one ships in this attempt
+- **WHEN** the attempt completes
+- **THEN** one invoice is produced listing only the shipped line, dated at the attempt time, addressed to "Dear PetStore Customer"
+
+#### Scenario: Nothing shipped
+
+- **GIVEN** an order where no line ships in this attempt
+- **WHEN** the attempt completes
+- **THEN** no invoice is produced
+
+### Requirement: Purchase order storage
+
+ID: SWHR6-R-0177
+Recovered from: FULF-ENT-0006
+The system SHALL store each purchase order with a unique order id, a mandatory order date, a mandatory order value, the customer's user id, e-mail address and locale, a contact (name, e-mail, telephone, address with two street lines, city, state, country, postal code), a payment card (number, type, expiry date), and line items each holding category, product, item, line number, a mandatory quantity, a mandatory shipped quantity and a mandatory unit price.
+
+#### Scenario: Order without a date
+
+- **GIVEN** a purchase order lacking an order date or order value
+- **WHEN** it is stored
+- **THEN** it is rejected
+
+#### Scenario: Duplicate order id
+
+- **GIVEN** a stored purchase order with id X
+- **WHEN** another order with id X is stored
+- **THEN** it is rejected
+
+### Requirement: Purchase order line record
+
+ID: SWHR6-R-0178
+Recovered from: FULFIL-ENT-0001
+The system SHALL record each purchase order line with category, product, item, quantity, unit price and quantity shipped, identified by order id and line number, and SHALL NOT allow the quantity shipped to exceed the quantity ordered.
+
+#### Scenario: Shipped exceeds ordered
+
+- **GIVEN** a line with quantity 2
+- **WHEN** its shipped quantity is set to 3
+- **THEN** the change is rejected
+
+### Requirement: Supplier order record
+
+ID: SWHR6-R-0179
+Recovered from: FUL-ENT-0011
+The system SHALL keep, for each supplier order, a unique order id, an order date that is always present, an order status, a shipping contact with address, and its order lines; each line SHALL always carry an ordered quantity, a shipped quantity and a unit price, plus category, product, item and line number.
+
+#### Scenario: Supplier order stored
+
+- **GIVEN** a supplier order with a date, status, contact and lines
+- **WHEN** it is stored
+- **THEN** all parts are retained and the order id is unique
+
+### Requirement: Order date lookup
+
+ID: SWHR6-R-0180
+Recovered from: OFL-REQ-0004
+The system SHOULD support fast lookup of purchase orders by order date.
+
+#### Scenario: Find by date
+
+- **GIVEN** stored purchase orders with different dates
+- **WHEN** orders are searched by order date
+- **THEN** the matching orders are returned
+
+### Requirement: Order status lookup
+
+ID: SWHR6-R-0181
+Recovered from: OFL-REQ-0005
+The system SHOULD support fast lookup of orders in the order manager by status.
+
+#### Scenario: Find by status
+
+- **GIVEN** managed orders with different statuses
+- **WHEN** orders are searched by status
+- **THEN** the matching orders are returned
+
+### Requirement: Order document line items
+
+ID: SWHR6-R-0182
+Recovered from: ORDER-FULFILLMENT-BUSINESS-RULE-0003
+The system SHALL carry each line item in supplier-order and invoice documents with category id, product id, item id, line number, quantity and unit price; when schema validation is applied, quantity SHALL be a positive integer, line number a non-negative integer, unit price a decimal of at least 0, at least one line item SHALL be present, and item ids SHALL be unique within the document.
+
+#### Scenario: Duplicate item ids
+
+- **GIVEN** a document with two line items sharing an item id and validation on
+- **WHEN** the document is validated
+- **THEN** validation fails
+
+#### Scenario: Zero quantity
+
+- **GIVEN** a line item with quantity 0 and validation on
+- **WHEN** the document is validated
+- **THEN** validation fails
+
+### Requirement: Order line item fields
+
+ID: SWHR6-R-0183
+Recovered from: ORDER-FULFILLMENT-ENTITY-0001
+The system SHALL keep, for each order line item, the category id, product id, item id, line number, ordered quantity, unit price and quantity shipped so far.
+
+#### Scenario: Line item created
+
+- **GIVEN** a new order line
+- **WHEN** it is stored
+- **THEN** all seven fields are retained
+
+### Requirement: Invoice document structure
+
+ID: SWHR6-R-0184
+Recovered from: ORDER-FULFILLMENT-INTEGRATION-0002
+The system SHALL build an invoice document containing the order id, user id, order date and shipping date (each date formatted yyyy-MM-dd) and one or more line items, in the TPA Invoice namespace.
+
+#### Scenario: Invoice built
+
+- **GIVEN** an order shipped on 2004-05-06 with one line
+- **WHEN** the invoice document is built
+- **THEN** it contains order id, user id, order date, shipping date as yyyy-MM-dd, and the line item, in that order
