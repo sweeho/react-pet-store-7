@@ -18,3 +18,75 @@ The cart screen SHALL show "Your Shopping Cart is Empty." when the cart has no l
 - **WHEN** the cart screen is displayed
 - **THEN** each line shows an item link, a Remove link, an editable quantity of at most 10 characters and the unit cost
 - **AND** an Update Cart button, the cart total as currency and a Check Out link to the order information screen are shown
+
+### Requirement: Anonymous per-session cart
+
+ID: SWHR6-R-0109
+Recovered from: CART-BR-0004
+The system SHALL give every visitor session its own cart from the start of the session, without sign-on, and SHALL keep that cart for the life of the session.
+
+#### Scenario: Visitor arrives
+
+- **GIVEN** a visitor who has not signed on
+- **WHEN** a new session starts
+- **THEN** an empty cart exists for that session and the visitor can use it
+
+#### Scenario: Cart persists within session
+
+- **GIVEN** a session whose cart holds items
+- **WHEN** the visitor navigates between pages in the same session
+- **THEN** the same cart contents are retained
+
+### Requirement: Cart operations
+
+ID: SWHR6-R-0189
+Recovered from: CART-BR-0001
+The system SHALL let a shopper add one item to the cart from the item, product-list or search page, remove an item from the cart, and update the quantities of all cart lines in one submission.
+
+#### Scenario: Add an item
+
+- **GIVEN** a shopper viewing an item, product list or search results
+- **WHEN** the shopper chooses Add to Cart for an item
+- **THEN** the item is added to the cart
+
+#### Scenario: Update all quantities at once
+
+- **GIVEN** a cart with several lines
+- **WHEN** the shopper edits quantities and chooses Update Cart
+- **THEN** every line's quantity is updated in one submission
+
+### Requirement: Non-numeric quantity treated as zero
+
+ID: SWHR6-R-0190
+Recovered from: CART-BR-0002
+The system SHALL treat a line's quantity as 0 when a quantity entered during a cart update is not a whole number.
+
+#### Scenario: Non-numeric quantity
+
+- **GIVEN** a shopper updates the cart
+- **WHEN** a quantity entered is not a whole number
+- **THEN** that line's quantity is treated as 0
+
+### Requirement: Add to cart
+
+ID: SWHR6-R-0191
+Recovered from: CART-REQ-0001
+The system SHALL add one unit of an item to the shopper's cart when the shopper chooses Add to Cart from a product item list, an item page or search results, and SHALL then show the cart.
+
+#### Scenario: Add to Cart chosen
+
+- **GIVEN** a shopper viewing a product item list
+- **WHEN** the shopper chooses Add to Cart on an item
+- **THEN** one unit of the item is added and the cart screen is shown
+
+### Requirement: Remove cart line
+
+ID: SWHR6-R-0192
+Recovered from: CART-REQ-0002
+The system SHALL remove an item line from the cart when the shopper chooses Remove on that line.
+
+#### Scenario: Remove chosen
+
+- **GIVEN** a cart containing a line for an item
+- **WHEN** the shopper chooses Remove on that line
+- **THEN** the line is no longer in the cart
