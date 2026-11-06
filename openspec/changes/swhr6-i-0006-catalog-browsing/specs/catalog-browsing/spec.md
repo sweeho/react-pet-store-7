@@ -56,6 +56,8 @@ The system SHALL hold item list price, unit cost, image and description per loca
 
 ### Requirement: Category, product and item hierarchy
 
+ID: SWHR6-R-0029
+Recovered from: CATALOG-ENT-0001
 The system SHALL keep the catalog as categories, products and items, where each product belongs to exactly one category and each item belongs to exactly one product, with list price and unit cost as two-decimal amounts of up to 10 digits.
 
 #### Scenario: Item belongs to one product
@@ -84,6 +86,8 @@ The system SHALL let a visitor navigate category -> product list -> item list ->
 
 ### Requirement: Home page category entry points
 
+ID: SWHR6-R-0031
+Recovered from: CATB-SCR-0001
 The home page SHALL let the shopper open each of the five pet categories: Fish, Dogs, Reptiles, Cats and Birds.
 
 #### Scenario: Open a category from the home page
@@ -94,6 +98,8 @@ The home page SHALL let the shopper open each of the five pet categories: Fish, 
 
 ### Requirement: Item detail screen
 
+ID: SWHR6-R-0014
+Recovered from: CAT-SCR-0002
 The item detail screen SHALL show the item's name and attribute, its image, a "List Price" taken from the item's list price and a "Your Price" taken from the item's unit cost, both formatted as currency for the page's locale, and an Add to Cart link for that item.
 
 #### Scenario: Item displayed
@@ -104,6 +110,8 @@ The item detail screen SHALL show the item's name and attribute, its image, a "L
 
 ### Requirement: Category sidebar
 
+ID: SWHR6-R-0027
+Recovered from: CAT-BR-0007
 The side navigation SHALL list the first 5 catalog categories in the page language, each linking to that category's product list.
 
 #### Scenario: Sidebar displayed
@@ -114,6 +122,8 @@ The side navigation SHALL list the first 5 catalog categories in the page langua
 
 ### Requirement: Price shown per list
 
+ID: SWHR6-R-0026
+Recovered from: CAT-BR-0003
 The product's item list SHALL show each item's list price, while keyword search results SHALL show each item's unit cost ("Your Price") and the cart SHALL show the unit cost.
 
 #### Scenario: Price in item list versus search
@@ -124,6 +134,8 @@ The product's item list SHALL show each item's list price, while keyword search 
 
 ### Requirement: Keyword search
 
+ID: SWHR6-R-0141
+Recovered from: CAT-BR-0004
 The system SHALL split the search text on whitespace into keywords and SHALL return the items, in the shopper's current locale, whose product name, category id or item description contains ANY of the keywords.
 
 #### Scenario: Any keyword matches
@@ -158,6 +170,8 @@ The system SHALL serve every storefront page in English (en_US), Japanese (ja_JP
 
 ### Requirement: Language switching
 
+ID: SWHR6-R-0116
+Recovered from: CAT-BR-0006
 The system SHALL let a shopper switch the storefront language to English, Japanese or Chinese from any page, and SHALL apply the chosen language to the shopper's cart as well.
 
 #### Scenario: Switch to Chinese
@@ -168,6 +182,8 @@ The system SHALL let a shopper switch the storefront language to English, Japane
 
 ### Requirement: Catalog list caching
 
+ID: SWHR6-R-0028
+Recovered from: CAT-BR-0008
 The system SHALL cache the rendered category navigation and product item lists for 5 minutes per page and request parameters, shared by all visitors, so catalog changes MAY take up to 5 minutes to appear on those pages.
 
 #### Scenario: Change within cache window
@@ -178,6 +194,8 @@ The system SHALL cache the rendered category navigation and product item lists f
 
 ### Requirement: Request character encoding
 
+ID: SWHR6-R-0030
+Recovered from: CATB-REQ-0001
 The system SHALL interpret the character encoding of every incoming storefront request as UTF-8 before any request parameter is read, and SHALL pass the request and response on unaltered.
 
 #### Scenario: Japanese search text
@@ -188,6 +206,8 @@ The system SHALL interpret the character encoding of every incoming storefront r
 
 ### Requirement: Catalog lookup indexes
 
+ID: SWHR6-R-0143
+Recovered from: CAT-REQ-0004
 The system SHALL support retrieval of products by category and items by product efficiently via secondary indexes on product category and item product.
 
 #### Scenario: Items by product
@@ -195,3 +215,51 @@ The system SHALL support retrieval of products by category and items by product 
 - **GIVEN** a large catalog
 - **WHEN** items of one product are requested
 - **THEN** they are retrieved by index
+
+### Requirement: Localised catalog details
+
+ID: SWHR6-R-0117
+Recovered from: CATB-ENT-0001
+The system SHALL store the catalog as category, product and item, each product belonging to exactly one category and each item to exactly one product, with localised name, image and description held per locale as one row per category, product or item and locale.
+
+#### Scenario: One detail row per locale
+
+- **GIVEN** a category available in en_US and ja_JP
+- **WHEN** its details are stored
+- **THEN** one detail row exists for each locale
+
+### Requirement: Encoding filter pass-through
+
+ID: SWHR6-R-0144
+Recovered from: CATB-BR-0002
+The system SHALL, once the encoding has been set, pass the same request and response on to the next filter in the chain without altering the response.
+
+#### Scenario: Request continues after encoding is set
+
+- **GIVEN** a request that reaches the encoding filter
+- **WHEN** the filter has finished setting the encoding
+- **THEN** the same request and response are passed on unaltered
+
+### Requirement: Product category lookup index
+
+ID: SWHR6-R-0142
+Recovered from: CAT-REQ-0001
+The system SHALL support fast lookup of products by category identifier, for listing the products of a category.
+
+#### Scenario: Products of a category
+
+- **GIVEN** a large catalog
+- **WHEN** the products of one category are listed
+- **THEN** they are retrieved through the category index
+
+### Requirement: Per-locale pricing and currency
+
+ID: SWHR6-R-0145
+Recovered from: CATB-BR-0011
+The system SHALL price each item separately for each locale, in that locale's currency, and SHALL format displayed prices as currency of the page locale (US dollars for en_US, yen for ja_JP, yuan for zh_CN).
+
+#### Scenario: Japanese price
+
+- **GIVEN** an item with a ja_JP price row
+- **WHEN** it is displayed in ja_JP
+- **THEN** its own ja_JP price is shown formatted as yen, not converted from another locale
