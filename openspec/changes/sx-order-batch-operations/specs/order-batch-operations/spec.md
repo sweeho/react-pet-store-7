@@ -77,3 +77,51 @@ The system SHALL perform an online backup of the order database into a backup fo
 - **GIVEN** the database is online
 - **WHEN** the backup job runs
 - **THEN** a backup is written to the backup folder and moved to a dated folder
+
+### Requirement: Nightly order extract
+
+ID: SWHR6-R-0173
+Recovered from: OBO-REQ-0001
+The system SHALL export every purchase order whose date is on or after yesterday 00:00 and before today 00:00 to a comma-separated UTF-8 file with double-quote text delimiter, ordered by order id, with columns order id, user id, order date, locale, order value, line-item count and order status.
+
+#### Scenario: Yesterday's orders exported
+
+- **GIVEN** orders placed yesterday and today
+- **WHEN** the nightly extract runs
+- **THEN** only yesterday's orders are written, ordered by order id, with the seven columns
+
+#### Scenario: Order without manager record
+
+- **GIVEN** an order in the window that has no order manager record
+- **WHEN** the nightly extract runs
+- **THEN** the order is not included in the file
+
+### Requirement: Old finished order purge
+
+ID: SWHR6-R-0174
+Recovered from: OBO-REQ-0006
+The system SHALL delete orders whose workflow status is COMPLETED or DENIED and whose order date is earlier than the retention cutoff (180 days), together with their supplier line items, supplier orders, order line items, order manager record, purchase order, and the contact, address and credit card records the order referenced, in a single transaction.
+
+#### Scenario: Old completed order purged
+
+- **GIVEN** a COMPLETED order older than 180 days and a PENDING order older than 180 days
+- **WHEN** the purge runs
+- **THEN** the completed order and its dependent records are removed together and the pending order remains
+
+#### Scenario: Order without contact record
+
+- **GIVEN** a COMPLETED order older than 180 days with no contact record
+- **WHEN** the purge runs
+- **THEN** the order is not purged
+
+### Requirement: Purge follows extract
+
+ID: SWHR6-R-0172
+Recovered from: OBO-REQ-0007
+The system SHALL run the order purge only after the order extract has run, so that purged orders have already been exported.
+
+#### Scenario: Purge ordering
+
+- **GIVEN** the nightly batch cycle
+- **WHEN** the purge is scheduled
+- **THEN** it starts only after the order extract has run
