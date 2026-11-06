@@ -101,3 +101,33 @@ The system SHALL, when inventory changes are submitted, replace the stock quanti
 - **GIVEN** an item with quantity 5
 - **WHEN** an unticked row with new quantity 12 is submitted
 - **THEN** the quantity remains 5
+
+### Requirement: Non-numeric quantity fails the update
+
+ID: SWHR6-R-0169
+Recovered from: INV-BR-0004
+The system SHALL, GIVEN a ticked row whose new quantity is not a whole number WHEN inventory changes are submitted, fail the request with an error and SHALL NOT show the success page.
+
+#### Scenario: Non-integer quantity
+
+- **GIVEN** a ticked row whose new quantity is "abc"
+- **WHEN** inventory changes are submitted
+- **THEN** the request fails with an error and the success page is not shown
+
+### Requirement: Order re-fulfilment and invoicing after inventory update
+
+ID: SWHR6-R-0168
+Recovered from: INV-WF-0005
+The system SHALL, after applying submitted inventory changes, re-attempt fulfilment of every pending supplier order, publish an invoice for each order that shipped at least one line in that attempt, and then show the message "Inventory was updated successfully" with options to display inventory again or log out; the stock changes, the re-attempt and the invoice publication SHALL be performed in one transaction.
+
+#### Scenario: Pending order now shippable
+
+- **GIVEN** a pending order whose lines can be shipped after the stock change
+- **WHEN** inventory changes are submitted
+- **THEN** the order is fulfilled, an invoice is published, and the confirmation message is shown with options to display inventory again or log out
+
+#### Scenario: Atomic update
+
+- **GIVEN** submitted inventory changes
+- **WHEN** the re-attempt or invoice publication fails
+- **THEN** the stock changes, the re-attempt and the invoice publication are not committed
