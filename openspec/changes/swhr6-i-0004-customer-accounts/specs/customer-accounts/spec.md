@@ -6,6 +6,7 @@ Recovered from: ACCT-WF-0001
 The system SHALL let a new visitor sign up by entering a user name, a password and the password repeated, SHALL create the sign-on user, and SHALL then show the customer details form; WHEN the user name is already taken or the user cannot be created, the system SHALL show "The User name you have chosen is in use. Please choose another username."
 
 #### Scenario: Visitor sign-up
+ID: SWHR6-R-0020.01
 - **GIVEN** user name "shopper" already exists 
 - **WHEN** a visitor submits it at sign-up
 - **THEN** the in-use message is shown and no user is created
@@ -16,6 +17,7 @@ Recovered from: ACCT-WF-0002
 WHEN a new user submits the customer details form, the system SHALL create the customer record for that user, store the contact, card and profile details, mark the user as signed on, switch the storefront to the chosen preferred language, and return the user to the screen they were trying to reach before signing up (or the home screen if that was the account screen).
 
 #### Scenario: Customer details submission
+ID: SWHR6-R-0054.01
 - **GIVEN** a new user redirected to sign-on from the cart
 - **WHEN** the details form is submitted
 - **THEN** the user is signed on, the storefront uses the chosen language and the cart is shown
@@ -26,6 +28,7 @@ Recovered from: ACCT-BR-0003
 The system SHALL treat last name, first name, street address, city, state or province, postal code and telephone as required contact fields, and street address line 2 and e-mail as optional, when an account is created or updated; WHEN a required contact field is blank, the system records the missing fields but does not show them to the customer and does not stop the request (suspected defect).
 
 #### Scenario: Required contact fields
+ID: SWHR6-R-0048.01
 - **GIVEN** a form with city blank
 - **WHEN** it is submitted
 - **THEN** the missing field is recorded but the customer is shown no message
@@ -36,6 +39,7 @@ Recovered from: ACCT-BR-0006
 The system SHALL let a customer choose a preferred language (English, Japanese, Chinese) and a favourite category (Birds, Cats, Dogs, Fish, Reptiles), and turn MyList and pet-tips banners on or off; WHEN a preference box is left unticked the preference SHALL be saved as off.
 
 #### Scenario: Profile preference options
+ID: SWHR6-R-0049.01
 - **GIVEN** the MyList box is unticked
 - **WHEN** the form is submitted
 - **THEN** MyList is saved as off
@@ -46,6 +50,7 @@ Recovered from: ACCT-BR-0007
 WHEN a signed-on customer saves changes to their account, the system SHALL overwrite the stored contact, card and profile details with the submitted values and switch the storefront to the saved preferred language.
 
 #### Scenario: Account edit saves and switches language
+ID: SWHR6-R-0050.01
 - **GIVEN** a signed-on customer
 - **WHEN** they save with language ja_JP
 - **THEN** details are replaced and the storefront is Japanese
@@ -56,6 +61,7 @@ Recovered from: ACCT-BR-0009
 WHEN a signed-on customer has MyList on and a page with the MyList panel is shown, the system SHALL list up to 10 products of the favourite category, each linking to its item list.
 
 #### Scenario: MyList panel
+ID: SWHR6-R-0051.01
 - **GIVEN** MyList on and 14 products in the favourite category
 - **WHEN** the home page is shown
 - **THEN** 10 products are listed, each linking to its item list
@@ -66,6 +72,7 @@ Recovered from: ACCT-BR-0010
 WHEN a signed-on customer has banners on and the home or cart screen is shown, the system SHALL show the banner for the favourite category (dogs, cats, reptiles, birds or fish), and SHALL show the dogs banner when the category is not one of those.
 
 #### Scenario: Pet-tips banner
+ID: SWHR6-R-0052.01
 - **GIVEN** banners on and an unrecognised favourite category
 - **WHEN** the cart is shown
 - **THEN** the dogs banner is shown
@@ -76,6 +83,7 @@ Recovered from: ACCT-BR-0011
 The address forms SHALL offer a fixed, locale-specific list of states or provinces (English: California, New York, Texas; Japanese: Tokyo, Osaka, Nagano; Chinese: Beijing, Shanghai, Jiangsu) and of countries (United States, Canada, Japan, China in the page's language).
 
 #### Scenario: Address list options
+ID: SWHR6-R-0053.01
 - **GIVEN** the English address form
 - **WHEN** it is displayed
 - **THEN** the state list holds California, New York and Texas
@@ -86,6 +94,7 @@ Recovered from: CUST-BR-0001
 The system SHALL store an address exactly as supplied, accepting any combination of values including empty or null, with no check of required fields, length or format at creation.
 
 #### Scenario: Address stored without validation
+ID: SWHR6-R-0055.01
 - **GIVEN** an address with null or empty values
 - **WHEN** it is created
 - **THEN** it is accepted unchanged
@@ -96,6 +105,7 @@ Recovered from: CUST-BR-0002
 The system SHALL store a payment card as card number, card type and expiry date, all mandatory, with the number held in clear text and the expiry as free text (for example 04/04) with no format or date check. (The address pass states a different rule under this key: any caller may create, read, change and remove an address without a role check.)
 
 #### Scenario: Payment card storage rule
+ID: SWHR6-R-0021.01
 - **GIVEN** a card with expiry "04/04"
 - **WHEN** it is stored
 - **THEN** the text is kept unchanged
@@ -106,6 +116,7 @@ Recovered from: CUST-BR-0003
 The system SHALL keep per customer a storefront profile with a mandatory preferred language, an optional favourite category, and mandatory my-list and banner preference flags.
 
 #### Scenario: Profile mandatory fields
+ID: SWHR6-R-0056.01
 - **GIVEN** a profile with no favourite category
 - **WHEN** it is stored
 - **THEN** it is accepted
@@ -116,6 +127,7 @@ Recovered from: CUST-ENT-0001
 The system SHALL represent a customer as a record keyed by the sign-on user name linked to exactly one account and one profile, the account linking to contact information and one payment card; an address SHALL be six text fields (street line 1, street line 2, city, state, zip code, country) persisted as a stand-alone record with line 2 optional; a payment card SHALL be card number, card type and expiry date with no length, format or checksum constraint; and a profile SHALL require preferred language, my-list and banner flags with favourite category optional.
 
 #### Scenario: Customer, address, card and profile entities
+ID: SWHR6-R-0022.01
 - **GIVEN** a customer
 - **WHEN** its record is read
 - **THEN** one account, one profile, contact, address and card are reachable
@@ -126,6 +138,7 @@ Recovered from: CUST-ENT-0004
 The system SHALL store an account with a mandatory status, and SHALL require each account to reference an existing contact and an existing payment card.
 
 #### Scenario: Account entity
+ID: SWHR6-R-0057.01
 - **GIVEN** an account referencing a missing card
 - **WHEN** it is stored
 - **THEN** it is rejected
@@ -136,6 +149,7 @@ Recovered from: CUST-ENT-0005
 The system SHALL identify a customer by the sign-on user name, and SHALL require each customer to reference an existing sign-on user, an existing account and an existing profile.
 
 #### Scenario: Customer references
+ID: SWHR6-R-0058.01
 - **GIVEN** a customer whose sign-on user does not exist
 - **WHEN** it is stored
 - **THEN** it is rejected
@@ -146,6 +160,7 @@ Recovered from: CUST-INT-0001
 The system SHALL write an address as an XML element Address containing a street name, then the second street name only when non-empty, then city, state, zip code and country, in that order.
 
 #### Scenario: Address XML output
+ID: SWHR6-R-0059.01
 - **GIVEN** an address with empty street line 2
 - **WHEN** it is written as XML
 - **THEN** only one street name element is written
@@ -156,6 +171,7 @@ Recovered from: CUST-REQ-0001
 The system SHALL allow an address to be created from six values, from an existing address, or empty, and SHALL return all six stored values on request.
 
 #### Scenario: Address creation forms
+ID: SWHR6-R-0060.01
 - **GIVEN** an existing address
 - **WHEN** an address is created from it
 - **THEN** all six values are copied
@@ -166,6 +182,7 @@ Recovered from: CUSTACC-BR-0001
 The system SHALL give an account a status that is either "active" or "disabled", and SHALL create new accounts as "active".
 
 #### Scenario: Account status values
+ID: SWHR6-R-0061.01
 - **GIVEN** a new account
 - **WHEN** it is created
 - **THEN** its status is "active"
@@ -176,6 +193,7 @@ Recovered from: CUSTACC-BR-0002
 The system SHALL create a new account with status "active" and default a new profile to language "en_US", no favourite category, "my list" enabled and banners enabled.
 
 #### Scenario: Default account status and profile
+ID: SWHR6-R-0122.01
 - **GIVEN** a newly created profile
 - **WHEN** it is read
 - **THEN** language is en_US, favourite category empty, my-list on, banners on
@@ -186,6 +204,7 @@ Recovered from: CUSTACC-BR-0003
 WHEN a customer is removed, the system SHALL also remove its account and profile, removing an account SHALL remove its contact information and credit card, and removing contact information SHALL remove its address.
 
 #### Scenario: Cascading customer removal
+ID: SWHR6-R-0062.01
 - **GIVEN** a customer with account, profile, contact, address and card
 - **WHEN** the customer is removed
 - **THEN** all dependent records are removed
@@ -196,6 +215,7 @@ Recovered from: CUSTACC-ENT-0001
 The system SHALL represent a customer as a record identified by a unique user id, owning exactly one account (status active or disabled) and exactly one profile.
 
 #### Scenario: Customer owns account and profile
+ID: SWHR6-R-0123.01
 - **GIVEN** an existing customer
 - **WHEN** it is read
 - **THEN** one account and one profile are available
@@ -206,6 +226,7 @@ Recovered from: CUSTACC-ENT-0002
 The system SHALL hold per customer a profile with preferred language, favourite category, a "my list" preference and a banner preference.
 
 #### Scenario: Profile fields
+ID: SWHR6-R-0063.01
 - **GIVEN** a customer
 - **WHEN** its profile is read
 - **THEN** the four preferences are present
@@ -216,6 +237,7 @@ Recovered from: CUSTACC-REQ-0001
 The system SHALL create exactly one account and one profile for every new customer, linked to that customer, and SHALL be able to list all customers.
 
 #### Scenario: Customer creation and listing
+ID: SWHR6-R-0064.01
 - **GIVEN** three customers
 - **WHEN** all customers are requested
 - **THEN** three customers are returned
@@ -226,6 +248,7 @@ Recovered from: CUSTACC-RULE-0003
 WHEN an account is created without supplied contact and card details, the system SHALL create empty contact-information and credit-card records and attach them to the account.
 
 #### Scenario: Empty contact and card when none supplied
+ID: SWHR6-R-0065.01
 - **GIVEN** an account created without details
 - **WHEN** it is created
 - **THEN** empty contact and card are attached
@@ -236,6 +259,7 @@ Recovered from: CUSTACC-WFL-0001
 WHEN a customer is created, the system SHALL create an account with status "active" and a profile with default preferences, and attach both to the customer.
 
 #### Scenario: Customer creation workflow
+ID: SWHR6-R-0066.01
 - **GIVEN** a new customer
 - **WHEN** it is created
 - **THEN** account and profile are attached
@@ -246,6 +270,7 @@ Recovered from: CUSTACC-WFL-0002
 WHEN an account is created without supplied contact information and credit card, the system SHALL create empty ones and attach them.
 
 #### Scenario: Account creation without details
+ID: SWHR6-R-0067.01
 - **GIVEN** an account created without details
 - **WHEN** it is created
 - **THEN** empty contact and card are attached
@@ -256,6 +281,7 @@ Recovered from: CUSTACCT-ENT-0001
 The system SHALL represent a customer as a record keyed by the sign-on user name, linked to exactly one account and exactly one profile.
 
 #### Scenario: Customer keyed by sign-on user name
+ID: SWHR6-R-0068.01
 - **GIVEN** a sign-on user name
 - **WHEN** a customer is created
 - **THEN** it is linked to one account and one profile
