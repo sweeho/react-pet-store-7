@@ -185,3 +185,21 @@ The system SHALL read configuration switches such as the confirmation-mail switc
 - **GIVEN** a switch is not defined in configuration
 - **WHEN** it is read
 - **THEN** a locator error is raised
+
+### Requirement: Independent customer e-mail switches
+
+ID: SWHR6-R-0185
+Recovered from: NOT-RULE-0005
+The system SHALL provide three independent on/off switches for customer e-mail: one for approval/denial notices, one for per-shipment notices and one for completed-order notices. A switch SHALL be read once when the notification service starts, not per message.
+
+#### Scenario: One switch disabled
+
+- **GIVEN** the approval/denial switch is off and the shipment and completed-order switches are on
+- **WHEN** an order is approved and later shipped
+- **THEN** no approval notice is sent and the shipment notice is sent
+
+#### Scenario: Switch changed after start
+
+- **GIVEN** the notification service has started with a switch on
+- **WHEN** the switch value is changed afterwards
+- **THEN** the running service keeps using the value it read at start
