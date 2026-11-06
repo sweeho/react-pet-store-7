@@ -1,32 +1,7 @@
 recommendations:
-  - record_key: REPT-BR-0002
-    recommendation: accept
-    confidence: high
-    reason: >
-      Calculation and the inclusive finder SQL agree. Including denied and pending orders is a suspected
-      defect; confirm what the code does and send the status question to the Business Owner.
-  - record_key: REPT-BR-0003
-    recommendation: edit
-    confidence: medium
-    reason: >
-      Code sums unit quantities, not order counts, and any non-REVENUE request takes this branch. Chart
-      label was not read; the Business Owner should confirm intent in the defect register.
-    edited_requirement: >
-      WHEN any chart other than revenue is requested for a period the system SHALL sum the ordered
-      quantities of every line item of every order dated within the period, grouped by category, or by
-      item within a given category. Orders of every status are included.
   - record_key: SAL-REQ-0005
     recommendation: accept
     confidence: medium
     reason: >
-      The EJB-QL BETWEEN and the generated SQL agree on inclusive bounds; the revenue chart calls this
-      finder, which confirms live use.
-  - record_key: SAL-REQ-0001
-    recommendation: edit
-    confidence: low
-    reason: >
-      Only index DDL was seen and the purpose is inferred; the indexes may serve order-batch-operations.
-      Keep as a non-functional note, not a business rule.
-    edited_requirement: >
-      The system SHOULD support retrieval of purchase orders by ordering user and by order date
-      efficiently, using secondary indexes on the order's user id and order date.
+      The finder with BETWEEN is declared in the descriptor and REPT-BR-0002 shows the reporting caller uses
+      the same date-range lookup, so it is already covered; accept as a supporting capability.
