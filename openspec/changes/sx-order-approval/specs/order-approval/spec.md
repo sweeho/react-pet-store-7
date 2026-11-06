@@ -65,3 +65,33 @@ The system SHALL represent a batch of order status changes as an OrderApproval d
 - **GIVEN** an OrderApproval document with no Order entries
 - **WHEN** it is read with validation on
 - **THEN** it is rejected as invalid
+
+### Requirement: ja_JP automatic approval
+
+ID: SWHR6-R-0170
+Recovered from: APPR-BR-0002
+The system SHALL automatically approve an order placed in the ja_JP locale whose total price is strictly less than 50000, and SHALL leave every other ja_JP order pending administrator approval.
+
+#### Scenario: Below the limit
+
+- **GIVEN** a ja_JP order with total 49999
+- **WHEN** it is received
+- **THEN** it is approved automatically
+
+#### Scenario: At the limit
+
+- **GIVEN** a ja_JP order with total exactly 50000
+- **WHEN** it is received
+- **THEN** it stays PENDING
+
+### Requirement: No automatic approval for other locales
+
+ID: SWHR6-R-0171
+Recovered from: APPR-BR-0003
+The system SHALL NOT automatically approve an order whose locale is neither en_US nor ja_JP, whatever its total.
+
+#### Scenario: zh_CN order
+
+- **GIVEN** a zh_CN order of any value
+- **WHEN** it is received
+- **THEN** it stays PENDING until an administrator approves or denies it
