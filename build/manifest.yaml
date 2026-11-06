@@ -291,6 +291,7 @@ capabilities:
         - "Supplier home and confirmation screen — Home screen on navigation: the home screen is shown with Display Inventory and Logout actions"
         - "Stock update rules — Ticked row with a value: item A's quantity is 12"
         - "Retry pending orders after stock update — Waiting order now shippable: the line ships, an invoice is published and the confirmation is shown"
+        - "Atomic stock update — Re-attempt or invoice publication fails: the stock changes, the re-attempt and the invoice publication are performed in one transaction, so none of them is kept"
       outOfScope:
         - "Order shipment logic (see order-fulfillment)"
       risksAssumptions: []
