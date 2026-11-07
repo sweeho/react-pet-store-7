@@ -1,0 +1,166 @@
+sections:
+  - section: Summary
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Context
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Goals
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Non-goals
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Users
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: User journeys
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Capability map
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Screens
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Constraints and assumptions
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Open questions
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
+  - section: Sources
+    from:
+      - openspec/changes/swhr6-i-0002-bootstrap-landing-page-and/specs/site-shell/spec.md
+      - openspec/changes/swhr6-i-0003-sign-on/specs/sign-on/spec.md
+      - openspec/changes/swhr6-i-0004-customer-accounts/specs/customer-accounts/spec.md
+      - openspec/changes/swhr6-i-0005-catalog-data-maintenance/specs/catalog-data-maintenance/spec.md
+      - openspec/changes/swhr6-i-0006-catalog-browsing/specs/catalog-browsing/spec.md
+      - openspec/changes/swhr6-i-0007-shopping-cart/specs/shopping-cart/spec.md
+      - openspec/changes/swhr6-i-0008-checkout/specs/checkout/spec.md
+      - openspec/changes/swhr6-i-0009-order-approval/specs/order-approval/spec.md
+      - openspec/changes/swhr6-i-0010-inventory-management/specs/inventory-management/spec.md
+      - openspec/changes/swhr6-i-0011-order-fulfilment/specs/order-fulfillment/spec.md
+      - openspec/changes/swhr6-i-0012-order-notifications/specs/order-notifications/spec.md
+      - openspec/changes/swhr6-i-0013-sales-reporting/specs/sales-reporting/spec.md
+      - openspec/changes/swhr6-i-0014-order-batch-operations/specs/order-batch-operations/spec.md
