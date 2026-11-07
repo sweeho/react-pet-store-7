@@ -1,6 +1,6 @@
 # Pet Store Modernisation
 
-_PRD v5 · approved 2026-11-07 · by sweeho@gmail.com. Published from the Design Workbench — edit it there, not here._
+_PRD v9 · approved 2026-11-07 · by sweeho@gmail.com. Published from the Design Workbench — edit it there, not here._
 
 ## Summary
 
