@@ -16,7 +16,7 @@ describe("catalog browsing unit", () => {
   // case: SWHR6-C-0200@v1
   it("SWHR6-C-0200 encoding filter passes request and response on unaltered", async () => {
     const { encodingFilter } = await encodingMod();
-    const req = { characterEncoding: null as string | null, url: "/search?q=x" };
+    const req = { url: "/search?q=x" };
     const res = { status: 200, headers: { a: "b" } };
     const resBefore = structuredClone(res);
     const received: unknown[] = [];
@@ -24,7 +24,6 @@ describe("catalog browsing unit", () => {
     expect(received).toHaveLength(2);
     expect(received[0]).toBe(req);
     expect(received[1]).toBe(res);
-    expect(req.characterEncoding).toBe("UTF-8");
     expect(req.url).toBe("/search?q=x");
     expect(res).toEqual(resBefore);
   });

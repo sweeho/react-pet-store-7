@@ -86,13 +86,16 @@ describe("catalog browsing integration: caching", () => {
     const before = c.listProducts(categoryId, "en_US", { now: t0 });
     expect(before.map((p: { id: string }) => p.id)).toContain(productId);
     const newcomer = await makeProduct(categoryId);
-    const after = c.listProducts(categoryId, "en_US", { now: t0 + 60_000 });
-    const ids = after.map((p: { id: string }) => p.id);
-    const staleIds = before.map((p: { id: string }) => p.id);
-    // Either the cached (stale) list or the fresh list is acceptable inside the window.
-    const isStale = JSON.stringify(ids) === JSON.stringify(staleIds);
-    const isFresh = ids.includes(newcomer) && ids.includes(productId);
-    expect(isStale || isFresh).toBe(true);
+    const idsAt = (now: number) =>
+      (c.listProducts(categoryId, "en_US", { now }) as { id: string }[]).map((p) => p.id);
+    // Within the 5-minute window the cached (stale) list is served.
+    const within = idsAt(t0 + 60_000);
+    expect(within).not.toContain(newcomer);
+    expect(within).toEqual(before.map((p: { id: string }) => p.id));
+    // After the window the cache has expired and the fresh list is served.
+    const expired = idsAt(t0 + 5 * 60_000 + 1_000);
+    expect(expired).toContain(newcomer);
+    expect(expired).toContain(productId);
   });
 });
 
