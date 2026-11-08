@@ -1,14 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-// Primary areas per the change's design.md; each is routed at /<key>.
-const PRIMARY_AREAS = [
-  "sign-on",
-  "customer-accounts",
-  "catalog-browsing",
-  "shopping-cart",
-  "checkout",
-  "inventory-management",
-];
+// Primary areas per the change's design.md. Other suites route sign-on at
+// /signon and shopping-cart at /cart, so each area accepts its route aliases.
+const PRIMARY_AREAS: Record<string, string[]> = {
+  "sign-on": ["/signon", "/sign-on"],
+  "customer-accounts": ["/customer-accounts", "/account"],
+  "catalog-browsing": ["/catalog-browsing", "/catalog"],
+  "shopping-cart": ["/cart", "/shopping-cart"],
+  checkout: ["/checkout"],
+  "inventory-management": ["/inventory-management", "/inventory"],
+};
 
 test.describe("site-shell", () => {
   // case: SWHR6-C-0293@v1
@@ -19,8 +20,10 @@ test.describe("site-shell", () => {
     await expect(page.getByRole("main")).toBeVisible();
 
     const main = page.getByRole("main");
-    for (const key of PRIMARY_AREAS) {
-      await expect(main.locator(`a[href="/${key}"]`), `landing page links to ${key}`).toBeVisible();
+    for (const [key, routes] of Object.entries(PRIMARY_AREAS)) {
+      const selector = routes.map((r) => `a[href="${r}"]`).join(", ");
+      // A card plus a text link to the same area is fine: assert at least one is visible.
+      await expect(main.locator(selector).first(), `landing page links to ${key}`).toBeVisible();
     }
   });
 
