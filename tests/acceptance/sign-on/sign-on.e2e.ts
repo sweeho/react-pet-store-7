@@ -82,7 +82,9 @@ test.describe("sign-on (e2e)", () => {
     await expect(page.getByText("You are signed out.")).toBeVisible();
     await page.goto("/cart");
     await expect(page.getByRole("textbox", { name: /quantity/i })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /sign out/i })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /sign out|ログアウト|サインアウト/i })).toHaveCount(
+      0,
+    );
     await expect(page.locator("html")).toHaveAttribute("lang", /^ja/);
   });
 
@@ -174,6 +176,9 @@ test.describe("sign-on (e2e)", () => {
         "You could not be authenticated with the information provided. Please check your Username and Password.",
       ),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: /sign[\s-]?in|log[\s-]?in|back/i })).toBeVisible();
+    // scoped to main content: the header also shows a "Sign in" link to unauthenticated visitors
+    await expect(
+      page.getByRole("main").getByRole("link", { name: /sign[\s-]?in|log[\s-]?in|back/i }),
+    ).toBeVisible();
   });
 });
