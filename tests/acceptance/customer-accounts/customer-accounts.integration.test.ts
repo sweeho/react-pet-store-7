@@ -19,11 +19,17 @@ describe("customer-accounts integration", () => {
     db.createSignOnUser("u60");
     db.createCustomer("u60", withDetails);
     const c = db.getCustomer("u60");
-    expect(c.account).toBeDefined();
-    expect(c.profile).toBeDefined();
-    expect(c.account.contact).toBeDefined();
-    expect(c.account.address).toBeDefined();
-    expect(c.account.card).toBeDefined();
+    for (const part of [
+      c.account,
+      c.profile,
+      c.account.contact,
+      c.account.address,
+      c.account.card,
+    ]) {
+      expect(part).not.toBeNull();
+      expect(part).not.toBeUndefined();
+      expect(typeof part).toBe("object");
+    }
   });
 
   // case: SWHR6-C-0062@v1
@@ -50,15 +56,25 @@ describe("customer-accounts integration", () => {
     expect(a.street1).toBe("");
     expect(a.street2).toBeNull();
     expect(a.city).toBeNull();
+    expect(a.state).toBe("");
+    expect(a.zip).toBe("");
     expect(a.country).toBeNull();
   });
 
   // case: SWHR6-C-0069@v1
   it("SWHR6-C-0069 profile without favourite category accepted", async () => {
     const db = await customerDb();
-    expect(() =>
-      db.storeProfile({ language: "en_US", favoriteCategory: null, myList: true, banners: true }),
-    ).not.toThrow();
+    db.createSignOnUser("u69");
+    const profileId = db.storeProfile({
+      language: "en_US",
+      favoriteCategory: null,
+      myList: true,
+      banners: true,
+    });
+    db.storeCustomer({ userName: "u69", profileId });
+    const p = db.getCustomer("u69").profile;
+    expect(p.favoriteCategory).toBeNull();
+    expect(p.language).toBe("en_US");
   });
 
   // case: SWHR6-C-0070@v1
@@ -105,8 +121,9 @@ describe("customer-accounts integration", () => {
     db.createSignOnUser("u76");
     db.createCustomer("u76");
     const p = db.getCustomer("u76").profile;
+    expect(Object.keys(p).sort()).toEqual(["banners", "favoriteCategory", "language", "myList"]);
     for (const k of ["language", "favoriteCategory", "myList", "banners"]) {
-      expect(p).toHaveProperty(k);
+      expect(p[k]).not.toBeUndefined();
     }
   });
 
@@ -117,15 +134,20 @@ describe("customer-accounts integration", () => {
       db.createSignOnUser(n);
       db.createCustomer(n);
     }
-    expect(db.listCustomers()).toHaveLength(3);
+    const names = db.listCustomers().map((c: { userName: string }) => c.userName);
+    expect(names).toEqual(expect.arrayContaining(["a77", "b77", "c77"]));
+    expect(names.filter((n: string) => n.endsWith("77")).sort()).toEqual(["a77", "b77", "c77"]);
   });
 
   // case: SWHR6-C-0078@v1
   it("SWHR6-C-0078 account created without details gets empty contact and card", async () => {
     const db = await customerDb();
     const acct = db.createAccount();
-    expect(acct.contact).toBeDefined();
-    expect(acct.card).toBeDefined();
+    for (const part of [acct.contact, acct.card]) {
+      expect(part).not.toBeNull();
+      expect(typeof part).toBe("object");
+      expect(Object.keys(part).length).toBeGreaterThan(0);
+    }
     expect(Object.values(acct.contact).every((v) => v === "" || v == null)).toBe(true);
     expect(Object.values(acct.card).every((v) => v === "" || v == null)).toBe(true);
   });
@@ -135,8 +157,10 @@ describe("customer-accounts integration", () => {
     const db = await customerDb();
     db.createSignOnUser("u79");
     const c = db.createCustomer("u79");
-    expect(c.account).toBeDefined();
-    expect(c.profile).toBeDefined();
+    expect(c.account).toBeTruthy();
+    expect(c.profile).toBeTruthy();
+    expect(typeof c.account).toBe("object");
+    expect(typeof c.profile).toBe("object");
   });
 
   // case: SWHR6-C-0081@v1

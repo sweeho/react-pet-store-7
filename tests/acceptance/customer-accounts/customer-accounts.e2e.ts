@@ -11,6 +11,8 @@ import { expect, test, type Page } from "@playwright/test";
 //  - cart at /cart; storefront root "/" has data-testid "mylist" (entries are links
 //    data-testid "mylist-entry"), "banner" (data-banner="dogs|cats|..."), and <html lang>
 //  - address form at /address with a "State" select
+//  - GET /api/products -> { products: [{ name }] } is the full catalogue (14 products); each
+//    mylist-entry's text is a product name
 
 const save = (page: Page) => page.getByRole("button", { name: /^(save|submit|continue)/i });
 
@@ -44,10 +46,12 @@ async function signUp(page: Page, name: string) {
   await page.getByLabel(/^user ?name$/i).fill(name);
   await page.getByLabel(/^password$/i).fill("pass");
   await page.getByLabel(/^repeat password$/i).fill("pass");
-  await page.getByRole("button", { name: /sign ?up|create|submit/i }).click();
+  await page.getByRole("button", { name: /^sign ?up$/i }).click();
 }
 
 test.describe("customer-accounts (e2e)", () => {
+  test.use({ locale: "en-US" });
+
   // case: SWHR6-C-0058@v1
   test("[SWHR6-C-0058] sign-up with existing user name shows in-use message", async ({
     page,
@@ -72,8 +76,12 @@ test.describe("customer-accounts (e2e)", () => {
     // the form was accepted (not failed for another reason): saved details show on the account page
     await page.goto("/account");
     await expect(page.getByText("duke@example.com", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText(/missing|required|address data/i)).toHaveCount(0);
-    // that the blank city is recorded as missing is asserted in the integration test (SWHR6-C-0061)
+    await expect(page.getByRole("main").getByText(/missing|required|address data/i)).toHaveCount(0);
+    await expect(page.getByRole("alert")).toHaveCount(0);
+    // the blank city was stored as blank: the edit form shows it empty
+    await page.goto("/account/edit");
+    await expect(page.getByLabel("City", { exact: true })).toHaveValue("");
+    // the missing-field record itself is asserted in the integration test (SWHR6-C-0061)
   });
 
   // case: SWHR6-C-0063@v1
@@ -95,14 +103,24 @@ test.describe("customer-accounts (e2e)", () => {
   });
 
   // case: SWHR6-C-0064@v1
-  test("[SWHR6-C-0064] MyList shows 10 of 14 products with links", async ({ page }) => {
+  test("[SWHR6-C-0064] MyList shows 10 of 14 products with links", async ({ page, request }) => {
+    const catalogue = (
+      (await (await request.get("/api/products")).json()).products as { name: string }[]
+    ).map((p) => p.name);
+    expect(catalogue).toHaveLength(14);
     await signOn(page, "mylistuser");
     await page.goto("/");
     const entries = page.getByTestId("mylist").getByTestId("mylist-entry");
     await expect(entries).toHaveCount(10);
+    const shown: string[] = [];
     for (const e of await entries.all()) {
       await expect(e).toHaveAttribute("href", /.+/);
+      shown.push(((await e.textContent()) ?? "").trim());
     }
+    const matched = catalogue.filter((name) => shown.some((t) => t.includes(name)));
+    expect(matched).toHaveLength(10);
+    // the other 4 catalogue products are left out
+    expect(catalogue.filter((name) => !matched.includes(name))).toHaveLength(4);
   });
 
   // case: SWHR6-C-0065@v1
@@ -115,13 +133,67 @@ test.describe("customer-accounts (e2e)", () => {
   // case: SWHR6-C-0066@v1
   test("[SWHR6-C-0066] English address form state list", async ({ page }) => {
     await page.goto("/address");
-    const options = await page
-      .getByLabel("State", { exact: true })
-      .locator("option")
-      .allTextContents();
-    expect(options.map((o) => o.trim())).toEqual(
-      expect.arrayContaining(["California", "New York", "Texas"]),
-    );
+    await expect(page.locator("html")).toHaveAttribute("lang", /^en/);
+    const options = (
+      await page.getByLabel("State", { exact: true }).locator("option").allTextContents()
+    )
+      .map((o) => o.trim())
+      .filter((o) => o !== "");
+    const states = [
+      "Alabama",
+      "Alaska",
+      "Arizona",
+      "Arkansas",
+      "California",
+      "Colorado",
+      "Connecticut",
+      "Delaware",
+      "Florida",
+      "Georgia",
+      "Hawaii",
+      "Idaho",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Louisiana",
+      "Maine",
+      "Maryland",
+      "Massachusetts",
+      "Michigan",
+      "Minnesota",
+      "Mississippi",
+      "Missouri",
+      "Montana",
+      "Nebraska",
+      "Nevada",
+      "New Hampshire",
+      "New Jersey",
+      "New Mexico",
+      "New York",
+      "North Carolina",
+      "North Dakota",
+      "Ohio",
+      "Oklahoma",
+      "Oregon",
+      "Pennsylvania",
+      "Rhode Island",
+      "South Carolina",
+      "South Dakota",
+      "Tennessee",
+      "Texas",
+      "Utah",
+      "Vermont",
+      "Virginia",
+      "Washington",
+      "West Virginia",
+      "Wisconsin",
+      "Wyoming",
+    ];
+    expect(options).toEqual(expect.arrayContaining(states));
+    // every entry is plain English (ASCII) text
+    for (const o of options) expect(o).toMatch(/^[\x20-\x7e]+$/);
   });
 
   // case: SWHR6-C-0067@v1
@@ -129,13 +201,13 @@ test.describe("customer-accounts (e2e)", () => {
     await page.goto("/cart");
     // anonymous visitor is redirected to sign-on, then signs up
     await page
-      .getByRole("link", { name: /sign ?up|create/i })
-      .first()
+      .getByRole("main")
+      .getByRole("link", { name: /^sign ?up$/i })
       .click();
     await page.getByLabel(/^user ?name$/i).fill("cartbuyer");
     await page.getByLabel(/^password$/i).fill("pass");
     await page.getByLabel(/^repeat password$/i).fill("pass");
-    await page.getByRole("button", { name: /sign ?up|create|submit/i }).click();
+    await page.getByRole("button", { name: /^sign ?up$/i }).click();
     await fillDetails(page);
     await page.getByLabel("Language", { exact: true }).selectOption("ja_JP");
     await save(page).click();
