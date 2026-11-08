@@ -43,7 +43,7 @@ async function signUp(page: Page, name: string) {
   await page.goto("/signup");
   await page.getByLabel(/^user ?name$/i).fill(name);
   await page.getByLabel(/^password$/i).fill("pass");
-  await page.getByLabel(/repeat password/i).fill("pass");
+  await page.getByLabel(/^repeat password$/i).fill("pass");
   await page.getByRole("button", { name: /sign ?up|create|submit/i }).click();
 }
 
@@ -128,7 +128,7 @@ test.describe("customer-accounts (e2e)", () => {
       .click();
     await page.getByLabel(/^user ?name$/i).fill("cartbuyer");
     await page.getByLabel(/^password$/i).fill("pass");
-    await page.getByLabel(/repeat password/i).fill("pass");
+    await page.getByLabel(/^repeat password$/i).fill("pass");
     await page.getByRole("button", { name: /sign ?up|create|submit/i }).click();
     await fillDetails(page);
     await page.getByLabel("Language", { exact: true }).selectOption("ja_JP");
