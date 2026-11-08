@@ -19,8 +19,8 @@ async function signOn(page: Page) {
     .getByRole("link", { name: /sign[\s-]?in|sign[\s-]?on|log[\s-]?in/i })
     .first()
     .click();
-  await page.getByLabel(/user ?name|user id/i).fill(USER);
-  await page.getByLabel(/password/i).fill(PASS);
+  await page.getByLabel(/^(user ?name|user id)$/i).fill(USER);
+  await page.getByLabel(/^password$/i).fill(PASS);
   await page.getByRole("button", { name: /sign[\s-]?in|sign[\s-]?on|log[\s-]?in/i }).click();
   await page.waitForLoadState("networkidle");
 }
@@ -55,7 +55,7 @@ test.describe("checkout", () => {
     await toCheckout(page);
     const email = await page
       .getByRole("group", { name: /billing/i })
-      .getByLabel(/e-?mail/i)
+      .getByLabel(/^e-?mail$/i)
       .inputValue();
     const posted = page.waitForRequest(
       (r) => /\/api\/orders/.test(r.url()) && r.method() === "POST",
@@ -89,7 +89,7 @@ test.describe("checkout", () => {
     await toCheckout(page);
     const email = await page
       .getByRole("group", { name: /billing/i })
-      .getByLabel(/e-?mail/i)
+      .getByLabel(/^e-?mail$/i)
       .inputValue();
     await submit(page).click();
     await expect(page.getByText("Your Order is Complete")).toBeVisible();
@@ -119,9 +119,9 @@ test.describe("checkout", () => {
       ]) {
         await expect(g.getByLabel(f).first()).toBeVisible();
       }
-      await expect(g.getByLabel(/first name/i)).not.toHaveValue("");
-      await expect(g.getByLabel(/last name/i)).not.toHaveValue("");
-      await expect(g.getByLabel(/e-?mail/i)).not.toHaveValue("");
+      await expect(g.getByLabel(/^first name$/i)).not.toHaveValue("");
+      await expect(g.getByLabel(/^last name$/i)).not.toHaveValue("");
+      await expect(g.getByLabel(/^e-?mail$/i)).not.toHaveValue("");
     }
   });
 
@@ -136,7 +136,7 @@ test.describe("checkout", () => {
     });
     await page
       .getByRole("group", { name: /billing/i })
-      .getByLabel(/city/i)
+      .getByLabel(/^city$/i)
       .fill("");
     await submit(page).click();
     await expect(
