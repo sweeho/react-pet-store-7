@@ -71,7 +71,7 @@ test.describe("customer-accounts (e2e)", () => {
     await page.waitForLoadState("networkidle");
     // the form was accepted (not failed for another reason): saved details show on the account page
     await page.goto("/account");
-    await expect(page.getByText("Duke")).toBeVisible();
+    await expect(page.getByText("duke@example.com", { exact: true }).first()).toBeVisible();
     await expect(page.getByText(/missing|required|address data/i)).toHaveCount(0);
     // that the blank city is recorded as missing is asserted in the integration test (SWHR6-C-0061)
   });
@@ -82,12 +82,14 @@ test.describe("customer-accounts (e2e)", () => {
   }) => {
     await signOn(page, "editor");
     await page.goto("/account/edit");
-    await fillDetails(page, { City: "Osaka-edited" });
+    await fillDetails(page, { City: "Osaka-edited", "Address 1": "9 Edited Ave" });
     await page.getByLabel("Language", { exact: true }).selectOption("ja_JP");
     await save(page).click();
     await page.waitForLoadState("networkidle");
     await page.goto("/account");
-    await expect(page.getByText("Osaka-edited")).toBeVisible();
+    await expect(page.getByText("Osaka-edited", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("9 Edited Ave", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("1 Main St", { exact: true })).toHaveCount(0);
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("lang", /^ja/);
   });

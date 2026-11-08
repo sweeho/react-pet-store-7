@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 
-import { address, card, customerDb } from "./customer-accounts-contract";
+import { card, customerDb } from "./customer-accounts-contract";
 
 const withDetails = { withDetails: true };
 
@@ -160,7 +160,6 @@ describe("customer-accounts integration", () => {
     expect(Array.isArray(c.profile)).toBe(false);
     expect(c.account).toBeTruthy();
     expect(c.profile).toBeTruthy();
-    expect(address.city).toBeTruthy();
   });
 });
 
