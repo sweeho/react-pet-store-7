@@ -1,28 +1,51 @@
+import { render } from "@testing-library/react";
+import { MemoryRouter, Outlet, useRoutes, type RouteObject } from "react-router";
 import type { ComponentType } from "react";
 
 /**
- * Locates the shell's shared components by file name under src/components,
- * so the tests do not depend on a single directory layout. Contract:
- *  - a layout module (file name contains "layout") exporting a component that
- *    renders its `children` (or a router <Outlet/>) inside header/nav/footer;
- *  - an empty-frame module (file name contains "empty"), default or named export;
- *  - an error-frame module (file name contains "error") taking `onRetry`.
+ * Renders the application's real page modules (src/pages) at a URL, the way
+ * vite-plugin-pages mounts them, which vitest does not load. Contract:
+ *  - a page module exports its component as default;
+ *  - `src/pages/_layout.tsx`, when present, wraps every page and renders an <Outlet/>;
+ *  - the shared empty frame carries data-testid="empty-frame";
+ *  - the shared error frame carries data-testid="error-frame" and contains a
+ *    button named "Retry".
  */
-const modules = import.meta.glob<Record<string, unknown>>(
-  ["/src/components/**/*.tsx", "!/src/components/**/*.test.tsx"],
+const modules = import.meta.glob<{ default?: ComponentType }>(
+  ["/src/pages/**/*.tsx", "!/src/pages/**/*.test.tsx"],
   { eager: true },
 );
 
-export function findShared(fileHint: RegExp): ComponentType<Record<string, unknown>> {
-  const entry = Object.entries(modules).find(([path]) =>
-    fileHint.test(path.split("/").pop() ?? ""),
+function toPath(file: string): string {
+  return file
+    .replace("/src/pages/", "")
+    .replace(/\.tsx$/, "")
+    .replace(/(^|\/)index$/, "")
+    .replace(/\[\.\.\.[^\]]+\]/g, "*")
+    .replace(/\[([^\]]+)\]/g, ":$1");
+}
+
+function buildRoutes(): RouteObject[] {
+  const Layout = modules["/src/pages/_layout.tsx"]?.default;
+  const children: RouteObject[] = Object.entries(modules)
+    .filter(([file]) => !file.endsWith("/_layout.tsx") && modules[file].default)
+    .map(([file, mod]) => {
+      const Page = mod.default!;
+      return { path: toPath(file) || undefined, index: toPath(file) === "", element: <Page /> };
+    });
+  return Layout
+    ? [{ path: "/", element: <Layout />, children }]
+    : [{ path: "/", element: <Outlet />, children }];
+}
+
+function Routes() {
+  return useRoutes(buildRoutes());
+}
+
+export function renderApp(url: string) {
+  return render(
+    <MemoryRouter initialEntries={[url]}>
+      <Routes />
+    </MemoryRouter>,
   );
-  if (!entry) throw new Error(`No shared component file matching ${fileHint} under src/components`);
-  const mod = entry[1];
-  const exported =
-    mod.default ??
-    Object.entries(mod).find(([k, v]) => typeof v === "function" && fileHint.test(k))?.[1] ??
-    Object.values(mod).find((v) => typeof v === "function");
-  if (typeof exported !== "function") throw new Error(`${entry[0]} exports no component`);
-  return exported as ComponentType<Record<string, unknown>>;
 }
