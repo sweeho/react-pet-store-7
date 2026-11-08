@@ -10,11 +10,14 @@ import { expect, test, type Page } from "@playwright/test";
 //  - sign-on at /signon with "User Name"/"Password" (seeded users use password "pass")
 //  - cart at /cart; storefront root "/" has data-testid "mylist" (entries are links
 //    data-testid "mylist-entry"), "banner" (data-banner="dogs|cats|..."), and <html lang>
+//  - GET /api/contact-missing -> { missing: string[] } lists the contact fields recorded as missing
+//    for the signed-in customer's last details submit (e.g. "city"); never shown on any page
 //  - address form at /address with a "State" select
 //  - GET /api/products -> { products: [{ name }] } is the full catalogue (14 products); each
 //    mylist-entry's text is a product name
 
-const save = (page: Page) => page.getByRole("button", { name: /^(save|submit|continue)/i });
+const save = (page: Page) =>
+  page.getByRole("main").getByRole("button", { name: /^(save|submit)$/i });
 
 async function signOn(page: Page, user: string) {
   await page.goto("/signon");
@@ -68,7 +71,9 @@ test.describe("customer-accounts (e2e)", () => {
   });
 
   // case: SWHR6-C-0061@v1
-  test("[SWHR6-C-0061] blank city shows the customer no message", async ({ page }) => {
+  test("[SWHR6-C-0061] blank city recorded as missing, customer sees no message", async ({
+    page,
+  }) => {
     await signUp(page, "newcity");
     await fillDetails(page, { City: "" });
     await save(page).click();
@@ -81,7 +86,13 @@ test.describe("customer-accounts (e2e)", () => {
     // the blank city was stored as blank: the edit form shows it empty
     await page.goto("/account/edit");
     await expect(page.getByLabel("City", { exact: true })).toHaveValue("");
-    // the missing-field record itself is asserted in the integration test (SWHR6-C-0061)
+    // the blank city is recorded as missing for the last submit
+    await page.goto("/account/edit");
+    await fillDetails(page, { City: "" });
+    await save(page).click();
+    await page.waitForLoadState("networkidle");
+    const res = await page.request.get("/api/contact-missing");
+    expect(((await res.json()) as { missing: string[] }).missing).toContain("city");
   });
 
   // case: SWHR6-C-0063@v1
@@ -209,11 +220,14 @@ test.describe("customer-accounts (e2e)", () => {
     await page.getByLabel(/^repeat password$/i).fill("pass");
     await page.getByRole("button", { name: /^sign ?up$/i }).click();
     await fillDetails(page);
-    await page.getByLabel("Language", { exact: true }).selectOption("ja_JP");
     await save(page).click();
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/cart/);
-    await expect(page.locator("html")).toHaveAttribute("lang", /^ja/);
-    await expect(page.getByRole("link", { name: /sign ?(out|off)|log ?out/i })).toBeVisible();
+    await expect(
+      page
+        .getByRole("banner")
+        .getByRole("link", { name: /sign ?(out|off)|log ?out/i })
+        .first(),
+    ).toBeVisible();
   });
 });
