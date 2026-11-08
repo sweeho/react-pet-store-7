@@ -69,7 +69,11 @@ test.describe("customer-accounts (e2e)", () => {
     await fillDetails(page, { City: "" });
     await save(page).click();
     await page.waitForLoadState("networkidle");
+    // the form was accepted (not failed for another reason): saved details show on the account page
+    await page.goto("/account");
+    await expect(page.getByText("Duke")).toBeVisible();
     await expect(page.getByText(/missing|required|address data/i)).toHaveCount(0);
+    // that the blank city is recorded as missing is asserted in the integration test (SWHR6-C-0061)
   });
 
   // case: SWHR6-C-0063@v1

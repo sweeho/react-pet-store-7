@@ -126,6 +126,8 @@ describe("customer-accounts integration", () => {
     const acct = db.createAccount();
     expect(acct.contact).toBeDefined();
     expect(acct.card).toBeDefined();
+    expect(Object.values(acct.contact).every((v) => v === "" || v == null)).toBe(true);
+    expect(Object.values(acct.card).every((v) => v === "" || v == null)).toBe(true);
   });
 
   // case: SWHR6-C-0079@v1
