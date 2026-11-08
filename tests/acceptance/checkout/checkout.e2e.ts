@@ -43,7 +43,10 @@ async function addAnItem(page: Page) {
 }
 
 async function toCheckout(page: Page) {
-  await page.getByRole("link", { name: /check ?out/i }).click();
+  await page
+    .getByRole("main")
+    .getByRole("link", { name: /^check ?out$/i })
+    .click();
   await page.waitForURL(/checkout/i);
 }
 
@@ -64,7 +67,7 @@ test.describe("checkout", () => {
     const req = await posted;
     expect(req.postData() ?? "").toContain(email);
     await expect(page.getByText("Your Order is Complete")).toBeVisible();
-    await expect(page.getByText(email)).toBeVisible();
+    await expect(page.getByText(email, { exact: true }).first()).toBeVisible();
     await page.goto("/cart");
     await expect(page.getByText("Your Shopping Cart is Empty.")).toBeVisible();
   });
@@ -93,8 +96,8 @@ test.describe("checkout", () => {
       .inputValue();
     await submit(page).click();
     await expect(page.getByText("Your Order is Complete")).toBeVisible();
-    await expect(page.getByText(/order (id|number)?.*\d+/i).first()).toBeVisible();
-    await expect(page.getByText(email)).toBeVisible();
+    await expect(page.getByText(/order\s*(id|number|#)\s*:?\s*#?\d+/i).first()).toBeVisible();
+    await expect(page.getByText(email, { exact: true }).first()).toBeVisible();
   });
 
   // case: SWHR6-C-0216@v1
@@ -162,8 +165,13 @@ test.describe("checkout", () => {
       }),
     );
     await submit(page).click();
-    await expect(page.getByText(/error|failed|boom/i).first()).toBeVisible();
-    await expect(page.getByText(/trace|stack|at .+\(/i).first()).toBeVisible();
-    await expect(page.getByText(/notify.*administrator|administrator/i).first()).toBeVisible();
+    await expect(page.getByText(/boom/i).first()).toBeVisible();
+    await expect(page.getByText(/stack trace|trace:|\n\s*at .+\(/i).first()).toBeVisible();
+    await expect(
+      page
+        .getByRole("button", { name: /notify.*administrator/i })
+        .or(page.getByRole("link", { name: /notify.*administrator/i }))
+        .first(),
+    ).toBeVisible();
   });
 });
